@@ -1,0 +1,2 @@
+# Allow harbour-storeman-installer to manage packages
+/usr/bin/harbour-storeman-installer,r
