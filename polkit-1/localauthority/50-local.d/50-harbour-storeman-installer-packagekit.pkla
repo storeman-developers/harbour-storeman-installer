@@ -1,0 +1,6 @@
+[Storeman Installer]
+Identity=unix-group:users
+Action=org.freedesktop.packagekit.*
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes

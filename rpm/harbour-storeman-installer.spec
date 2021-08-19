@@ -10,6 +10,10 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 BuildRequires:  sailfish-svg2png
 
+%define localauthority_dir polkit-1/localauthority/50-local.d
+%define ssu_features_dir   ssu/features.d
+%define hicolor_icons_dir  %{_datadir}/icons/hicolor
+
 %description
 %{summary}.
 
@@ -20,17 +24,17 @@ BuildRequires:  sailfish-svg2png
 mkdir -p %{buildroot}%{_bindir}
 install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
 
-install -d %{buildroot}%{_datadir}/mapplauncherd/privileges.d
-install mapplauncherd/privileges.d/%{name} %{buildroot}%{_datadir}/mapplauncherd/privileges.d/%{name}
+install -d %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
+install %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 
-install -d %{buildroot}%{_datadir}/ssu/features.d
-install mentaljam-obs/ssu/features.d/mentaljam-obs.ini %{buildroot}%{_datadir}/ssu/features.d/mentaljam-obs.ini
+install -d %{buildroot}%{_datadir}/%{ssu_features_dir}
+install mentaljam-obs/%{ssu_features_dir}/* %{buildroot}%{_datadir}/%{ssu_features_dir}
 
 for s in 86 108 128 172
 do
   prof=${s}x${s}
-  install -d %{buildroot}%{_datadir}/icons/hicolor/$prof/apps
-  sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{_datadir}/icons/hicolor/$prof/apps
+  install -d %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{hicolor_icons_dir}/$prof/apps
 done
 
 desktop-file-install \
@@ -47,7 +51,7 @@ rm -f /var/cache/ssu/features.ini && ssu ur || true
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
+%{_datadir}/%{ssu_features_dir}/mentaljam-obs.ini
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/*/apps/%{name}.png
-%{_datadir}/mapplauncherd/privileges.d/%{name}
-%{_datadir}/ssu/features.d/mentaljam-obs.ini
+%{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
+%{hicolor_icons_dir}/*/apps/%{name}.png
