@@ -1,7 +1,7 @@
 Summary:        Storeman Installer for Sailfish OS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.0.0
+Version:        1.0.1
 Release:        1
 Group:          System
 Source0:        %{name}-%{version}.tar.bz2
@@ -55,3 +55,7 @@ rm -f /var/cache/ssu/features.ini && ssu ur || true
 %{_datadir}/applications/%{name}.desktop
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
+
+%changelog
+* Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
+- Update translations
