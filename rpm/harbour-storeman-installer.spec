@@ -1,7 +1,7 @@
 Summary:        Storeman Installer for Sailfish OS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.1.0
+Version:        1.1.1
 Release:        1
 Group:          System
 Source0:        %{name}-%{version}.tar.bz2
@@ -11,7 +11,6 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  sailfish-svg2png
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
-%define ssu_features_dir   ssu/features.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
 
 %description
@@ -27,9 +26,6 @@ install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
 install -d %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 install %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 
-install -d %{buildroot}%{_datadir}/%{ssu_features_dir}
-install mentaljam-obs/%{ssu_features_dir}/* %{buildroot}%{_datadir}/%{ssu_features_dir}
-
 for s in 86 108 128 172
 do
   prof=${s}x${s}
@@ -42,21 +38,26 @@ desktop-file-install \
   --dir %{buildroot}%{_datadir}/applications \
   %{name}.desktop
 
-%post
-rm -f /var/cache/ssu/features.ini && ssu ur && ssu er mentaljam-obs || true
+%posttrans
+rm -f /var/cache/ssu/features.ini
+ssu ar mentaljam-obs 'https://repo.sailfishos.org/obs/home:/mentaljam/%%(release)_%%(arch)/'
+ssu ur
 
 %postun
-rm -f /var/cache/ssu/features.ini && ssu ur || true
+ssu rr mentaljam-obs
+rm -f /var/cache/ssu/features.ini
+ssu ur
 
 %files
 %defattr(-,root,root,-)
 %{_bindir}/%{name}
-%{_datadir}/%{ssu_features_dir}/mentaljam-obs.ini
 %{_datadir}/applications/%{name}.desktop
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Thu Jan 27 2022 olf <https://github.com/Olf0> - 1.1.1-1
+- Update repository configuration
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
