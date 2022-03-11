@@ -1,8 +1,5 @@
 name: GitHub-actions CI build runner
 
-env:
-  sfos_target32: 4.1.0.24
-
 on:
   push:
     tags:
@@ -24,7 +21,7 @@ jobs:
     - name: Build armv7hl
       uses: coderus/github-sfos-build@master
       with:
-        release: ${{ env.sfos_target32 }}
+        release: 4.1.0.24
         arch: armv7hl
 
     - name: Upload build result
