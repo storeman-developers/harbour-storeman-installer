@@ -1,7 +1,7 @@
 name: GitHub-actions CI build runner
 
 env:
-  sfos_target32: ${{ '3.3.0.14' }}
+  sfos_target32: ${{ '3.4.0.24' }}
 
 on:
   push:
