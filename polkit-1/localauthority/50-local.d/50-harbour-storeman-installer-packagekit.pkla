@@ -1,6 +1,6 @@
 [Storeman Installer]
-Identity=unix-group:users
-Action=org.freedesktop.packagekit.*
+Identity=unix-group:ssu
+Action=org.freedesktop.packagekit.package-install-untrusted;org.freedesktop.packagekit.system-sources-configure
 ResultAny=yes
 ResultInactive=yes
 ResultActive=yes
