@@ -33,10 +33,9 @@ do
   sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{hicolor_icons_dir}/$prof/apps
 done
 
-desktop-file-install \
-  --delete-original \
-  --dir %{buildroot}%{_datadir}/applications \
-  %{name}.desktop
+# a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check.
+# b. Just an idea to try: -m 755 | --mode=755 may be helpful for resolving issue #1
+desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
 rm -f /var/cache/ssu/features.ini
