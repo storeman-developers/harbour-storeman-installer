@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
-pkcon repo-set-data mentaljam-obs refresh-now true
+pkcon repo-set-data storeman-obs refresh-now true
 pkcon install -y harbour-storeman
