@@ -1,7 +1,7 @@
 Summary:        Storeman Installer for Sailfish OS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.1.1
+Version:        1.2.0
 Release:        1
 Group:          System
 Source0:        %{name}-%{version}.tar.bz2
@@ -40,10 +40,11 @@ desktop-file-install \
 
 %posttrans
 rm -f /var/cache/ssu/features.ini
-ssu ar mentaljam-obs 'https://repo.sailfishos.org/obs/home:/mentaljam/%%(release)_%%(arch)/'
+ssu ar storeman-obs 'https://repo.sailfishos.org/obs/home:/poetaster:/storeman/%%(release)_%%(arch)/'
 ssu ur
 
 %postun
+ssu rr storeman-obs
 ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ur
@@ -56,9 +57,11 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
-* Thu Jan 27 2022 olf <https://github.com/Olf0> - 1.1.1-1
+* Thu Jan 27 2022 olf <https://github.com/Olf0> - 1.2.0-1
 - Update repository configuration
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
 - Update translations
+* Thu Aug 19 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.0-1
+- Initial release
