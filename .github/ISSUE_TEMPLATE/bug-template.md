@@ -9,7 +9,7 @@ assignees: ''
 
 **SailfishOS VERSION** (Settings → About product → Build): 
 <br />**HARDWARE** (Settings → About product → Manufacturer & Product name): 
-<br />**Storeman VERSION** (Storeman → [Top pulley] About Storeman): 
+<br />**Storeman Installer VERSION**: 
 <br />
 
 #### BUG DESCRIPTION
