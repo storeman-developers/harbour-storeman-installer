@@ -38,13 +38,13 @@ done
 desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
+ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ar storeman-obs 'https://repo.sailfishos.org/obs/home:/poetaster:/storeman/%%(release)_%%(arch)/'
 ssu ur
 
 %postun
 ssu rr storeman-obs
-ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ur
 
