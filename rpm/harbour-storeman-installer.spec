@@ -1,7 +1,7 @@
-Summary:        Storeman Installer for Sailfish OS
+Summary:        Storeman Installer for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.0
+Version:        1.2.1
 Release:        1
 Group:          System
 URL:            https://github.com/storeman-developers/harbour-storeman-installer
@@ -15,7 +15,7 @@ BuildRequires:  sailfish-svg2png
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
 
 %description
-%{summary}.
+Selects the correct Storeman variant built for the CPU-architecture of the device and the installed SailfishOS release.
 
 %prep
 %setup -q -n %{name}-%{version}
@@ -67,7 +67,6 @@ ssu ur
 - Update repository configuration
 - Add URL: to spec file
 - Update spec file
-
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
