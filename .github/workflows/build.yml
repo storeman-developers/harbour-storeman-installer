@@ -1,4 +1,4 @@
-name: GitHub-actions CI build runner - master branch against SFOS 2.2.0.29 (armv7hl only, because it is a `noarch` RPM)
+name: CI build - master branch on SFOS 2.2.0.29 (armv7hl)
 
 on:
   push:
