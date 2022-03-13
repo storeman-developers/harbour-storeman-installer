@@ -15,7 +15,7 @@ BuildRequires:  sailfish-svg2png
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
 
 %description
-Selects the correct Storeman variant built for the CPU-architecture of the device and the installed SailfishOS release.
+Selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
 
 %prep
 %setup -q -n %{name}-%{version}
