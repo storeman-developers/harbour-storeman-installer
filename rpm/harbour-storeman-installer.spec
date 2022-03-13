@@ -57,9 +57,17 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
-* Thu Jan 27 2022 olf <https://github.com/Olf0> - 1.2.0-1
+* Sun Mar 13 2022 olf <https://github.com/Olf0> - 1.2.0-1
+- Change group from users to ssu
+- polkit: Limit allowed actions to the necessary ones
+- Do not to call Bash
+- desktop file: Only label languages by country code 
+- Create bug-template.md / Create suggestion-template.md
+- Create build.yml
 - Update repository configuration
 - Add URL: to spec file
+- Update spec file
+
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
