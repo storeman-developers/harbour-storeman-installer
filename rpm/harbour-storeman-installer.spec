@@ -4,6 +4,7 @@ Name:           harbour-storeman-installer
 Version:        1.2.0
 Release:        1
 Group:          System
+URL:            https://github.com/storeman-developers/harbour-storeman-installer
 Source0:        %{name}-%{version}.tar.bz2
 Requires:       ssu
 BuildArch:      noarch
@@ -58,6 +59,7 @@ ssu ur
 %changelog
 * Thu Jan 27 2022 olf <https://github.com/Olf0> - 1.2.0-1
 - Update repository configuration
+- Add URL: to spec file
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
