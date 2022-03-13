@@ -1,4 +1,4 @@
-name: GitHub-actions CI build runner
+name: GitHub-actions CI build runner - master branch against SFOS 2.2.0.29 (armv7hl only, because it is a `noarch` RPM)
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - '*'
   pull_request:
     branches:
-      - 'master'
+      - master
 
 jobs:
   build:
@@ -19,9 +19,9 @@ jobs:
       run: mkdir RPMS
 
     - name: Build armv7hl
-      uses: coderus/github-sfos-build@master
+      uses: coderus/github-sfos-build@old-stable
       with:
-        release: 4.1.0.24
+        release: 2.2.0.29
         arch: armv7hl
 
     - name: Upload build result
