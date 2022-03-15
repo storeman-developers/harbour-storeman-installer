@@ -17,6 +17,33 @@ BuildRequires:  sailfish-svg2png
 %description
 Selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
 
+# This description section includes metadata for SailfishOS:Chum, see
+# https://github.com/sailfishos-chum/main/blob/main/Metadata.md
+%if "%{?vendor}" == "chum"
+PackageName: Storeman Installer for SailfishOS
+Type: desktop-application
+Categories:
+ - Utilities
+ - System
+DeveloperName: Storeman Developers (mentaljam)
+Custom:
+  Repo: %{url}
+Icon: %{url}/raw/master/harbour-storeman-installer.svg
+Screenshots:
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-01.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-02.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-03.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-04.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-06.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-07.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-08.png
+ - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-09.png
+Url:
+  Homepage: %{url}
+  Help: %{url}/issues
+  Bugtracker: %{url}/issues
+%endif
+
 %prep
 %setup -q -n %{name}-%{version}
 
