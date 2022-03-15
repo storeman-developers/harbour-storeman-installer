@@ -17,15 +17,22 @@ BuildRequires:  sailfish-svg2png
 %description
 Selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
 
+# This description section includes metadata for SailfishOS:Chum, see
+# https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %if "%{?vendor}" == "chum"
-PackageName: Storeman Installer
+PackageName: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
  - Utilities
+ - System
 DeveloperName: Storeman Developers (mentaljam)
 Custom:
- - Repo: https://github.com/storeman-developers/harbour-storeman-installer
+  Repo: %{url}
 Icon: https://raw.githubusercontent.com/storeman-developers/harbour-storeman-installer/master/harbour-storeman-installer.svg
+Url:
+  Homepage: %{url}
+  Help: %{url}/issues
+  Bugtracker: %{url}/issues
 %endif
 
 %prep
