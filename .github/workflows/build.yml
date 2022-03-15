@@ -1,4 +1,4 @@
-name: CI build - master branch on SFOS 2.2.0.29 (armv7hl)
+name: CI build - master branch on SFOS 3.0.1.11 (armv7hl)
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
     - name: Build armv7hl
       uses: coderus/github-sfos-build@old-stable
       with:
-        release: 2.2.0.29
+        release: 3.0.1.11
         arch: armv7hl
 
     - name: Upload build result
