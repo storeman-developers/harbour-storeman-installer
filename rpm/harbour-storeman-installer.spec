@@ -25,7 +25,7 @@ Type: desktop-application
 Categories:
  - Utilities
  - System
-DeveloperName: Storeman Developers (mentaljam)
+DeveloperName: Storeman developers (mentaljam)
 Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/harbour-storeman-installer.svg
