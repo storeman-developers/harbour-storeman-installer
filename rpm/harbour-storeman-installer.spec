@@ -25,6 +25,8 @@ Type: desktop-application
 Categories:
  - Utilities
  - System
+ - Network
+ - PackageManager
 DeveloperName: Storeman developers (mentaljam)
 Custom:
   Repo: %{url}
