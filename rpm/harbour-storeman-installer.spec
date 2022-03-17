@@ -1,7 +1,7 @@
 Summary:        Storeman Installer for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.3.0
+Version:        1.2.1
 Release:        1
 Group:          System
 URL:            https://github.com/storeman-developers/harbour-storeman-installer
