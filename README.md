@@ -10,7 +10,7 @@ The Storeman Installer works on any SailfishOS release and CPU-architecture, tho
 
 If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:Chum GUI application](https://chumrpm.netlify.app/), you can download and install Storeman from there, without the indirection via Storeman Installer.
 
-The current Storeman proper can be obtained for manual installation from [Storemans releases section at GitHub]; the RPMs of older Storeman releases are also available there.
+The current Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there.
 
 ### Important notes
 
