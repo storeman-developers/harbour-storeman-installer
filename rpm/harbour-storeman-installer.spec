@@ -1,7 +1,7 @@
 Summary:        Storeman Installer for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.1
+Version:        1.2.2
 Release:        1
 Group:          System
 URL:            https://github.com/storeman-developers/harbour-storeman-installer
@@ -86,6 +86,12 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.2-1
+- .desktop file: Trivially bail out of SailJail #38
+* Thu Mar 17 2022 olf <https://github.com/Olf0> - 1.2.1-1
+- spec file: Add SailfishOS:Chum metadata (#23) plus spec file: Add categories (#31) and #30
+- Create help-template.md (#24)
+- Create and enhance README (#25, #29, #30, #32, #33, #34, #35)
 * Sun Mar 13 2022 olf <https://github.com/Olf0> - 1.2.0-1
 - Change group from users to ssu
 - polkit: Limit allowed actions to the necessary ones
