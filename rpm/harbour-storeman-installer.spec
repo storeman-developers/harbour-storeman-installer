@@ -1,4 +1,4 @@
-Summary:        Storeman Installer for SailfishOS
+Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
 Version:        1.2.3
@@ -15,7 +15,7 @@ BuildRequires:  sailfish-svg2png
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
 
 %description
-Selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
+Storeman Installer selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
