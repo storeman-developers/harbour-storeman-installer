@@ -69,6 +69,7 @@ done
 
 # a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check, but seems to work without it.
 # b. Just an idea to try: -m 755 | --mode=755 may be helpful for resolving issue #1
+# c. Compare with https://github.com/storeman-developers/harbour-storeman/blob/master/rpm/harbour-storeman.spec#L82-L83
 desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
