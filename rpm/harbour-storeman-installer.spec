@@ -1,11 +1,11 @@
-Summary:        Storeman Installer for SailfishOS
+Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.3
+Version:        1.2.4
 Release:        1
-Group:          System
-URL:            https://github.com/storeman-developers/harbour-storeman-installer
-Source0:        %{name}-%{version}.tar.bz2
+Group:          Applications/System
+URL:            https://github.com/storeman-developers/%{name}
+Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
@@ -14,11 +14,13 @@ BuildRequires:  sailfish-svg2png
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
 
-%description
-Selects the correct variant of the Storeman OpenRepos client application built for the CPU-architecture of the device and the installed SailfishOS release.
-
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
+%description
+Storeman Installer selects the right variant of the Storeman OpenRepos client
+application built for the CPU-architecture of the device and the installed
+SailfishOS release.
+
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
 Type: desktop-application
@@ -49,6 +51,8 @@ Url:
 %prep
 %setup -q -n %{name}-%{version}
 
+%build
+
 %install
 mkdir -p %{buildroot}%{_bindir}
 install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
@@ -65,6 +69,7 @@ done
 
 # a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check, but seems to work without it.
 # b. Just an idea to try: -m 755 | --mode=755 may be helpful for resolving issue #1
+# c. Compare with https://github.com/storeman-developers/harbour-storeman/blob/master/rpm/harbour-storeman.spec#L82-L83
 desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
