@@ -4,8 +4,8 @@ Name:           harbour-storeman-installer
 Version:        1.2.3
 Release:        1
 Group:          Applications/System
-URL:            https://github.com/storeman-developers/harbour-storeman-installer
-Source0:        %{name}-%{version}.tar.bz2
+URL:            https://github.com/storeman-developers/%{name}
+Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
