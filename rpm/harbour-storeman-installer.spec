@@ -1,8 +1,8 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.4
-Release:        1
+Version:        1.2.6
+Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
@@ -49,7 +49,7 @@ Url:
 %endif
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup
 
 %build
 
@@ -91,6 +91,11 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.6-release1
+- Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
+- Specify a correct source link at GitHub (#42)
+- Address a couple of rpmlint complaints
+Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 * Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.2-1
 - .desktop file: Trivially bail out of SailJail #38
 * Thu Mar 17 2022 olf <https://github.com/Olf0> - 1.2.1-1
