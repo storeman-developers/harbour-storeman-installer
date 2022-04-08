@@ -1,7 +1,7 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.6
+Version:        1.2.7
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -55,22 +55,19 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_bindir}
-install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
+cp bin/%{name} %{buildroot}%{_bindir}/
 
-install -d %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
-install %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
+mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
+cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 
 for s in 86 108 128 172
 do
   prof=${s}x${s}
-  install -d %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  mkdir -p %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  cp icons/$prof/%{name}.png %{buildroot}%{hicolor_icons_dir}/$prof/apps/
 done
 
-# a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check, but seems to work without it.
-# b. Just an idea to try: -m 755 | --mode=755 may be helpful for resolving issue #1
-# c. Compare with https://github.com/storeman-developers/harbour-storeman/blob/master/rpm/harbour-storeman.spec#L82-L83
-desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
+desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
 ssu rr mentaljam-obs
@@ -91,6 +88,8 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.7-release1
+- Fix icon deployment
 * Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
