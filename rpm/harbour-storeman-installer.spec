@@ -9,7 +9,6 @@ Source:         https://github.com/storeman-developers/%{name}/archive/%{version
 Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
-BuildRequires:  sailfish-svg2png
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
@@ -32,7 +31,7 @@ Categories:
 DeveloperName: Storeman developers (mentaljam)
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/harbour-storeman-installer.svg
+Icon: %{url}/raw/master/.xdata/icons/harbour-storeman-installer.svg
 Screenshots:
  - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-01.png
  - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-02.png
