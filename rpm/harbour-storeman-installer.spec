@@ -60,11 +60,10 @@ install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
 install -d %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 install %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 
-for s in 86 108 128 172
+for p in '86x86 0.336' '108x108 0.422' '128x128 0.5' '172x172 0.672'
 do
-  prof=${s}x${s}
-  install -d %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  p=($p)
+  sailfish_svg2png -z ${p[1]} . "%{buildroot}%{hicolor_icons_dir}/${p[0]}/apps"
 done
 
 # a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check, but seems to work without it.
