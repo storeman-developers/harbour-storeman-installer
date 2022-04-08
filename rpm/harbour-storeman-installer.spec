@@ -81,7 +81,7 @@ ssu ur
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/%{name}
+%attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
