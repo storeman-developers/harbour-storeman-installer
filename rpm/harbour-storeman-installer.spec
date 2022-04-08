@@ -49,7 +49,7 @@ Url:
 %endif
 
 %prep
-%setup
+%setup -q
 
 %build
 
