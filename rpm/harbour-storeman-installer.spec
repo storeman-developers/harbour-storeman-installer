@@ -88,9 +88,9 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
-* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.7-release1
+* Fri Apr 08 2022 olf <https://github.com/Olf0> - 1.2.7-release1
 - Fix icon deployment
-* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.6-release1
+* Thu Apr 07 2022 olf <https://github.com/Olf0> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
