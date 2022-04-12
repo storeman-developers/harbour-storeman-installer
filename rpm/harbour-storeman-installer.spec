@@ -12,8 +12,7 @@ BuildRequires:  desktop-file-utils
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
-%define screenshots_url \
-  https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-
+%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -35,14 +34,14 @@ Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icons/%{name}.svg
 Screenshots:
- - %{screenshots_url}screenshot-storeman-01.png
- - %{screenshots_url}screenshot-storeman-02.png
- - %{screenshots_url}screenshot-storeman-03.png
- - %{screenshots_url}screenshot-storeman-04.png
- - %{screenshots_url}screenshot-storeman-06.png
- - %{screenshots_url}screenshot-storeman-07.png
- - %{screenshots_url}screenshot-storeman-08.png
- - %{screenshots_url}screenshot-storeman-09.png
+ - %{screenshots_url}screenshot-screenshot-storeman-01.png
+ - %{screenshots_url}screenshot-screenshot-storeman-02.png
+ - %{screenshots_url}screenshot-screenshot-storeman-03.png
+ - %{screenshots_url}screenshot-screenshot-storeman-04.png
+ - %{screenshots_url}screenshot-screenshot-storeman-06.png
+ - %{screenshots_url}screenshot-screenshot-storeman-07.png
+ - %{screenshots_url}screenshot-screenshot-storeman-08.png
+ - %{screenshots_url}screenshot-screenshot-storeman-09.png
 Url:
   Homepage: %{url}
   Help: %{url}/issues
