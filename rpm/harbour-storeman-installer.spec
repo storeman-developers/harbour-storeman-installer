@@ -1,7 +1,7 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.6
+Version:        1.2.7
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -9,10 +9,10 @@ Source:         https://github.com/storeman-developers/%{name}/archive/%{version
 Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
-BuildRequires:  sailfish-svg2png
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
+%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -32,16 +32,16 @@ Categories:
 DeveloperName: Storeman developers (mentaljam)
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/harbour-storeman-installer.svg
+Icon: %{url}/raw/master/icons/%{name}.svg
 Screenshots:
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-01.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-02.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-03.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-04.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-06.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-07.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-08.png
- - https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/screenshot-screenshot-storeman-09.png
+ - %{screenshots_url}screenshot-screenshot-storeman-01.png
+ - %{screenshots_url}screenshot-screenshot-storeman-02.png
+ - %{screenshots_url}screenshot-screenshot-storeman-03.png
+ - %{screenshots_url}screenshot-screenshot-storeman-04.png
+ - %{screenshots_url}screenshot-screenshot-storeman-06.png
+ - %{screenshots_url}screenshot-screenshot-storeman-07.png
+ - %{screenshots_url}screenshot-screenshot-storeman-08.png
+ - %{screenshots_url}screenshot-screenshot-storeman-09.png
 Url:
   Homepage: %{url}
   Help: %{url}/issues
@@ -55,22 +55,19 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_bindir}
-install -m 0755 bin/%{name} %{buildroot}%{_bindir}/%{name}
+cp bin/%{name} %{buildroot}%{_bindir}/
 
-install -d %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
-install %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
+mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
+cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 
 for s in 86 108 128 172
 do
   prof=${s}x${s}
-  install -d %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  sailfish_svg2png -s 1 1 1 1 1 1 $s . %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  mkdir -p %{buildroot}%{hicolor_icons_dir}/$prof/apps
+  cp icons/$prof/%{name}.png %{buildroot}%{hicolor_icons_dir}/$prof/apps/
 done
 
-# a. `desktop-file-install --help-install` states that the syntax is `-dir=`: To check, but seems to work without it.
-# b. Just an idea to try: -m 755 | --mode=755 may be helpful for resolving issue #1
-# c. Compare with https://github.com/storeman-developers/harbour-storeman/blob/master/rpm/harbour-storeman.spec#L82-L83
-desktop-file-install --delete-original --dir %{buildroot}%{_datadir}/applications %{name}.desktop
+desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %posttrans
 ssu rr mentaljam-obs
@@ -85,13 +82,15 @@ ssu ur
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/%{name}
+%attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
-* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.6-release1
+* Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
+- Fix icon deployment
+* Thu Apr 07 2022 olf <https://github.com/Olf0> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
