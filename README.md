@@ -6,11 +6,12 @@
 
 Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS and initially installed by the Storeman Installer (or manually).  To update from Storeman < 0.2.9, one must remove ("uninstall") Storeman *before* installing the Storeman Installer or manually installing Storeman ≥ 0.2.9.  After an initial installation of Storeman ≥ 0.2.9, further updates of Storeman will be performed within Storeman, as usual. 
 
-The Storeman Installer works on any SailfishOS release and CPU-architecture, though the recent Storeman releases only support SailfishOS ≥ 3.1.0.  The current Storeman Installer can be obtained from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest).
+The Storeman Installer works on any SailfishOS release ≥ 3.1.0 and all CPU-architectures.  The current Storeman Installer RPM can be obtained from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos](https://openrepos.net/content/olf/storeman-installer) and [the SailfishOS-OBS](https://build.sailfishos.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
 
-If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:Chum GUI application](https://chumrpm.netlify.app/), you can download and install Storeman from there, without the indirection via Storeman Installer.
+If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:Chum GUI application](https://chumrpm.netlify.app/), you can install Storeman from there, without the indirection via Storeman Installer.
 
-The current Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there.
+The current RPMs of Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there, e.g., v0.1.8 which works on SailfishOS 2.2.1.
+Alternatively the current RPMs of Storeman proper can be obtained from [the SailfishOS-OBS](https://build.sailfishos.org/project/show/home:olf:harbour-storeman).
 
 ### Important notes
 
@@ -25,4 +26,4 @@ The current Storeman proper can be obtained for manual installation from [Storem
 * Tap on the "File downloaded" notification on your SailfishOS device or select the downloaded RPM file in a file-manager app and select "Install" in its pulley menu; then confirm the installation.
 * Preferrably disable "Allow untrusted software" again.
 * Tap on the "Storeman Installer" icon in the device's app grid ("launcher") and wait until the Storeman installation finishes - the "Storeman Installer" icon should be replaced by the icon of Storeman proper, even though the icons look the same, their text is different.
-* The Storeman Installer is automatically removed ("uninstalled") when Storeman is installed.
+* The Storeman Installer is automatically removed ("uninstalled") when Storeman is being installed.
