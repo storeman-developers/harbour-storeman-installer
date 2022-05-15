@@ -6,9 +6,11 @@ Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
-Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
+Requires:       ssu
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+Requires: sailfish-version >= 3.1.0
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
