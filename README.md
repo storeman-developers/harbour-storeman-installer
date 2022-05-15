@@ -22,8 +22,8 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
 ### Installation instructions
 
 * Enable "System → Security → Untrusted software → Allow untrusted software" in the SailfishOS Settings app.
-* Download the current Storeman Installer from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos](https://openrepos.net/content/olf/storeman-installer) or [the SailfishOS-OBS](https://build.sailfishos.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
-* Tap on the "File downloaded" notification on your SailfishOS device or select the downloaded RPM file in a file-manager app and select "Install" in its pulley menu; then confirm the installation.
+* Download the current Storeman Installer RPM from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos](https://openrepos.net/content/olf/storeman-installer) or [the SailfishOS-OBS](https://build.sailfishos.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
+* Tap on the "File downloaded" notification on your SailfishOS device or select the downloaded RPM file in a file-manager app and choose "Install" in its pulley menu; then confirm the installation.
 * Preferrably disable "Allow untrusted software" again.
 * Tap on the "Storeman Installer" icon in the device's app grid ("launcher") and wait until the Storeman installation finishes - the "Storeman Installer" icon should be replaced by the icon of Storeman proper, even though the icons look the same, their text is different.
 * The Storeman Installer is automatically removed ("uninstalled") when Storeman is being installed.
