@@ -1,14 +1,16 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.7
+Version:        1.2.8
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
-Requires:       ssu
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
+Requires:       ssu
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+Requires: sailfish-version >= 3.1.0
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
@@ -88,6 +90,8 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
+- Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
 - Fix icon deployment
 * Thu Apr 07 2022 olf <https://github.com/Olf0> - 1.2.6-release1
