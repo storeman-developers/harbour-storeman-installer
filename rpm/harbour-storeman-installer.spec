@@ -90,6 +90,8 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
+- Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
 - Fix icon deployment
 * Thu Apr 07 2022 olf <https://github.com/Olf0> - 1.2.6-release1
