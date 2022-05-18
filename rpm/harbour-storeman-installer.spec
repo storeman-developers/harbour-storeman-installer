@@ -1,7 +1,7 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.8
+Version:        1.2.9
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -90,6 +90,8 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.9-release1
+- Foo
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
