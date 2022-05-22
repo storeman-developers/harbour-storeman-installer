@@ -1,22 +1,22 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-# The Git release tag format is <version>-<release> since version 1.2.9.
+# The Git release tag format must adhere to just <version> since version 1.2.6.
 # The <version> field adheres to semantic versioning and the <release> field 
 # is comprised of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
-# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
+# https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        1.2.9
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
-# These "Source:" lines below require that the value of %{name} is also the
-# project name at GitHub and the value of %{version}-%{release} is also the
-# name of a correspondingly set git-tag.
+# These "Source:" lines below require that the value of ${name} is also the
+# project name at GitHub and the value of ${version} is also the name of a
+# correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/%{name}/archive/%{version}-%{release}.tar.gz
-# Source:       https://github.com/storeman-developers/%{name}/archive/refs/tags/%{version}-%{release}.tar.gz
-Source:         https://github.com/storeman-developers/%{name}/archive/%{version}-%{release}/%{name}-%{version}-%{release}.tar.gz
+# Source:       https://github.com/storeman-developers/${name}/archive/${version}.tar.gz
+# Source:       https://github.com/storeman-developers/${name}/archive/refs/tags/${version}.tar.gz
+Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
