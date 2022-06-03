@@ -1,10 +1,21 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-Version:        1.2.8
+# The Git release tag format must adhere to just <version> since version 1.2.6.
+# The <version> field adheres to semantic versioning and the <release> field 
+# is comprised of {alpha,beta,rc,release} postfixed with a natural number
+# greater or equal to 1 (e.g. "beta3").  For details and reasons, see
+# https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
+Version:        1.2.9
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
+# These "Source:" lines below require that the value of ${name} is also the
+# project name at GitHub and the value of ${version} is also the name of a
+# correspondingly set git-tag.
+# Alternative links, which also download ${projectname}-${tagname}.tar.gz:
+# Source:       https://github.com/storeman-developers/${name}/archive/${version}.tar.gz
+# Source:       https://github.com/storeman-developers/${name}/archive/refs/tags/${version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
@@ -90,6 +101,8 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
+* Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
+- pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
