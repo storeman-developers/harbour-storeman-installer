@@ -101,7 +101,7 @@ ssu ur
 %{hicolor_icons_dir}/*/apps/%{name}.png
 
 %changelog
-* XXXX - 1.2.9-release1
+* XXXX - 1.3.0-release1
 - 
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
