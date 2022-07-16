@@ -13,12 +13,6 @@ If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:C
 The current RPMs of Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there, e.g., v0.1.8 which works on SailfishOS 2.2.1.<br />
 Alternatively the current RPMs of Storeman proper can be obtained from [the SailfishOS-OBS](https://build.sailfishos.org/project/show/home:olf:harbour-storeman).
 
-### Important notes
-
-* If you have any troubles with installing, removing or updating packages after a SailfishOS upgrade, try running `devel-su pkcon refresh` in the terminal app.
-* Before software can be built for a SailfishOS release at the SailfishOS-OBS, Jolla must create a corresponding "download on demand (DoD)" OBS-repository.  It often takes some time after a new "general availability (GA)" SailfishOS release is published before the corresponding "DoD" repository is being made available, during which installing or updating Storeman by the Storeman Installer or Storeman's self-updating on a device with the new SailfishOS release already installed will fail; consequently this is always the case during the "closed beta (cBeta)" and "early access (EA)" phases of a new SailfishOS release.  Hence one has to either manually set the last prior SailfishOS GA release in the SailfishOS:Chum GUI application or manually download and install or update Storeman built for the last prior SailfishOS GA release, then.
-* Disclaimer: Storeman and Storeman Installer may still have flaws, kill your kittens or break your SailfishOS installation!  Although this is very unlikely after years of testing by many users, new flaws may be introduced in any release (as for any software).  Be aware, that the license you implicitly accept by using Storeman excludes any liability.
-
 ### Installation instructions
 
 * Enable "System → Security → Untrusted software → Allow untrusted software" in the SailfishOS Settings app.
@@ -27,3 +21,9 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
 * Preferrably disable "Allow untrusted software" again.
 * Tap on the "Storeman Installer" icon on the device's app grid ("launcher") and wait until the Storeman installation finishes - the "Storeman Installer" icon should be replaced by the icon of Storeman proper, even though the icons look the same, their text is different.
 * The Storeman Installer is automatically removed ("uninstalled") when Storeman is being installed.
+
+### Important notes
+
+* If you have any troubles with installing, removing or updating packages after a SailfishOS upgrade, try running `devel-su pkcon refresh` in the terminal app.
+* Before software can be built for a SailfishOS release at the SailfishOS-OBS, Jolla must create a corresponding "download on demand (DoD)" OBS-repository.  It often takes some time after a new "general availability (GA)" SailfishOS release is published before the corresponding "DoD" repository is being made available, during which installing or updating Storeman by the Storeman Installer or Storeman's self-updating on a device with the new SailfishOS release already installed will fail; consequently this is always the case during the "closed beta (cBeta)" and "early access (EA)" phases of a new SailfishOS release.  Hence one has to either manually set the last prior SailfishOS GA release in the SailfishOS:Chum GUI application or manually download and install or update Storeman built for the last prior SailfishOS GA release, then.
+* Disclaimer: Storeman and Storeman Installer may still have flaws, kill your kittens or break your SailfishOS installation!  Although this is very unlikely after years of testing by many users, new flaws may be introduced in any release (as for any software).  Be aware, that the license you implicitly accept by using Storeman excludes any liability.
