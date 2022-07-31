@@ -14,8 +14,8 @@ URL:            https://github.com/storeman-developers/%{name}
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/${name}/archive/${version}.tar.gz
-# Source:       https://github.com/storeman-developers/${name}/archive/refs/tags/${version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
@@ -72,6 +72,8 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
+#mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
+#cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
 
 for s in 86 108 128 172
 do
@@ -97,8 +99,9 @@ ssu ur
 %defattr(-,root,root,-)
 %attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
+%{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
+#%%{_sysconfdir}/%%{localauthority_dir}/50-%{name}.pkla
 
 %changelog
 * XXXX - 1.3.0-release1
