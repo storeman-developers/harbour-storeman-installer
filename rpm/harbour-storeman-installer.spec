@@ -84,6 +84,9 @@ ssu ur
 %posttrans
 %{_bindir}/systemctl start %{name}.timer
 
+# This MUST be omitted for Storeman ≥ 0.3.2!
+# Disabling this is fine, anyway, because Storeman will re-employ this repo.
+# In any failure case, at most this repo stays enabled unnecessarily.
 #%%postun
 #if [ "$1" = "0" ] # Removal
 #then
