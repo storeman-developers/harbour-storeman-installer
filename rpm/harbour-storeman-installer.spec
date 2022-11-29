@@ -3,10 +3,10 @@ License:        MIT
 Name:           harbour-storeman-installer
 # The Git release tag format must adhere to just <version> since version 1.2.6.
 # The <version> field adheres to semantic versioning and the <release> field 
-# is comprised of {alpha,beta,rc,release} postfixed with a natural number
+# comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.2.9
+Version:        1.3.0
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -14,8 +14,8 @@ URL:            https://github.com/storeman-developers/%{name}
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/${name}/archive/${version}.tar.gz
-# Source:       https://github.com/storeman-developers/${name}/archive/refs/tags/${version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
@@ -72,6 +72,8 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
+#mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
+#cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
 
 for s in 86 108 128 172
 do
@@ -82,25 +84,31 @@ done
 
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
-%posttrans
+%post
 ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
 ssu ur
 
-%postun
-ssu rr harbour-storeman-obs
-rm -f /var/cache/ssu/features.ini
-ssu ur
+#%%postun
+#if [ "$1" = "0" ] # Removal
+#then
+#  ssu rr harbour-storeman-obs
+#  rm -f /var/cache/ssu/features.ini
+#  ssu ur
+#fi
 
 %files
 %defattr(-,root,root,-)
 %attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_sharedstatedir}/%{localauthority_dir}/50-%{name}-packagekit.pkla
 %{hicolor_icons_dir}/*/apps/%{name}.png
+%{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
+#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
+- Enhance spec file a bit
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
