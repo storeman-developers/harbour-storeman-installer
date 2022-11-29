@@ -5,3 +5,4 @@ Description=Service unit for installing Storeman
 Type=oneshot
 ExecStartPre=pkcon repo-set-data harbour-storeman-obs refresh-now true
 ExecStart=pkcon -y install harbour-storeman
+#RemainAfterExit=yes # Only relevant / helpful for debugging
