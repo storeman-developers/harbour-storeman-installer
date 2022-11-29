@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.0
-Release:        release1
+Version:        2.0.0
+Release:        alpha1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -20,11 +20,11 @@ Source:         https://github.com/storeman-developers/%{name}/archive/%{version
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
+Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires: sailfish-version >= 3.1.0
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
-%define hicolor_icons_dir  %{_datadir}/icons/hicolor
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
@@ -67,45 +67,43 @@ Url:
 %build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-cp bin/%{name} %{buildroot}%{_bindir}/
+mkdir -p %{buildroot}%{_unitdir}
+cp /systemd/system/%{name}.* %{buildroot}%{_unitdir}/
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 #mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
 #cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
 
-for s in 86 108 128 172
-do
-  prof=${s}x${s}
-  mkdir -p %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  cp icons/$prof/%{name}.png %{buildroot}%{hicolor_icons_dir}/$prof/apps/
-done
-
-desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
-
-%posttrans
+%post
 ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
 ssu ur
 
-%postun
-ssu rr harbour-storeman-obs
-rm -f /var/cache/ssu/features.ini
-ssu ur
+%posttrans
+%{_bindir}/systemctl start %{name}.timer
+
+#%%postun
+#if [ "$1" = "0" ] # Removal
+#then
+#  ssu rr harbour-storeman-obs
+#  rm -f /var/cache/ssu/features.ini
+#  ssu ur
+#fi
 
 %files
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{hicolor_icons_dir}/*/apps/%{name}.png
+%{_unitdir}/%{name}.timer
+%{_unitdir}/%{name}.service
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
-#%%{_sysconfdir}/%%{localauthority_dir}/50-%{name}.pkla
+#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* XXXX - 1.3.0-release1
+* XXXX - 2.0.0-alpha1
 - 
+* Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
+- Enhance spec file a bit
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
