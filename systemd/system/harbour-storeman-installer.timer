@@ -1,0 +1,5 @@
+[Unit]
+Description=Trigger service unit for installing Storeman after a second
+
+[Timer]
+OnActiveSec=1
