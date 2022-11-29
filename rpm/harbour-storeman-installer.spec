@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.0
+Version:        1.3.1
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -92,17 +92,6 @@ then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
   ssu ur
 fi
-
-# This MUST be omitted for Storeman ≥ 0.3.2!
-# Disabling this is fine, anyway, because Storeman will re-employ this repo.
-# In any failure case, at most this repo stays enabled unnecessarily.
-#%%postun
-#if [ "$1" = "0" ] # Removal
-#then
-#  ssu rr harbour-storeman-obs
-#  rm -f /var/cache/ssu/features.ini
-#  ssu ur
-#fi
 
 %files
 %defattr(-,root,root,-)
