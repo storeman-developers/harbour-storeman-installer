@@ -76,10 +76,13 @@ cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 #cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
 
 %post
-ssu rr mentaljam-obs
-rm -f /var/cache/ssu/features.ini
-ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-ssu ur
+if [ "$1" = "1" ] # Installation
+then
+  ssu rr mentaljam-obs
+  rm -f /var/cache/ssu/features.ini
+  ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+  ssu ur
+fi
 
 %posttrans
 %{_bindir}/systemctl start %{name}.timer
