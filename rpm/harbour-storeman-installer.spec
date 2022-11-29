@@ -85,10 +85,13 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
-ssu rr mentaljam-obs
-rm -f /var/cache/ssu/features.ini
-ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-ssu ur
+if [ "$1" = "1" ] # Installation
+then
+  ssu rr mentaljam-obs
+  rm -f /var/cache/ssu/features.ini
+  ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+  ssu ur
+fi
 
 #%%postun
 #if [ "$1" = "0" ] # Removal
