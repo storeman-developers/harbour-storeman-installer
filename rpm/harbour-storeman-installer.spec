@@ -84,16 +84,19 @@ done
 
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
-%posttrans
+%post
 ssu rr mentaljam-obs
 rm -f /var/cache/ssu/features.ini
 ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
 ssu ur
 
-%postun
-ssu rr harbour-storeman-obs
-rm -f /var/cache/ssu/features.ini
-ssu ur
+#%%postun
+#if [ "$1" = "0" ] # Removal
+#then
+#  ssu rr harbour-storeman-obs
+#  rm -f /var/cache/ssu/features.ini
+#  ssu ur
+#fi
 
 %files
 %defattr(-,root,root,-)
@@ -101,11 +104,11 @@ ssu ur
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
-#%%{_sysconfdir}/%%{localauthority_dir}/50-%{name}.pkla
+#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* XXXX - 1.3.0-release1
-- 
+* Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
+- Enhance spec file a bit
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
