@@ -85,11 +85,17 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
-ssu rr mentaljam-obs
-rm -f /var/cache/ssu/features.ini
-ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-ssu ur
+if [ "$1" = "1" ] # Installation
+then
+  ssu rr mentaljam-obs
+  rm -f /var/cache/ssu/features.ini
+  ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+  ssu ur
+fi
 
+# This MUST be omitted for Storeman ≥ 0.3.2!
+# Disabling this is fine, anyway, because Storeman will re-employ this repo.
+# In any failure case, at most this repo stays enabled unnecessarily.
 #%%postun
 #if [ "$1" = "0" ] # Removal
 #then
