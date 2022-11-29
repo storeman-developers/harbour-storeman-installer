@@ -21,7 +21,10 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
-Requires: sailfish-version >= 3.1.0
+Requires:       sailfish-version >= 3.1.0
+Conflicts:      harbour-storeman
+Obsoletes:      harbour-storeman = 0.2
+Provides:       harbour-storeman = 0.3.0~
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
