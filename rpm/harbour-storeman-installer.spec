@@ -117,7 +117,9 @@ fi
 
 %changelog
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Enhance spec file a bit
+- Automatically remove an installed Storeman 0.2.x upon installation (on SailfishOS ≥ 3.1.0). (#95)
+- Enhance spec file. (#89, #91, #93)
+- Many small enhancements of comments, strings and other non-code assets.
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
