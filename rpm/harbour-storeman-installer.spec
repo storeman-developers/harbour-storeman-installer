@@ -88,6 +88,11 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
+# The %%post scriptlet is deliberately run when installing *and* updating.
+# The added harbour-storeman-obs repository is not removed when Storeman Installer
+# is removed, but when Storeman is removed (before it was added, removed, then
+# added again when installing Storeman via Storeman Installer): This is far more
+# fail-safe; if something goes wrong, SSUs repo entry is now ensured to exist.
 ssu_ur='no'
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
@@ -114,8 +119,10 @@ fi
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+- Enhance %%post section of the spec file
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Enhance spec file a bit
+- Enhance multiple aspects of the spec file
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
