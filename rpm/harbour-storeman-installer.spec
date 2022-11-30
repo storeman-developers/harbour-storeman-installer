@@ -88,21 +88,21 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
+ssu_ur='no'
 ssu_lr="$(ssu lr)"
 if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
-  ssu_ur="yes"
+  ssu_ur='yes'
 fi
 if ! printf '%s' "$ssu_lr" | grep -Fq 'harbour-storeman-obs'
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  ssu_ur="yes"
+  ssu_ur='yes'
 fi
-if [ "$ssu_ur" = "yes" ]
-then
-  ssu ur
+if [ "$ssu_ur" = 'yes' ]
+then ssu ur
 fi
 
 %files
