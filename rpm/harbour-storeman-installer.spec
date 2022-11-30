@@ -4,7 +4,7 @@ Name:           harbour-storeman-installer
 # The Git release tag format must adhere to just <version> since version 1.2.6.
 # The <version> field adheres to semantic versioning and the <release> field 
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g. "beta3").  For details and reasons, see
+# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.0.0
 Release:        beta1
@@ -79,27 +79,30 @@ cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 #cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
 
 %post
-if [ "$1" = "1" ] # Installation
+# The %%post scriptlet is deliberately run when installing *and* updating.
+# The added harbour-storeman-obs repository is not removed when Storeman Installer
+# is removed, but when Storeman is removed (before it was added, removed, then
+# added again when installing Storeman via Storeman Installer): This is far more
+# fail-safe; if something goes wrong, SSUs repo entry is now ensured to exist.
+ssu_ur='no'
+ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
+if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
+  ssu_ur='yes'
+fi
+if ! printf '%s' "$ssu_lr" | grep -Fq 'harbour-storeman-obs'
+then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  ssu ur
+  ssu_ur='yes'
+fi
+if [ "$ssu_ur" = 'yes' ]
+then ssu ur
 fi
 
 %posttrans
-%{_bindir}/systemctl start %{name}.timer
-
-# This MUST be omitted for Storeman ≥ 0.3.2!
-# Disabling this is fine, anyway, because Storeman will re-employ this repo.
-# In any failure case, at most this repo stays enabled unnecessarily.
-#%%postun
-#if [ "$1" = "0" ] # Removal
-#then
-#  ssu rr harbour-storeman-obs
-#  rm -f /var/cache/ssu/features.ini
-#  ssu ur
-#fi
+systemctl start %{name}.timer
 
 %files
 %defattr(-,root,root,-)
@@ -109,12 +112,15 @@ fi
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* XXXX - 2.0.0-alpha1
+* Day Dec 0X 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
 - 
+* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+- Enhance %%post section of the spec file (#96)
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Automatically remove an installed Storeman 0.2.x upon installation (on SailfishOS ≥ 3.1.0). (#95)
-- Enhance spec file. (#89, #91, #93)
-- Many small enhancements of comments, strings and other non-code assets.
+- Now automatically removes an installed Storeman 0.2.x when being installed (#95)
+- Enhance multiple aspects of the spec file (#89, #91, #93)
+- Many small enhancements of comments, strings and other non-code assets
+- Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
