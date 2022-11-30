@@ -7,7 +7,7 @@ Name:           harbour-storeman-installer
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        1.3.0
-Release:        release1
+Release:        release2
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -23,8 +23,8 @@ Requires:       ssu
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
 Conflicts:      harbour-storeman
-Obsoletes:      harbour-storeman = 0.2
-Provides:       harbour-storeman = 0.3.0~
+Obsoletes:      harbour-storeman < 0.3.0
+Provides:       harbour-storeman = 0.3.0~0
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
