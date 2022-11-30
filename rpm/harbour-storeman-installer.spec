@@ -120,7 +120,7 @@ fi
 
 %changelog
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
-- Enhance %%post section of the spec file
+- Enhance %%post section of the spec file (#96)
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
 - Now automatically removes an installed Storeman 0.2.x when being installed (#95)
 - Enhance multiple aspects of the spec file (#89, #91, #93)
