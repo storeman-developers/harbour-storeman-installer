@@ -7,7 +7,7 @@ Name:           harbour-storeman-installer
 # greater or equal to 1 (e.g. "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.0.0
-Release:        alpha1
+Release:        beta1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -22,7 +22,10 @@ BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
-Requires: sailfish-version >= 3.1.0
+Requires:       sailfish-version >= 3.1.0
+Conflicts:      harbour-storeman
+Obsoletes:      harbour-storeman = 0.2
+Provides:       harbour-storeman = 0.3.0~
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
@@ -109,7 +112,9 @@ fi
 * XXXX - 2.0.0-alpha1
 - 
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Enhance spec file a bit
+- Automatically remove an installed Storeman 0.2.x upon installation (on SailfishOS ≥ 3.1.0). (#95)
+- Enhance spec file. (#89, #91, #93)
+- Many small enhancements of comments, strings and other non-code assets.
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
