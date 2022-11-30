@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.0
+Version:        1.3.1
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -122,8 +122,9 @@ fi
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
 - Enhance %%post section of the spec file
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Enhance multiple aspects of the spec file
-- Now automatically removes an installed Storeman 0.2.x when being installed
+- Now automatically removes an installed Storeman 0.2.x when being installed (#95)
+- Enhance multiple aspects of the spec file (#89, #91, #93)
+- Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
 * Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
 - pkcon expects options before the command (#74)
