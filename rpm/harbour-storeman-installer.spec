@@ -122,9 +122,9 @@ fi
 * Sat Dec 03 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
-- Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0
+- Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
-- Now automatically removes an installed Storeman 0.2.x when being installed (#95)
+- Now should automatically remove an installed Storeman < 0.3.0 when being installed (#95)
 - Enhance multiple aspects of the spec file (#89, #91, #93)
 - Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
