@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.2
-Release:        rc1
+Version:        2.0.1
+Release:        rc2
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -78,6 +78,9 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
+# BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
+# no appended `|| true` needed to satisfy `set -e` for failing commands outside of
+# flow control directives (if, while, until etc.).
 ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
@@ -96,7 +99,9 @@ then ssu ur
 fi
 
 %posttrans
-systemctl start %{name}.timer
+systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer
+systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service
+systemctl -q --no-block start %{name}.timer
 
 %files
 %defattr(-,root,root,-)
@@ -104,9 +109,7 @@ systemctl start %{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-beta2
-- Fix v2.0.0-beta1
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-rc2
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
