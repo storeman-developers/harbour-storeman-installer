@@ -82,8 +82,8 @@ cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 # The %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
-# added again when installing Storeman via Storeman Installer): This is far more
-# fail-safe; if something goes wrong, SSUs repo entry is now ensured to exist.
+# added again when installing Storeman via Storeman Installer), which is far more
+# fail-safe; if something goes wrong, this SSUs repo entry is now ensured to exist.
 ssu_ur='no'
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
@@ -114,7 +114,7 @@ systemctl start %{name}.timer
 %changelog
 * Sun Dec 04 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
 - 
-* Sat Dec 03 2022 olf <https://github.com/Olf0> - 1.3.2-release1
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
