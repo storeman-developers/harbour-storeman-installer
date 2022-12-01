@@ -106,7 +106,8 @@ exit 0
 # is indicated that the final exit status of a whole scriptlet is crucial: 
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
 
-%posttrans  # At the very end of every install and upgrade
+%posttrans
+# At the very end of every install or upgrade
 systemctl -q --no-block start %{name}.timer || true
 
 %postun
