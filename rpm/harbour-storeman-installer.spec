@@ -75,8 +75,8 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 %post
 if [ $1 = 1 ]  # Installation, not upgrade
 then
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
   systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
 fi
 # The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
