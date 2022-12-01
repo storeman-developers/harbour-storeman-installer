@@ -1,5 +1,5 @@
 [Unit]
-Description=Service unit for installing Storeman
+Description=oneshot unit for installing Storeman
 
 [Service]
 Type=oneshot
