@@ -14,7 +14,7 @@ URL:            https://github.com/storeman-developers/%{name}
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/{name}/archive/%%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
