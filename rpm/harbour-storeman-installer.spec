@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.1
+Version:        1.3.2
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -119,8 +119,10 @@ fi
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+* Sat Dec 03 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
+* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+- Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
 - Now automatically removes an installed Storeman 0.2.x when being installed (#95)
 - Enhance multiple aspects of the spec file (#89, #91, #93)
