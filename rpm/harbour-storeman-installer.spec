@@ -112,7 +112,7 @@ systemctl start %{name}.timer
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sun Dec 06 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
+* Sun Dec 04 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
 - 
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
 - Refine %%post section of the spec file (#96)
