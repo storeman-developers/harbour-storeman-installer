@@ -114,9 +114,9 @@ systemctl start %{name}.timer
 %changelog
 * Sun Dec 04 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
 - 
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 1.3.2-release1
+* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
-* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+* Wed Nov 30 2022 olf <https://github.com/Olf0> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
 - Now should automatically remove an installed Storeman < 0.3.0 when being installed (#95)
