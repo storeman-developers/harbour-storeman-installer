@@ -116,6 +116,7 @@ systemctl start %{name}.timer
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
+- Thus the necessity for user interaction(s) is elimiated, besides triggering the installation of Storeman Installer
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
 * Wed Nov 30 2022 olf <https://github.com/Olf0> - 1.3.1-release1
