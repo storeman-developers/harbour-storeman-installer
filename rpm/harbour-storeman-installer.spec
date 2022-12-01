@@ -120,7 +120,7 @@ fi
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-rc2
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
