@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.0
-Release:        beta1
+Version:        2.0.1
+Release:        beta2
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -70,13 +70,9 @@ Url:
 %build
 
 %install
-mkdir -p %{buildroot}%{_unitdir}
-cp systemd/system/%{name}.* %{buildroot}%{_unitdir}/
-
-mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
-cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
-#mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
-#cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
+mkdir -p %{buildroot}%{_sysconfdir}
+cp -r systemd/system %{buildroot}%{_sysconfdir}/
+cp -r %{localauthority_dir} %{buildroot}%{_sysconfdir}/
 
 %post
 # The %%post scriptlet is deliberately run when installing *and* updating.
@@ -84,20 +80,20 @@ cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
-ssu_ur='no'
+ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
+if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if ! printf '%s' "$ssu_lr" | grep -Fq 'harbour-storeman-obs'
+if ! printf %s "$ssu_lr" | grep -Fq harbour-storeman-obs
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if [ "$ssu_ur" = 'yes' ]
+if [ $ssu_ur = yes ]
 then ssu ur
 fi
 
@@ -106,12 +102,13 @@ systemctl start %{name}.timer
 
 %files
 %defattr(-,root,root,-)
-%{_unitdir}/%{name}.timer
-%{_unitdir}/%{name}.service
-%{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
-#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
+%{_sysconfdir}/systemd/system/%{name}.timer
+%{_sysconfdir}/systemd/system/%{name}.service
+%{_sysconfdir}/%%{localauthority_dir}/50-%{name}.pkla
 
 %changelog
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-beta2
+- Fix v2.0.0-beta1
 * Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.0-beta1
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
