@@ -1,31 +1,28 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
-Name:           harbour-storeman-installer
+Name:           harbour-storeman
 # The Git release tag format must adhere to just <version> since version 1.2.6.
 # The <version> field adheres to semantic versioning and the <release> field 
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.3
-Release:        rc3
+Version:        0.3.0~1
+Release:        installer1
 Group:          Applications/System
-URL:            https://github.com/storeman-developers/%{name}
+URL:            https://github.com/storeman-developers/%{name}-installer
 # These "Source:" lines below require that the value of ${name} is also the
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
-# Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
-Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}-installer/archive/%%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/%%{name}-installer/archive/refs/tags/%%{version}.tar.gz
+Source:         https://github.com/storeman-developers/%{name}-installer/archive/%{version}/%{name}-installer-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
-Conflicts:      harbour-storeman
-Obsoletes:      harbour-storeman < 0.3.0
-Provides:       harbour-storeman = 0.3.0~0
 
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
@@ -35,6 +32,9 @@ Provides:       harbour-storeman = 0.3.0~0
 Storeman Installer selects the right variant of the Storeman OpenRepos client
 application built for the CPU-architecture of the device and the installed
 SailfishOS release.
+
+This variant of the Storeman Installer disguises itself as Storeman 0.3.0~1 in order to
+ease / automate upgrading from Storeman < 0.3.0.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
@@ -47,7 +47,7 @@ Categories:
 DeveloperName: Storeman developers (mentaljam)
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/icons/%{name}.svg
+Icon: %{url}/raw/master/icons/%{name}-installer.svg
 Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-01.png
  - %{screenshots_url}screenshot-screenshot-storeman-02.png
@@ -75,8 +75,8 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 %post
 if [ $1 = 1 ]  # Installation, not upgrade
 then
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}-installer.service || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}-installer.timer || true
 fi
 # The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -107,7 +107,7 @@ fi
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.timer || true
+systemctl -q --no-block start %{name}-installer.timer || true
 
 %postun
 if [ $1 = 0 ]  # Removal
@@ -116,11 +116,13 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%{_sysconfdir}/systemd/system/%{name}.timer
-%{_sysconfdir}/systemd/system/%{name}.service
+%{_sysconfdir}/systemd/system/%{name}-installer.timer
+%{_sysconfdir}/systemd/system/%{name}-installer.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-rc2
+* Sat Dec 03 2022 olf <https://github.com/Olf0> - 0.3.0~1
+- Storeman Installer 2.0.3 in diguise as Storeman 0.3.0~1 to ease / automate upgrading.
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
