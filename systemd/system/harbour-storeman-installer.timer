@@ -1,5 +1,5 @@
 [Unit]
-Description=timer unit to trigger the oneshot unit for installing Storeman after one to two seconds
+Description=timer unit to trigger the corresponding oneshot unit for installing Storeman after one to two seconds
 
 [Timer]
 OnActiveSec=1
