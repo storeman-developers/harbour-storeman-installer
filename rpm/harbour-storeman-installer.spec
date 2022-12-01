@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.1
-Release:        beta2
+Version:        2.0.2
+Release:        rc1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -27,7 +27,6 @@ Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~0
 
-%define localauthority_dir polkit-1/localauthority/50-local.d
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
@@ -71,8 +70,7 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}
-cp -r systemd/system %{buildroot}%{_sysconfdir}/
-cp -r %{localauthority_dir} %{buildroot}%{_sysconfdir}/
+cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
 # The %%post scriptlet is deliberately run when installing *and* updating.
@@ -104,7 +102,6 @@ systemctl start %{name}.timer
 %defattr(-,root,root,-)
 %{_sysconfdir}/systemd/system/%{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
-%{_sysconfdir}/%{localauthority_dir}/50-%{name}.pkla
 
 %changelog
 * Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-beta2
