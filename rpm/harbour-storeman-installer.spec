@@ -71,7 +71,7 @@ Url:
 
 %install
 mkdir -p %{buildroot}%{_unitdir}
-cp /systemd/system/%{name}.* %{buildroot}%{_unitdir}/
+cp systemd/system/%{name}.* %{buildroot}%{_unitdir}/
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
