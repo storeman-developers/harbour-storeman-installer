@@ -99,7 +99,6 @@ fi
 if [ $ssu_ur = yes ]
 then ssu ur
 fi
-exit 0
 # BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
