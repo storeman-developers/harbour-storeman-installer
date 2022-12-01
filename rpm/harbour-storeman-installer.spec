@@ -73,14 +73,16 @@ mkdir -p %{buildroot}%{_sysconfdir}
 cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
-# The %%post scriptlet is deliberately run when installing *and* updating.
+if [ $1 = 1 ]  # Installation, not upgrade
+then
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
+fi
+# The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
-# BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
-# no appended `|| true` needed to satisfy `set -e` for failing commands outside of
-# flow control directives (if, while, until etc.).
 ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
@@ -97,11 +99,20 @@ fi
 if [ $ssu_ur = yes ]
 then ssu ur
 fi
+exit 0
+# BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
+# no appended `|| true` needed to satisfy `set -e` for failing commands outside of
+# flow control directives (if, while, until etc.).  Furthermore on Fedora docs it
+# is indicated that the final exit status of a whole scriptlet is crucial: 
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
 
-%posttrans
-systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer
-systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service
-systemctl -q --no-block start %{name}.timer
+%posttrans  # At the very end of every install and upgrade
+systemctl -q --no-block start %{name}.timer || true
+
+%postun
+if [ $1 = 0 ]  # Removal
+then systemctl -q --no-block daemon-reload || true
+fi
 
 %files
 %defattr(-,root,root,-)
