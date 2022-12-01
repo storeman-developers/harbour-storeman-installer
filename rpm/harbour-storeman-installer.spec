@@ -14,7 +14,7 @@ URL:            https://github.com/storeman-developers/%{name}
 # project name at GitHub and the value of ${version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
+# Source:       https://github.com/storeman-developers/{name}/archive/%%{version}.tar.gz
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
@@ -104,7 +104,7 @@ systemctl start %{name}.timer
 %defattr(-,root,root,-)
 %{_sysconfdir}/systemd/system/%{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
-%{_sysconfdir}/%%{localauthority_dir}/50-%{name}.pkla
+%{_sysconfdir}/%{localauthority_dir}/50-%{name}.pkla
 
 %changelog
 * Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.1-beta2
