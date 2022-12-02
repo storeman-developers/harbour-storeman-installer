@@ -18,9 +18,7 @@ URL:            https://github.com/storeman-developers/%{name}
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
-BuildRequires:  desktop-file-utils
 Requires:       ssu
-Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
 Conflicts:      harbour-storeman
