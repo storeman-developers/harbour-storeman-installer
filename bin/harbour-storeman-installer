@@ -65,6 +65,6 @@ then
   pkcon -y install harbour-storeman >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
+  printf '\n%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
