@@ -4,3 +4,5 @@ Description=timer unit to trigger the corresponding oneshot unit for installing 
 [Timer]
 OnActiveSec=1
 AccuracySec=1
+RemainAfterElapse=false
+Unit=harbour-storeman-installer.service
