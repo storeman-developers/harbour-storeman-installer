@@ -23,7 +23,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # shall stay free of bashisms.
 
 # This script is designed to be called as detached ("&") as the last statement
-# of the %posttrans section (the last executed) of a RPM spec file.
+# of the %posttrans section (the last executed) of an RPM spec file.
 
 # Memorise how we were called:
 called="$(basename "$0")"
