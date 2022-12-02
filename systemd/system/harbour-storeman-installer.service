@@ -1,5 +1,5 @@
 [Unit]
-Description=oneshot unit for installing Storeman
+Description=oneshot unit for installing harbour-storeman
 
 [Service]
 Type=oneshot
