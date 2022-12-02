@@ -29,7 +29,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 called="$(basename "$0")"
 
 # Create logfile:
-logfile="/var/log/$called_$(date +'%Ft%H-%M-%S').log.txt"
+logfile="/var/log/${called}_$(date +'%Ft%H-%M-%S').log.txt"
 if ! touch "$logfile"
 then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
