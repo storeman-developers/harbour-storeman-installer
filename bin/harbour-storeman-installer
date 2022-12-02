@@ -49,8 +49,9 @@ then
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
 fi
 
-# Serves as a synchronisation point, because pkcon sub-commands wait
-# until the package management system is idle:
+# `pkcon repo-set-data` is intended to serve as a synchronisation point,
+# because most of pkcon's sub-commands wait until the package management
+# backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
@@ -62,6 +63,7 @@ then
   # The following statement must be started detached ("&"), because this
   # script file will be removed in the process, which will likely fail,
   # if it is still opened for executing / reading.
+  # It also shall always be the last command issued (WRT control-flow).
   pkcon -y install harbour-storeman >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
