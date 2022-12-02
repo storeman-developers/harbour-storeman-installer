@@ -29,14 +29,14 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 called="$(basename "$0")"
 
 # Create logfile:
-logfile="/var/log/${called}_$(date +'%Ft%H-%M-%S').log.txt"
+logfile="/var/log/${called}_$(date +%Ft%H-%M-%S).log.txt"
 if ! touch "$logfile"
 then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
 # Write first entry to logfile:
 logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Ins)  $logentry" >> "$logfile"
+if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
@@ -45,7 +45,7 @@ fi
 if ! printf '%s' " $(id -un) $(id -Gn) " | grep -Fq ' root '
 then
   logentry="[Warning] $called should be started with root privileges, because it does not provide a polkit rule for users any longer."
-  printf '%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
+  printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
 fi
 
@@ -53,12 +53,12 @@ fi
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
+printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if pkcon -pvn repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
 then
   logentry="pkcon -pvny install harbour-storeman"
-  printf '\n%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
+  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
   # The following statement must be started detached ("&"), because this
   # script file will be removed in the process, which will likely fail,
@@ -67,6 +67,6 @@ then
   pkcon -pvny install harbour-storeman >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n' "$(date -Ins)  $logentry" >> "$logfile" || true
+  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
