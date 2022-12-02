@@ -31,14 +31,14 @@ called="$(basename "$0")"
 # Create logfile:
 logfile="/var/log/$called_$(date +'%Ft%H-%M-%S').log.txt"
 if ! touch "$logfile"
-then printf '%s\n' "[Error] Failed to touch logfile ${logfile}" | systemd-cat -t "$called" -p 4 || true
+then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
 # Write first entry to logfile:
-logentry="[Info] Touch'ed logfile: ${logfile}"
+logentry="[Info] Touch'ed logfile: $logfile"
 if printf '%s\n' "$(date -Ins)  $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else printf '%s\n' "[Error] Failed to write to ${logfile}" | systemd-cat -t "$called" -p 4 || true
+else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
 # Check for root privileges:
