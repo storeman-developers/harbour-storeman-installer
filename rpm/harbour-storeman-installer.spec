@@ -106,7 +106,7 @@ fi
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.service || true
+systemctl -q --no-block start %{name}.timer || true
 
 %postun
 if [ $1 = 0 ]  # Removal
