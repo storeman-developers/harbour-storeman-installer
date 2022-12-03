@@ -125,8 +125,9 @@ fi
 
 %changelog
 * Sat Dec 03 2022 olf <https://github.com/Olf0> - 1.3.3-release1
-- Start pkcon commands with the options -pn
-- Tidy spec file as implemented in v2.0
+- Start pkcon commands with the options -pn (#130)
+- Tidy spec file as implemented in v2.0 (#130)
+- Clarify comment (#128)
 * Fri Dec 02 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
