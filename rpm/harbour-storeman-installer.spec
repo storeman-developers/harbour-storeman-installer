@@ -18,16 +18,14 @@ URL:            https://github.com/storeman-developers/%{name}
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
-BuildRequires:  desktop-file-utils
 Requires:       ssu
+Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~0
 
-%define localauthority_dir polkit-1/localauthority/50-local.d
-%define hicolor_icons_dir  %{_datadir}/icons/hicolor
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
@@ -70,58 +68,65 @@ Url:
 %build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-cp bin/%{name} %{buildroot}%{_bindir}/
-
-mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
-cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
-#mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
-#cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
-
-for s in 86 108 128 172
-do
-  prof=${s}x${s}
-  mkdir -p %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  cp icons/$prof/%{name}.png %{buildroot}%{hicolor_icons_dir}/$prof/apps/
-done
-
-desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
+mkdir -p %{buildroot}%{_sysconfdir}
+cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
-# The %%post scriptlet is deliberately run when installing *and* updating.
+if [ $1 = 1 ]  # Installation, not upgrade
+then
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+fi
+# The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
-ssu_ur='no'
+ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
+if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if ! printf '%s' "$ssu_lr" | grep -Fq 'harbour-storeman-obs'
+if ! printf %s "$ssu_lr" | grep -Fq harbour-storeman-obs
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if [ "$ssu_ur" = 'yes' ]
+if [ $ssu_ur = yes ]
 then ssu ur
+fi
+# BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
+# no appended `|| true` needed to satisfy `set -e` for failing commands outside of
+# flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
+# is indicated that the final exit status of a whole scriptlet is crucial: 
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+
+%posttrans
+# At the very end of every install or upgrade
+systemctl -q --no-block start %{name}.service || true
+
+%postun
+if [ $1 = 0 ]  # Removal
+then systemctl -q --no-block daemon-reload || true
 fi
 
 %files
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{hicolor_icons_dir}/*/apps/%{name}.png
-%{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
-#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
+%{_sysconfdir}/systemd/system/%{name}.timer
+%{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 1.3.2-release1
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
+- Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
+- The service unit performs the installation of Storeman
+- The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
+- Thus the necessity for user interaction(s) is elimiated, besides triggering the installation of Storeman Installer
+* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
-* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+* Wed Nov 30 2022 olf <https://github.com/Olf0> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
 * Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
 - Now should automatically remove an installed Storeman < 0.3.0 when being installed (#95)
