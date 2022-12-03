@@ -113,7 +113,6 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%{_sysconfdir}/systemd/system/%{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
