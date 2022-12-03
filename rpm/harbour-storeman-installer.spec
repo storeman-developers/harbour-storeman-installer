@@ -73,9 +73,7 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
 if [ $1 = 1 ]  # Installation, not upgrade
-then
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+then systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
 fi
 # The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -119,7 +117,9 @@ fi
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
+* Sat Dec 03 2022 olf <https://github.com/Olf0> - 2.0.7-rc7
+- The timer unit is superfluous, hence eliminated
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.6-rc6
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
