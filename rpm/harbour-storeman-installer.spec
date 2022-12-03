@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.7
-Release:        rc7.systemd
+Version:        2.0.8
+Release:        rc8.systemd
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -73,9 +73,7 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
 if [ $1 = 1 ]  # Installation, not upgrade
-then
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+then systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
 fi
 # The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -119,8 +117,10 @@ fi
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
-- Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
+* Sat Dec 03 2022 olf <https://github.com/Olf0> - 2.0.8-rc8
+- The timer unit is superfluous, hence eliminated (#126)
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.7-rc7
+- Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service (#123, #125)
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
 - Thus the necessity for user interaction(s) is elimiated, besides triggering the installation of Storeman Installer
