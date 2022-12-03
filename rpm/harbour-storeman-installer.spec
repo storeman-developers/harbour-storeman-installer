@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.5
-Release:        rc5.executable
+Version:        2.0.9
+Release:        rc9.executable
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -108,7 +108,7 @@ fi
 %attr(0755,root,root) %{_bindir}/%{name}
 
 %changelog
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
+* Fri Dec 03 2022 olf <https://github.com/Olf0> - 2.0.9-rc9
 - Radically rewrite `harbor-storeman-installer` script in `/usr/bin`
 - … which is now started as detached ("&") in the `%posttrans` scriptlet
 - The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
