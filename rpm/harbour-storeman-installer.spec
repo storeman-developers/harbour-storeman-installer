@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.9
-Release:        rc9.executable
+Version:        2.0.6
+Release:        rc6.systemd
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -19,6 +19,7 @@ URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 Requires:       ssu
+Requires:       systemd
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
 Conflicts:      harbour-storeman
@@ -30,9 +31,9 @@ Provides:       harbour-storeman = 0.3.0~0
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
-Storeman Installer selects, downloads and installs the right variant of
-the Storeman OpenRepos client application built for the CPU-architecture
-of the device and its installed SailfishOS release.
+Storeman Installer selects the right variant of the Storeman OpenRepos client
+application built for the CPU-architecture of the device and the installed
+SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
@@ -67,11 +68,16 @@ Url:
 %build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-cp bin/%{name} %{buildroot}%{_bindir}/
+mkdir -p %{buildroot}%{_sysconfdir}
+cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
-# The %%post scriptlet is deliberately run when installing *and* updating.
+if [ $1 = 1 ]  # Installation, not upgrade
+then
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+fi
+# The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -100,18 +106,23 @@ fi
 
 %posttrans
 # At the very end of every install or upgrade
-# The harbour-storeman-installer script must be started detached ("&") to allow for
-# this RPM transaction to finalise (what waiting for it to finish would prevent).
-%{_bindir}/%{name} &
+systemctl -q --no-block start %{name}.service || true
+
+%postun
+if [ $1 = 0 ]  # Removal
+then systemctl -q --no-block daemon-reload || true
+fi
 
 %files
-%attr(0755,root,root) %{_bindir}/%{name}
+%defattr(-,root,root,-)
+%{_sysconfdir}/systemd/system/%{name}.timer
+%{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Fri Dec 03 2022 olf <https://github.com/Olf0> - 2.0.9-rc9
-- Radically rewrite `harbor-storeman-installer` script in `/usr/bin`
-- … which is now started as detached ("&") in the `%posttrans` scriptlet
-- The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
+* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.3-rc3
+- Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service
+- The service unit performs the installation of Storeman
+- The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
 - Thus the necessity for user interaction(s) is elimiated, besides triggering the installation of Storeman Installer
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
