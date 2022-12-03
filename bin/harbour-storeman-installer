@@ -45,7 +45,7 @@ fi
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 #sleep 1
 if pkcon -pv repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
@@ -61,6 +61,6 @@ then
   pkcon -pvy install harbour-storeman >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '\n%s\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
