@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.2
+Version:        1.3.3
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -33,9 +33,9 @@ Provides:       harbour-storeman = 0.3.0~0
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
-Storeman Installer selects the right variant of the Storeman OpenRepos client
-application built for the CPU-architecture of the device and the installed
-SailfishOS release.
+Storeman Installer selects, downloads and installs the right variant of
+the Storeman OpenRepos client application built for the CPU-architecture
+of the device and its installed SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
@@ -93,22 +93,27 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
-ssu_ur='no'
+ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if printf '%s' "$ssu_lr" | grep -Fq 'mentaljam-obs'
+if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if ! printf '%s' "$ssu_lr" | grep -Fq 'harbour-storeman-obs'
+if ! printf %s "$ssu_lr" | grep -Fq harbour-storeman-obs
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  ssu_ur='yes'
+  ssu_ur=yes
 fi
-if [ "$ssu_ur" = 'yes' ]
+if [ $ssu_ur = yes ]
 then ssu ur
 fi
+# BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
+# no appended `|| true` needed to satisfy `set -e` for failing commands outside of
+# flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
+# is indicated that the final exit status of a whole scriptlet is crucial: 
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
 
 %files
 %defattr(-,root,root,-)
@@ -119,6 +124,9 @@ fi
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Sat Dec 03 2022 olf <https://github.com/Olf0> - 1.3.3-release1
+- Start pkcon commands with the options -pn
+- Tidy spec file as implemented in v2.0
 * Fri Dec 02 2022 olf <https://github.com/Olf0> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
 * Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.1-release1
