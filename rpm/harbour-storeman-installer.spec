@@ -31,9 +31,9 @@ Provides:       harbour-storeman = 0.3.0~0
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
-Storeman Installer selects the right variant of the Storeman OpenRepos client
-application built for the CPU-architecture of the device and the installed
-SailfishOS release.
+Storeman Installer selects, downloads and installs the right variant of
+the Storeman OpenRepos client application built for the CPU-architecture
+of the device and its installed SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
