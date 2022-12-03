@@ -1,4 +1,72 @@
-#!/bin/sh
+#!/bin/bash
+set -eufC
+set -o pipefail
+export POSIXLY_CORRECT=1
+export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
-pkcon repo-set-data harbour-storeman-obs refresh-now true
-pkcon -y install harbour-storeman
+# Specify bash as interpreter of this script (in its first line), as this ensures
+# that "-o pipefail" is available (for its use in the third line), after checking
+# that bash seems to be present in mer-core at least since 2011-10-04 (see
+# https://github.com/sailfishos/mer-core/bash / https://git.merproject.org/mer-core/bash )
+# and consequently in SailfishOS since its beginnings (checked v1.0.0.5 per
+# curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash
+# , as no earlier released version is available there, e.g. the first ones at
+# https://coderus.openrepos.net/whitesoft/sailversion ).
+# In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash
+# anyway.  Since SailfishOS 4.0, the busybox variant of ash has become the shell
+# installed by default, which provides some bash compatibility when called via
+# its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
+# including "-o pipefail", but not "-o posix"; though, setting POSIXLY_CORRECT
+# seems to achive the same without compatibility issues, plus (when exported)
+# also for a number of other GNU utilities.
+# Nevertheless, this script is still a Bourne (not-"Again") Shell script and
+# shall stay free of bashisms.
+
+# This script is designed to be called as detached ("&") as the last statement
+# of the %posttrans section (the last executed) of an RPM spec file.
+
+# Memorise how we were called:
+called="$(basename "$0")"
+
+# Create logfile:
+logfile="/var/log/${called}_$(date +%Ft%H-%M-%S).log.txt"
+if ! touch "$logfile"
+then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
+fi
+
+# Write first entry to logfile:
+logentry="[Info] Touch'ed logfile: $logfile"
+if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
+then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
+else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
+fi
+
+# Check for root privileges:
+if ! printf '%s' " $(id -un) $(id -Gn) " | grep -Fq ' root '
+then
+  logentry="[Warning] $called should be started with root privileges, because it does not provide a polkit rule for users any longer."
+  printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
+fi
+
+# `pkcon repo-set-data` is intended to serve as a synchronisation point,
+# because most of pkcon's sub-commands wait until the package management
+# backend (on SailfishOS: RPM via libzypp) is idle:
+logentry="pkcon repo-set-data harbour-storeman-obs refresh-now true"
+printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
+if pkcon -pvn repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
+then
+  logentry="pkcon -pvny install harbour-storeman"
+  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
+  # The following statement must be started detached ("&"), because this
+  # script file will be removed in the process, which will likely fail,
+  # if it is still opened for executing / reading.
+  # It also shall always be the last command issued (WRT control-flow).
+  pkcon -pvny install harbour-storeman >> "$logfile" 2>&1 &
+else
+  logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
+  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+fi
