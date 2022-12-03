@@ -1,7 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[harbour-storeman.harbour-storeman-installer_desktop]
-source_file = harbour-storeman-installer.desktop
-source_lang = en
-type = DESKTOP
