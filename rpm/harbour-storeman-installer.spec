@@ -99,12 +99,12 @@ fi
 # BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
-# is indicated that the final exit status of a whole scriptlet is crucial: 
+# is indicated that solely the final exit status of a whole scriptlet is crucial: 
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.timer || true
+systemctl -q --no-block start %{name}.service || true
 
 %postun
 if [ $1 = 0 ]  # Removal
