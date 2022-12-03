@@ -7,3 +7,4 @@ OnActiveSec=1
 AccuracySec=1
 # Allows for retriggering without rebooting:
 RemainAfterElapse=false
+#Unit=harbour-storeman-installer.service
