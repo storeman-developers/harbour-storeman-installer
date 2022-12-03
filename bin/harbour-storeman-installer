@@ -44,19 +44,21 @@ fi
 # `pkcon repo-set-data` is intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: RPM via libzypp) is idle:
-logentry="pkcon repo-set-data harbour-storeman-obs refresh-now true"
+logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
-if pkcon -pvn repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
+#sleep 1
+if pkcon -pv repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
 then
-  logentry="pkcon -pvny install harbour-storeman"
+  #sleep 1
+  logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
   # The following statement must be started detached ("&"), because this
   # script file will be removed in the process, which will likely fail,
   # if it is still opened for executing / reading.
   # It also shall always be the last command issued (WRT control-flow).
-  pkcon -pvny install harbour-storeman >> "$logfile" 2>&1 &
+  pkcon -pvy install harbour-storeman >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
   printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
