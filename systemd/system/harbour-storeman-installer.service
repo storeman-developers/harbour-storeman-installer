@@ -6,4 +6,4 @@ Type=oneshot
 ExecStartPre=/usr/bin/pkcon -pn repo-set-data harbour-storeman-obs refresh-now true
 ExecStart=/usr/bin/pkcon -pny install harbour-storeman
 # systemd jumps directly to ExecStopPost, if any ExecStart*= statement failed:
-ExecStopPost=systemd-cat -t harbour-storeman-installer -p 3 '[Crit] Failed to install harbour-storeman'
+ExecStopPost=/bin/sh -c 'echo "[Crit] Failed to install harbour-storeman" | systemd-cat -t harbour-storeman-installer -p 3'
