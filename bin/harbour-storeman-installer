@@ -1,4 +1,4 @@
 #!/bin/sh
 
-pkcon repo-set-data harbour-storeman-obs refresh-now true
-pkcon -y install harbour-storeman
+pkcon -pn repo-set-data harbour-storeman-obs refresh-now true
+pkcon -pny install harbour-storeman
