@@ -4,14 +4,14 @@
 
 ### Background
 
-Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS and initially installed by the Storeman Installer (or manually).  To update from Storeman < 0.2.9, one must remove ("uninstall") Storeman *before* installing the Storeman Installer or manually installing Storeman ≥ 0.2.9.  After an initial installation of Storeman ≥ 0.2.9, further updates of Storeman will be performed within Storeman, as usual. 
+Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS and initially installed by the Storeman Installer (or manually).  To update from Storeman <&nbsp;0.2.9 (needs SailfishOS ≥&nbsp;3.1.0), one should reinstall Storeman via the Storeman Installer (which installs the current Storeman release, and since Storeman Installer 1.3.0 automatically removes a Storeman <&nbsp;0.3.0 before that) or manually remove Storeman <&nbsp;0.2.9 and install Storeman ≥&nbsp;0.3.0.  After an initial installation of Storeman ≥&nbsp;0.3.0, further updates of Storeman will be performed within Storeman, as usual.
 
-The Storeman Installer works on any SailfishOS release ≥ 3.1.0 and all supported CPU-architectures (armv7hl, i486 and aarch64).  The current Storeman Installer RPM can be obtained from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) and [the SailfishOS-OBS](https://build.sailfishos.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
+The Storeman Installer works on any SailfishOS release ≥&nbsp;3.1.0 and all supported CPU-architectures (armv7hl, i486 and aarch64).  The current Storeman Installer RPM can be obtained from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) and [the SailfishOS-OBS](https://build.merproject.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
 
 If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:Chum GUI application](https://chumrpm.netlify.app/), you can install Storeman from there, without the indirection via Storeman Installer.
 
 The current RPMs of Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there, e.g., v0.1.8 which works on SailfishOS 2.2.1.<br />
-Alternatively the current RPMs of Storeman proper can be obtained from [the SailfishOS-OBS](https://build.sailfishos.org/project/show/home:olf:harbour-storeman).
+Alternatively the current RPMs of Storeman proper can be obtained from [the SailfishOS-OBS](https://build.merproject.org/project/show/home:olf:harbour-storeman).
 
 ### Important notes
 
@@ -22,8 +22,8 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
 ### Installation instructions
 
 * Enable "System → Security → Untrusted software → Allow untrusted software" in the SailfishOS Settings app.
-* Download the current Storeman Installer RPM from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) or [the SailfishOS-OBS](https://build.sailfishos.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
+* Download the current Storeman Installer RPM from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) or [the SailfishOS-OBS](https://build.merproject.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
 * Tap on the "File downloaded" notification on your SailfishOS device or select the downloaded RPM file in a file-manager app and choose "Install" in its pulley menu; then confirm the installation.
-* Preferrably disable "Allow untrusted software" again.
-* Tap on the "Storeman Installer" icon on the device's app grid ("launcher") and wait until the Storeman installation finishes - the "Storeman Installer" icon should be replaced by the icon of Storeman proper, even though the icons look the same, their text is different.
+* Preferably disable "Allow untrusted software" again.
+* Tap on the "Storeman Installer" icon on the device's app grid ("launcher") and wait until the Storeman installation finishes - the "Storeman Installer" icon should be replaced by the icon of Storeman proper; even though the icons and their text look similarly on first sight, they are distinctively different.
 * The Storeman Installer is automatically removed ("uninstalled") when Storeman is being installed.
