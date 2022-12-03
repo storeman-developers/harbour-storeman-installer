@@ -3,7 +3,7 @@ Description=oneshot unit for installing harbour-storeman
 
 [Service]
 Type=oneshot
-ExecStartPre=/usr/bin/pkcon -pn repo-set-data harbour-storeman-obs refresh-now true
-ExecStart=/usr/bin/pkcon -pny install harbour-storeman
+ExecStartPre=/usr/bin/pkcon -p repo-set-data harbour-storeman-obs refresh-now true
+ExecStart=/usr/bin/pkcon -py install harbour-storeman
 # systemd jumps directly to ExecStopPost, if any ExecStart*= statement failed:
 ExecStopPost=/bin/sh -c 'echo "[Critical] Failed to install harbour-storeman" | systemd-cat -t harbour-storeman-installer -p 3'
