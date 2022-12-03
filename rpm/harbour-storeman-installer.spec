@@ -105,7 +105,7 @@ fi
 %{_bindir}/%{name} &
 
 %files
-%attr(0755,root,root) %{_bindir}/%{name}
+%attr(0754,root,root) %{_bindir}/%{name}
 
 %changelog
 * Fri Dec 03 2022 olf <https://github.com/Olf0> - 2.0.9-rc9

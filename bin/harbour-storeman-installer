@@ -41,14 +41,6 @@ then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
-# Check for root privileges:
-if ! printf '%s' " $(id -un) $(id -Gn) " | grep -Fq ' root '
-then
-  logentry="[Warning] $called should be started with root privileges, because it does not provide a polkit rule for users any longer."
-  printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
-  printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
-fi
-
 # `pkcon repo-set-data` is intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: RPM via libzypp) is idle:
