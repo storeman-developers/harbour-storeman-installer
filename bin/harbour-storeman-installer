@@ -53,7 +53,7 @@ fi
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+printf '\n%s\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if pkcon -pvn repo-set-data harbour-storeman-obs refresh-now true >> "$logfile" 2>&1
 then
