@@ -16,11 +16,11 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # https://coderus.openrepos.net/whitesoft/sailversion ).
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash
 # anyway.  Since SailfishOS 4.0, the busybox variant of ash has become the shell
-# installed by default, which provides some bash compatibility when called via
-# its bash-symlink (which is deployed by the busybox-symlinks-bash RPM),
-# including "-o pipefail", but not "-o posix"; though, setting POSIXLY_CORRECT
-# seems to achive the same without compatibility issues, plus (when exported)
-# also for a number of other GNU utilities.
+# installed by default, which provides some bash compatibility (implicitly, when
+# called via its bash-symlink, which is deployed by the busybox-symlinks-bash
+# RPM), including "-o pipefail", but not "-o posix"; although setting
+# POSIXLY_CORRECT instead seems to achive the same without compatibility issues,
+# plus (when exported) also for a number of other GNU utilities.
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
