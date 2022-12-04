@@ -51,6 +51,10 @@ printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
+  # Sleeping for a second between the two pkcon calls, because pkcon *rarely*
+  # fails installing a package ("not found") immediately after a individual
+  # repository refresh via `repo-set-data <repo> refresh-now true`:
+  sleep 1
   logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
