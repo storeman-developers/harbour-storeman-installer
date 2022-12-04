@@ -14,7 +14,6 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # curl https://releases.sailfishos.org/sources/sailfish-1.0.0.5-oss.tar.bz2 | tar -tv | fgrep bash
 # , as no earlier released version is available there, e.g. the first ones at
 # https://coderus.openrepos.net/whitesoft/sailversion ).
-
 # In SailfishOS releases before 4.0, /bin/sh is just a symbolic link to /bin/bash
 # anyway.  Since SailfishOS 4.0, the busybox variant of ash has become the shell
 # installed by default, which provides some bash compatibility (implicitly, when
