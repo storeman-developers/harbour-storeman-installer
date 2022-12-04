@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.8
-Release:        rc8.systemd
+Version:        2.0.11
+Release:        release1.systemd.unit
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -116,40 +116,48 @@ fi
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Sat Dec 03 2022 olf <https://github.com/Olf0> - 2.0.8-rc8
-- The timer unit is superfluous, hence eliminated (#126)
-* Fri Dec 02 2022 olf <https://github.com/Olf0> - 2.0.7-rc7
+* Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.11-release1.systemd.unit
+- The timer unit may be superfluous, hence eliminated it (#126)
+* Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service (#123, #125)
 - The service unit performs the installation of Storeman
 - The timer unit is triggered via `systemctl` in the `%posttrans` scriptlet
-- Thus the necessity for user interaction(s) is elimiated, besides triggering the installation of Storeman Installer
-* Thu Dec 01 2022 olf <https://github.com/Olf0> - 1.3.2-release1
+- Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
+* Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
+- Radically rewrite `harbor-storeman-installer` script in `/usr/bin` (#136)
+- The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
+- Do not use pkcon's option -n; it is slow enough
+* Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
+- Start pkcon commands with the options -pn (#130)
+- Tidy spec file as implemented in v2.0 (#130)
+- Clarify comment (#128)
+* Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
-* Wed Nov 30 2022 olf <https://github.com/Olf0> - 1.3.1-release1
+* Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
-* Tue Nov 29 2022 olf <https://github.com/Olf0> - 1.3.0-release1
+* Tue Nov 29 2022 olf <Olf0@users.noreply.github.com> - 1.3.0-release1
 - Now should automatically remove an installed Storeman < 0.3.0 when being installed (#95)
 - Enhance multiple aspects of the spec file (#89, #91, #93)
 - Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
-* Sat Jun 04 2022 olf <https://github.com/Olf0> - 1.2.9-release1
+* Sat Jun 04 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
 - pkcon expects options before the command (#74)
-* Sun May 15 2022 olf <https://github.com/Olf0> - 1.2.8-release1
+* Sun May 15 2022 olf <Olf0@users.noreply.github.com> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
-* Sun Apr 10 2022 olf <https://github.com/Olf0> - 1.2.7-release1
+* Sun Apr 10 2022 olf <Olf0@users.noreply.github.com> - 1.2.7-release1
 - Fix icon deployment
-* Thu Apr 07 2022 olf <https://github.com/Olf0> - 1.2.6-release1
+* Thu Apr 07 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
 Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
-* Sun Mar 20 2022 olf <https://github.com/Olf0> - 1.2.2-1
+* Sun Mar 20 2022 olf <Olf0@users.noreply.github.com> - 1.2.2-1
 - .desktop file: Trivially bail out of SailJail #38
-* Thu Mar 17 2022 olf <https://github.com/Olf0> - 1.2.1-1
+* Thu Mar 17 2022 olf <Olf0@users.noreply.github.com> - 1.2.1-1
 - spec file: Add SailfishOS:Chum metadata (#23) plus spec file: Add categories (#31) and #30
 - Create help-template.md (#24)
 - Create and enhance README (#25, #29, #30, #32, #33, #34, #35)
-* Sun Mar 13 2022 olf <https://github.com/Olf0> - 1.2.0-1
+* Sun Mar 13 2022 olf <Olf0@users.noreply.github.com> - 1.2.0-1
 - Change group from users to ssu
 - polkit: Limit allowed actions to the necessary ones
 - Do not to call Bash
