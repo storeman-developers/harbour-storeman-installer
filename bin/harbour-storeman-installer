@@ -47,9 +47,9 @@ then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
-# `pkcon repo-set-data` is intended to serve as a synchronisation point,
-# because most of pkcon's sub-commands wait until the package management
-# backend (on SailfishOS: RPM via libzypp) is idle:
+# `pkcon repo-set-data` is also intended to serve as a synchronisation
+# point, because most of pkcon's sub-commands wait until the package
+# management backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
