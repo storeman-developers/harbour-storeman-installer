@@ -116,6 +116,8 @@ fi
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
+* Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.11-release1.systemd.unit
+- The timer unit may be superfluous, hence eliminated it (#126)
 * Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service (#123, #125)
 - The service unit performs the installation of Storeman
