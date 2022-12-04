@@ -2,8 +2,8 @@
 set -u  # Do not use "-f" (Disable pathname expansion) and "-C" (no-clobber /
 # -overwrite), as this script does not potentially need that (yet).
 # Also drop "-e" for now, as it helps and hinders different aspects of debugging.
-# set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
-# export POSIXLY_CORRECT=1  # May be problematic
+#set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
+#export POSIXLY_CORRECT=1  # May be problematic
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
