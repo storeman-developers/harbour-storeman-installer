@@ -30,10 +30,6 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Memorise how we were called:
 called="$(basename "$0")"
 
-# Provide RPM with a little time to proceed finishing the RPM transaction,
-# which called this script in a detached ("&") manner:
-sleep 1
-
 # Create logfile:
 logfile="/var/log/${called}.log.txt"
 if ! touch "$logfile"
