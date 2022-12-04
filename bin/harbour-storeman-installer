@@ -30,10 +30,6 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Memorise how we were called:
 called="$(basename "$0")"
 
-# Provide RPM with a little time to proceed finishing the RPM transaction,
-# which called this script in a detached ("&") manner:
-sleep 1
-
 # If logfile is already there, update its timestamp(s), else create it:
 logfile="/var/log/${called}.log.txt"
 if ! touch "$logfile"
@@ -46,6 +42,10 @@ if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
+
+# Provide RPM with a little time to proceed finishing the RPM transaction,
+# which called this script in a detached ("&") manner:
+sleep 1
 
 # `pkcon repo-set-data` is also intended to serve as a synchronisation
 # point, because most of pkcon's sub-commands wait until the package
