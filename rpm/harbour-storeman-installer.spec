@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.8
-Release:        rc8.systemd
+Version:        2.0.10
+Release:        release1.systemd.timer
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -73,7 +73,9 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
 if [ $1 = 1 ]  # Installation, not upgrade
-then systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
+then
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
+  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
 fi
 # The rest of the %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -104,7 +106,7 @@ fi
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.service || true
+systemctl -q --no-block start %{name}.timer || true
 
 %postun
 if [ $1 = 0 ]  # Removal
