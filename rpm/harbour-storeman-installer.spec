@@ -127,7 +127,7 @@ fi
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite `harbor-storeman-installer` script in `/usr/bin` (#136)
 - The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
-- Do not use pkcon's option -n; it is slow enough
+- Do not use pkcon's option -n; it is slow enough (#134)
 * Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
 - Tidy spec file as implemented in v2.0 (#130)
