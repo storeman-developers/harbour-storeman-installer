@@ -44,8 +44,9 @@ then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
-# Provide RPM with a little time to proceed finishing the RPM transaction,
-# which called this script in a detached ("&") manner:
+# Provide RPM with a little time to proceed finishing the RPM transaction, which
+# called this script in a detached ("&") manner, because pkcon might fail
+# enqueuing a pkcon-job while an RPM transaction is unfinished.
 sleep 1
 
 # `pkcon repo-set-data` is also intended to serve as a synchronisation
@@ -56,6 +57,10 @@ printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
+  # Sleeping for a second between the two pkcon calls, because pkcon *rarely*
+  # fails installing a package ("not found") immediately after a individual
+  # repository refresh via `repo-set-data <repo> refresh-now true`:
+  sleep 1
   logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
