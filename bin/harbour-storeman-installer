@@ -47,7 +47,7 @@ fi
 # point, because most of pkcon's sub-commands wait until the package
 # management backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
@@ -56,7 +56,7 @@ then
   # repository refresh via `repo-set-data <repo> refresh-now true`:
   sleep 1
   logentry="pkcon -pvy install harbour-storeman"
-  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
   # The following statement must be started detached ("&"), because this
   # script file will be removed in the process, which will likely fail,
