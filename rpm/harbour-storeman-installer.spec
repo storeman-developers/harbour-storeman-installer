@@ -73,7 +73,7 @@ Url:
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
 
-touch %{_localstatedir}/log/%{name}.log.txt
+touch %{buildroot}%{_localstatedir}/log/%{name}.log.txt
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
@@ -130,7 +130,7 @@ fi
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbor-storeman-installer` script for interactive use (#144)
-- Log file needs to be writable
+- Log file needs to be writable (#146)
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite `harbor-storeman-installer` script in `/usr/bin` (#136)
 - The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
