@@ -73,7 +73,7 @@ Url:
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
 
-touch %{buildroot}%{_localstatedir}/log/%{name}.log.txt
+> %{buildroot}%{_localstatedir}/log/%{name}.log.txt
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
@@ -120,7 +120,7 @@ fi
 %files
 %defattr(-,root,root,-)
 %attr(0755,root,root) %{_bindir}/%{name}
-%attr(0664,root,ssu) %{_localstatedir}/log/%{name}.log.txt
+%config(noreplace) %attr(0664,root,ssu) %{_localstatedir}/log/%{name}.log.txt
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
