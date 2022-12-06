@@ -73,7 +73,8 @@ Url:
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
 
-> %{buildroot}%{_localstatedir}/log/%{name}.log.txt
+mkdir -p %{buildroot}%{_localstatedir}/log
+touch %{buildroot}%{_localstatedir}/log/%{name}.log.txt
 
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
