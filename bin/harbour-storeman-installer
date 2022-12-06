@@ -70,6 +70,6 @@ then
   eval $logentry >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '\n%s\n\n\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
