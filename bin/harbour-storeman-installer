@@ -38,10 +38,15 @@ fi
 
 # Write first entry to logfile:
 logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
+if printf '%s\n' "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
+
+# Even when started interactively, another pkcon job may have just been
+# started, hence provide pkcon with a little time to enqueue it, because
+# otherwise pkcon might fail enqueuing the next pkcon-job.
+sleep 1
 
 # `pkcon repo-set-data` is also intended to serve as a synchronisation
 # point, because most of pkcon's sub-commands wait until the package
