@@ -45,10 +45,10 @@ fi
 
 printf '\n%s\n' "[Info: Step 0 / 2] $called has been installed sucessfully." >> "$logfile" || true
 
-# Provide RPM with a little time to proceed finishing the RPM transaction, which
-# called this script in a detached ("&") manner, because pkcon might fail
-# enqueuing a pkcon-job while an RPM transaction is unfinished.
-sleep 3
+# Even when started interactively, another pkcon job may have just been
+# started, hence provide pkcon with a little time to enqueue it, because
+# pkcon might fail enqueuing another pkcon-job, then.
+sleep 1
 
 # `pkcon repo-set-data` is also intended to serve as a synchronisation
 # point, because most of pkcon's sub-commands wait until the package
