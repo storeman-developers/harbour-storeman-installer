@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.10
+Version:        2.0.13
 Release:        release1.systemd.timer
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -115,11 +115,12 @@ fi
 
 %files
 %defattr(-,root,root,-)
+%{_sysconfdir}/systemd/system/%{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.11-release1.systemd.unit
-- The timer unit may be superfluous, hence eliminated it (#126)
+* Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.13-release1.systemd.timer
+- Re-introduce timer service in files section, which was missed
 * Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
 - Create unit files harbour-storeman-installer.timer and harbour-storeman-installer.service (#123, #125)
 - The service unit performs the installation of Storeman
