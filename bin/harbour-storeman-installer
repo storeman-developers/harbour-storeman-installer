@@ -38,12 +38,12 @@ fi
 
 # Write first entry to logfile:
 logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
+if printf '%s\n' "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
-printf '\n%s\n' "[Info: Step 0 / 2] $called RPM has been sucessfully installed." >> "$logfile" || true
+printf '\n%s\n' "[Info: Step 0 / 2] $called has been installed sucessfully." >> "$logfile" || true
 
 # Provide RPM with a little time to proceed finishing the RPM transaction, which
 # called this script in a detached ("&") manner, because pkcon might fail
