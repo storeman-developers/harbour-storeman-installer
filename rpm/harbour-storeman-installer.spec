@@ -129,12 +129,12 @@ fi
 
 %changelog
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
-- Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
-- Re-adapt `harbor-storeman-installer` script for interactive use (#144)
-- Log file needs to be writable (#146)
+- Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
+- Re-adapt `harbour-storeman-installer` script for interactive use (#144)
+- Log file needs to be writeable (#146)
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
-- Radically rewrite `harbor-storeman-installer` script in `/usr/bin` (#136)
-- The `harbor-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
+- Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
+- The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
 * Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
