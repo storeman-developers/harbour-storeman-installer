@@ -44,21 +44,25 @@ if [ -s "$logfile" ]
 then line_breaks="\n\n\n"
 fi
 
-# Write first entry to logfile:
-logentry="[Info] Touch'ed logfile: $logfile"
-if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
-then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
-fi
-
 # Even when started interactively, another pkcon job may have just been
 # started, hence provide pkcon with a little time to enqueue it, because
 # otherwise pkcon might fail enqueuing the next pkcon-job.
 sleep 1
-
-# `pkcon repo-set-data` is also intended to serve as a synchronisation
+# `pkcon search name` is also intended to serve as a synchronisation
 # point, because most of pkcon's sub-commands wait until the package
 # management backend (on SailfishOS: RPM via libzypp) is idle:
+pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+
+# Write first entry to logfile:
+logentry="[Info] $pkgname touch'ed $logfile"
+if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
+then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
+else printf '%s\n' "[Error] $pkgname failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
+fi
+
+# Out of occasional bad experience when pkcon is being hammered with
+# commands, also prefix `pkcon repo-set-data` with a second of sleep:
+sleep 1
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
@@ -80,8 +84,8 @@ then
   # It also shall always be the last command issued (WRT control-flow).
   (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
   # "Daemonizing" / double-forking in shell-style, though I did not manage for
-  # the grandchild not to be a session leader (i.e., to fork again with a single
-  # shell expression).  PWD and umask do not need to be set anew, here.
+  # the grandchild *not* to be a session leader (i.e., to fork again with a
+  # single shell expression).  PWD and umask do not need to be set anew, here.
   retc=0
 else
   retc=$?
@@ -90,3 +94,4 @@ else
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
 exit $retc
+
