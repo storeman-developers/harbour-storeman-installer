@@ -5,6 +5,8 @@ set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
 #set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
+cd /tmp
+umask 0111
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
 # that "-o pipefail" is available (for its use in the third line), after checking
@@ -69,14 +71,22 @@ then
   export logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
-  # The following statement must be started detached ("&"), because this
-  # script file will be removed in the process, which will likely fail,
-  # if it is still opened for executing / reading.
+  # The following statement must be started fully detached ("double fork" /
+  # "daemonize": first a detached sub shell, in which pwd, umask might and
+  # session-id must be set anew (i.e., the execution environment), then again
+  # the command proper to run as new session-leader), because this script file
+  # will be removed in the process, which will likely fail, if it is still
+  # opened for executing / reading.
   # It also shall always be the last command issued (WRT control-flow).
-  (cd /; umask 0666; eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) > /dev/null 2>&1 < /dev/null &
-  # "Daemonizing" / double-forking in shell-style, though I did not manage for the grandchild not to be a session leader
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
+  # "Daemonizing" / double-forking in shell-style, though I did not manage for
+  # the grandchild not to be a session leader (i.e., to fork again with a single
+  # shell expression).  PWD and umask do not need to be set anew, here.
+  retc=0
 else
-  logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
+  retc=$?
+  logentry="[Critical] Aborting to install harbour-storeman, because error-code $retc was returned by: $logentry"
   printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
+exit $retc
