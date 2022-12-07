@@ -95,12 +95,17 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
+# Create a persistent log file, i.e., which is not managed by RPM and hence
+# is unaffected by removing the %%{name} RPM package:
 if [ $1 = 1 ]  # Installation
 then
   mkdir -p %{_localstatedir}/log
+  curmask="$(umask -p)"
+  umask 0111
   touch %{_localstatedir}/log/%{name}.log.txt
+  eval $curmask
 fi
-# The %%post scriptlet is deliberately run when installing *and* updating.
+# The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -126,6 +131,7 @@ fi
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+exit 0
 
 %files
 %defattr(-,root,root,-)
