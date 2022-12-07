@@ -21,10 +21,11 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires:       PackageKit
-# No idea how to express that, as there are no aliases ("Provides:") set, but
-# any of both shall be already installed anyway (for e.g., `touch`, `nohup` etc.):
+# No idea how to express that, as there are no aliases ("Provides:") set, but any
+# of both shall be already installed anyway (for e.g., `touch`, `nohup` etc.):
 # Requires:       busybox-symlinks-coreutils | gnu-coreutils
-Requires:       util-linux  # For `setsid`
+# For `setsid`:
+Requires:       util-linux
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
