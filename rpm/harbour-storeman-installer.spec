@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.5
+Version:        1.3.6
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -20,8 +20,14 @@ Source:         https://github.com/storeman-developers/%{name}/archive/%{version
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
+Requires:       PackageKit
+# No idea how to express that, as there are no aliases ("Provides:") set, but
+# any of both shall be already installed anyway (for e.g., `touch`, `nohup` etc.):
+# Requires:       busybox-symlinks-coreutils | gnu-coreutils
+Requires:       util-linux  # For `setsid`
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
 Requires:       sailfish-version >= 3.1.0
+# Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~0
@@ -73,9 +79,6 @@ Url:
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
 
-mkdir -p %{buildroot}%{_localstatedir}/log
-touch %{buildroot}%{_localstatedir}/log/%{name}.log.txt
-
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 #mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
@@ -91,6 +94,11 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
+if [ $1 = 1 ]  # Installation
+then
+  mkdir -p %{_localstatedir}/log
+  touch %{_localstatedir}/log/%{name}.log.txt
+fi
 # The %%post scriptlet is deliberately run when installing *and* updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
@@ -98,13 +106,13 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
 ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
+if echo "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
-if ! printf %s "$ssu_lr" | grep -Fq harbour-storeman-obs
+if ! echo "$ssu_lr" | grep -Fq harbour-storeman-obs
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
   ssu_ur=yes
@@ -120,14 +128,15 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_bindir}/%{name}
-%config(noreplace) %attr(0664,root,ssu) %{_localstatedir}/log/%{name}.log.txt
+%attr(0754,root,ssu) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
+- 
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbor-storeman-installer` script for interactive use (#144)
