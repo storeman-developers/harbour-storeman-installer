@@ -38,16 +38,21 @@ fi
 
 # Write first entry to logfile:
 logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Iseconds)  $logentry" >> "$logfile"
+if printf '%s\n' "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
+
+# Even when started interactively, another pkcon job may have just been
+# started, hence provide pkcon with a little time to enqueue it, because
+# otherwise pkcon might fail enqueuing the next pkcon-job.
+sleep 1
 
 # `pkcon repo-set-data` is also intended to serve as a synchronisation
 # point, because most of pkcon's sub-commands wait until the package
 # management backend (on SailfishOS: RPM via libzypp) is idle:
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
@@ -56,7 +61,7 @@ then
   # repository refresh via `repo-set-data <repo> refresh-now true`:
   sleep 1
   logentry="pkcon -pvy install harbour-storeman"
-  printf '\n%s\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
   # The following statement must be started detached ("&"), because this
   # script file will be removed in the process, which will likely fail,
@@ -65,6 +70,6 @@ then
   eval $logentry >> "$logfile" 2>&1 &
 else
   logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n\n\n' "$(date -Iseconds)  $logentry" >> "$logfile" || true
+  printf '\n%s\n\n\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
 fi
