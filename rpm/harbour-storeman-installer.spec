@@ -31,7 +31,7 @@ Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
-Provides:       harbour-storeman = 0.3.0~0
+Provides:       harbour-storeman = 0.3.0~1
 
 %define localauthority_dir polkit-1/localauthority/50-local.d
 %define hicolor_icons_dir  %{_datadir}/icons/hicolor
@@ -100,10 +100,9 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 if [ $1 = 1 ]  # Installation
 then
   mkdir -p %{_localstatedir}/log
-  curmask="$(umask -p)"
-  umask 0111
   touch %{_localstatedir}/log/%{name}.log.txt
-  eval $curmask
+  chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
 fi
 # The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
