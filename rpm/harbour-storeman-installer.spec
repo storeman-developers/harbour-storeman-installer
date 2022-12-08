@@ -102,7 +102,10 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 # is unaffected by removing the %%{name} RPM package:
 if [ $1 = 1 ]  # Installation
 then
+  curmask="$(umask)"
+  umask 7022  # The first octal digit is ignored by most implementations
   mkdir -p %{_localstatedir}/log
+  umask "$curmask"
   touch %{_localstatedir}/log/%{name}.log.txt
   chmod 0664 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
