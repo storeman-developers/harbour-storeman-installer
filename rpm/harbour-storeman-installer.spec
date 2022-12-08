@@ -21,12 +21,15 @@ BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires:       PackageKit
-# No idea how to express that, as there are no aliases ("Provides:") set, but any
-# of both shall be already installed anyway (for e.g., `touch`, `nohup` etc.):
-# Requires:       busybox-symlinks-coreutils | gnu-coreutils
+# `or` was introduced with RPM 4.13, SailfishOS 3.1.0 deploys v4.14; apparently
+# necessary here, because neither of both packages provides an alias ("virtual
+# package", e.g., named `coreutils`); any of both shall be already installed
+# anyway (for e.g., `touch` and many other very basic UNIX tools):
+Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 # For `setsid`:
 Requires:       util-linux
-# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
+# useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
