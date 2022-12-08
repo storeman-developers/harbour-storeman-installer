@@ -5,6 +5,7 @@ Description=timer unit to trigger the unit for installing harbour-storeman
 # Starts the corresponding service unit two to three seconds after activation:
 OnActiveSec=2
 AccuracySec=1
-# Allows for retriggering without rebooting, but makes debugging harder:
+# Allows for retriggering this timer unit without rebooting, but makes debugging harder:
 RemainAfterElapse=false
-# Unit=harbour-storeman-installer.service  # Not necessary
+Unit=harbour-storeman-installer.service  # Should not, but seems to be necessary!
+
