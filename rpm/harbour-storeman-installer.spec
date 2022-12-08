@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.13
+Version:        2.0.14
 Release:        release1.systemd.timer
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -24,7 +24,7 @@ Requires:       systemd
 Requires:       sailfish-version >= 3.1.0
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
-Provides:       harbour-storeman = 0.3.0~0
+Provides:       harbour-storeman = 0.3.0~1
 
 %define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
@@ -72,12 +72,11 @@ mkdir -p %{buildroot}%{_sysconfdir}
 cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
-if [ $1 = 1 ]  # Installation, not upgrade
-then
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.timer || true
-  systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
-fi
-# The rest of the %%post scriptlet is deliberately run when installing *and* updating.
+# The %%post scriptlet is deliberately run when installing and updating,
+# theoretically; practically this package always should be immediately removed
+# by the installation of harbour-storeman it triggers, if all runs well.
+systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
+systemctl link %{_sysconfdir}/systemd/system/%{name}.service
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -103,15 +102,17 @@ fi
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+exit 0
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.timer || true
+systemctl --no-block start %{name}.timer || true
 
 %postun
 if [ $1 = 0 ]  # Removal
-then systemctl -q --no-block daemon-reload || true
+then systemctl --no-block daemon-reload
 fi
+exit 0
 
 %files
 %defattr(-,root,root,-)
