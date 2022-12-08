@@ -24,7 +24,7 @@ Requires:       PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
 # Apparently necessary here, because neither of both packages provides an alias
-# ("virtual package", e.g., named `coreutils`); any of both shall be already
+# ("virtual package", e.g., named `coreutils`); either of both shall be already
 # installed anyway (for e.g., `touch` and many other very basic UNIX tools):
 Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 # For `setsid`:
