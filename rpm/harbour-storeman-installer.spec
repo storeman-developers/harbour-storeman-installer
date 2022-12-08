@@ -108,7 +108,7 @@ then
   umask "$curmask"
   touch %{_localstatedir}/log/%{name}.log.txt
   chmod 0664 %{_localstatedir}/log/%{name}.log.txt
-  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
+  chown root:ssu %{_localstatedir}/log/%{name}.log.txt
 fi
 # The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
