@@ -61,16 +61,16 @@ else printf '%s\n' "[Error] $pkgname failed to write to $logfile" | systemd-cat 
 fi
 
 # Out of occasional bad experience when pkcon is being hammered with
-# commands, also prefix `pkcon repo-set-data` with a second of sleep:
+# commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
-  # Sleeping for a second between the two pkcon calls, because pkcon *rarely*
-  # fails installing a package ("not found") immediately after an individual
-  # repository refresh via `repo-set-data <repo> refresh-now true`:
+  # Sleeping again for a second between the two pkcon calls, because pkcon
+  # *rarely* fails installing a package ("not found") immediately after an
+  # individual repository refresh via `repo-set-data <repo> refresh-now true`:
   sleep 1
   export logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
