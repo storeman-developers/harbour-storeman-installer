@@ -19,16 +19,25 @@ URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
+# For details on "Requires:" statements, especially "Requires(a,b,c):", see:
+# https://rpm-software-management.github.io/rpm/manual/spec.html#requires
+# Most of the following dependencies are required for both, specifically for
+# the `%post` section and additionally as a general requirement after the
+# RPM transaction has finished.
 Requires:       ssu
+Requires(post): ssu
 Requires:       PackageKit
+Requires(post): PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
 # Apparently necessary here, because neither of both packages provides an alias
 # ("virtual package", e.g., named `coreutils`); either of both shall be already
-# installed anyway (for e.g., `touch` and many other very basic UNIX tools):
+# installed, anyway (for e.g., `touch` and many other very basic UNIX tools):
 Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
-# For `setsid`:
+Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
+# For `setsid`, shall be already installed on SailfishOS, anyway:
 Requires:       util-linux
+Requires(post): util-linux
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
@@ -37,9 +46,9 @@ Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~1
 
-%define localauthority_dir polkit-1/localauthority/50-local.d
-%define hicolor_icons_dir  %{_datadir}/icons/hicolor
-%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global localauthority_dir polkit-1/localauthority/50-local.d
+%global hicolor_icons_dir  %{_datadir}/icons/hicolor
+%global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -101,7 +110,7 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 %post
 # Create a persistent log file, i.e., which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
-if [ $1 = 1 ]  # Installation
+if [ "$1" = 1 ]  # Installation
 then
   curmask="$(umask)"
   umask 7022  # The first octal digit is ignored by most implementations
@@ -109,7 +118,7 @@ then
   umask "$curmask"
   touch %{_localstatedir}/log/%{name}.log.txt
   chmod 0664 %{_localstatedir}/log/%{name}.log.txt
-  chown root:ssu %{_localstatedir}/log/%{name}.log.txt
+  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
 fi
 # The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -136,7 +145,11 @@ fi
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
-# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
+# or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
+# "8d0cec9 Partially convert to semantic line breaks." in
+# https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
 exit 0
 
 %files
@@ -149,7 +162,10 @@ exit 0
 
 %changelog
 * Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
-- 
+- Set umask and PWD in harbour-storeman-installer script
+- Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+- Print version of harbour-storeman-installer package in the log file entry of each run
+- Consistently set files and limit access to group "ssu"
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbor-storeman-installer` script for interactive use (#144)
