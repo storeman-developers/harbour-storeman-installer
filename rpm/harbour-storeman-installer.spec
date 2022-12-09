@@ -75,6 +75,7 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 # The %%post scriptlet is deliberately run when installing and updating,
 # theoretically; practically this package always should be immediately removed
 # by the installation of harbour-storeman it triggers, if all runs well.
+# Make depolyed unit files known to systemd:
 systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
 systemctl link %{_sysconfdir}/systemd/system/%{name}.service
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -101,7 +102,11 @@ fi
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
-# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
+# or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
+# "8d0cec9 Partially convert to semantic line breaks." in
+# https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
 exit 0
 
 %posttrans
