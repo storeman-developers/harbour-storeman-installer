@@ -26,7 +26,7 @@ Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~1
 
-%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%define screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -75,9 +75,9 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 # The %%post scriptlet is deliberately run when installing and updating,
 # theoretically; practically this package always should be immediately removed
 # by the installation of harbour-storeman it triggers, if all runs well.
-# Make depolyed unit files known to systemd:
-systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
+# Make depolyed unit files known to systemd, service units(s) first:
 systemctl link %{_sysconfdir}/systemd/system/%{name}.service
+systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -114,17 +114,19 @@ exit 0
 systemctl --no-block start %{name}.timer || true
 
 %postun
-if [ $1 = 0 ]  # Removal
+if [ "$1" = 0 ]  # Removal
 then systemctl --no-block daemon-reload
 fi
 exit 0
 
 %files
 %defattr(-,root,root,-)
-%{_sysconfdir}/systemd/system/%{name}.timer
 %{_sysconfdir}/systemd/system/%{name}.service
+%{_sysconfdir}/systemd/system/%{name}.timer
 
 %changelog
+* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.14-release1.systemd.timer
+- Overhaul and finalise "systemd.timer" variant
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.13-release1.systemd.timer
 - Re-introduce timer service in files section, which was missed
 * Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
