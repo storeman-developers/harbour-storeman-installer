@@ -85,7 +85,7 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 # The %%post scriptlet is deliberately run when installing and updating,
 # theoretically; practically this package always should be immediately removed
 # by the installation of harbour-storeman it triggers, if all runs well.
-# Make depolyed unit files known to systemd, service units(s) first:
+# Make depolyed unit files known to systemd, ordered in "reverse call order":
 systemctl link %{_sysconfdir}/systemd/system/%{name}.service
 systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
