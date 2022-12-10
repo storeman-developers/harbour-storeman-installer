@@ -4,10 +4,12 @@ Description=oneshot unit for installing harbour-storeman
 [Service]
 Type=oneshot
 ExecStartPre=/usr/bin/pkcon -p repo-set-data harbour-storeman-obs refresh-now true
-ExecStartPre=sleep 1
+ExecStartPre=/bin/sleep 1
 ExecStart=/usr/bin/pkcon -py install harbour-storeman
-# systemd jumps directly to ExecStopPost, if any ExecStart*= statement failed:
-ExecStopPost=systemd-cat -t harbour-storeman-installer -p 3 echo "[Critical] Failed to install harbour-storeman, removing harbour-storeman-installer RPM in a second!"
-ExecStopPost=sleep 1
+# systemd jumps directly to ExecStopPost, if any ExecStart*= statement failed.
+# Workaround, because systemd wants absolute paths, but Jolla altered the
+# one for the systemd tools from /bin to /usr/bin with SailfishOS 3.4.0:
+ExecStopPost=/bin/sh -c 'systemd-cat -t harbour-storeman-installer -p 3 echo "[Critical] Failed to install harbour-storeman, removing harbour-storeman-installer RPM in a second!"'
+ExecStopPost=/bin/sleep 1
 ExecStopPost=/usr/bin/pkcon -py remove harbour-storeman-installer
 
