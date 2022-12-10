@@ -91,7 +91,7 @@ else
   export logentry="pkcon -pvy remove $called"
   printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
   printf '%s\n' "[Info] Execute: $logentry" | systemd-cat -t "$called" -p 6 || true
-  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null &
 fi
 exit $retc
 
