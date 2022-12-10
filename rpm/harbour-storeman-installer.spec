@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.16
+Version:        2.0.19
 Release:        release1.detached.script
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -148,7 +148,7 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.16-release1.detached.script
+* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.19-release1.detached.script
 - Update defer-inst-via-detached-script branch with changes for v1.3.6
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
