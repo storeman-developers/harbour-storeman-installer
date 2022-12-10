@@ -18,15 +18,25 @@ URL:            https://github.com/storeman-developers/%{name}
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
+# For details on "Requires:" statements, especially "Requires(a,b,c):", see:
+# https://rpm-software-management.github.io/rpm/manual/spec.html#requires
+# Most of the following dependencies are required for both, specifically for
+# the `%post` section and additionally as a general requirement after the RPM
+# transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
+Requires(post): ssu
 Requires:       systemd
-# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+Requires(posttrans,postun): systemd
+Requires:       PackageKit
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
+# useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
+# Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
 Provides:       harbour-storeman = 0.3.0~1
 
-%define screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
