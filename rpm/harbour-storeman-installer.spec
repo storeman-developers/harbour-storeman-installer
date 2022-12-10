@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.11
+Version:        2.0.15
 Release:        release1.systemd.unit
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -18,15 +18,25 @@ URL:            https://github.com/storeman-developers/%{name}
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
+# For details on "Requires:" statements, especially "Requires(a,b,c):", see:
+# https://rpm-software-management.github.io/rpm/manual/spec.html#requires
+# Most of the following dependencies are required for both, specifically for
+# the `%post` section and additionally as a general requirement after the RPM
+# transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
+Requires(post): ssu
 Requires:       systemd
-# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+Requires(posttrans,postun): systemd
+Requires:       PackageKit
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
+# useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
+# Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
 Obsoletes:      harbour-storeman < 0.3.0
-Provides:       harbour-storeman = 0.3.0~0
+Provides:       harbour-storeman = 0.3.0~1
 
-%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -72,10 +82,11 @@ mkdir -p %{buildroot}%{_sysconfdir}
 cp -R systemd %{buildroot}%{_sysconfdir}/
 
 %post
-if [ $1 = 1 ]  # Installation, not upgrade
-then systemctl -q link %{_sysconfdir}/systemd/system/%{name}.service || true
-fi
-# The rest of the %%post scriptlet is deliberately run when installing *and* updating.
+# The %%post scriptlet is deliberately run when installing and updating,
+# theoretically; practically this package always should be immediately removed
+# by the installation of harbour-storeman it triggers, if all runs well.
+# Make depolyed unit files known to systemd, service units(s) first:
+systemctl link %{_sysconfdir}/systemd/system/%{name}.service
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -100,22 +111,30 @@ fi
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
-# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
+# or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
+# "8d0cec9 Partially convert to semantic line breaks." in
+# https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
+exit 0
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl -q --no-block start %{name}.service || true
+systemctl --no-block start %{name}.unit || true
 
 %postun
-if [ $1 = 0 ]  # Removal
-then systemctl -q --no-block daemon-reload || true
+if [ "$1" = 0 ]  # Removal
+then systemctl --no-block daemon-reload
 fi
+exit 0
 
 %files
 %defattr(-,root,root,-)
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
+* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.15-release1.systemd.unit
+- Overhaul and finalise "systemd.unit" variant
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.11-release1.systemd.unit
 - The timer unit may be superfluous, hence eliminated it (#126)
 * Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
@@ -173,3 +192,4 @@ Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 - Update translations
 * Thu Aug 19 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.0-1
 - Initial release
+
