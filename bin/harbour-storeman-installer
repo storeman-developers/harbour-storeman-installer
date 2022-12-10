@@ -31,47 +31,70 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 called="$(basename "$0")"
 
 # If logfile is already there, update its timestamp(s), else create it:
-logfile="/var/log/${called}.log.txt"
+export logfile="/var/log/${called}.log.txt"
 if ! touch "$logfile"
 then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
 fi
 
-# Write first entry to logfile:
-logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Iseconds) $logentry" >> "$logfile"
-then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
+# Prefix first output with three linebreaks, if logfile size > 0
+linebreaks=""
+if [ -s "$logfile" ]
+then line_breaks="\n\n\n"
 fi
 
-printf '\n%s\n' "[Info: Step 0 / 2] $called has been installed sucessfully." >> "$logfile" || true
+# Provide RPM with a little time to proceed finishing the RPM transaction,
+# which called this script in a detached ("&") manner, because pkcon might
+# fail enqueuing a pkcon-job while an RPM transaction is unfinished.
+sleep 2
+# `pkcon search name` is also intended to serve as a synchronisation point,
+# because most of pkcon's sub-commands wait until the package management
+# backend (on SailfishOS: libzypp) is idle:
+pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
 
-# Provide RPM with a little time to proceed finishing the RPM transaction, which
-# called this script in a detached ("&") manner, because pkcon might fail
-# enqueuing a pkcon-job while an RPM transaction is unfinished.
-sleep 3
+# Write first entry to logfile:
+logentry="[Info] $pkgname touch'ed $logfile"
+if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
+then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
+else printf '%s\n' "[Error] $pkgname failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
+fi
 
-# `pkcon repo-set-data` is also intended to serve as a synchronisation
-# point, because most of pkcon's sub-commands wait until the package
-# management backend (on SailfishOS: RPM via libzypp) is idle:
+# Out of occasional bad experience when pkcon is being hammered with commands,
+# also prefix `pkcon repo-set-data` with a second sleep:
+sleep 1
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
 if eval $logentry >> "$logfile" 2>&1
 then
-  # Sleeping for a second between the two pkcon calls, because pkcon *rarely*
-  # fails installing a package ("not found") immediately after a individual
-  # repository refresh via `repo-set-data <repo> refresh-now true`:
+  # Sleeping again for a second between the two pkcon calls, because pkcon
+  # *rarely* fails installing a package ("not found") immediately after an
+  # individual repository refresh via `repo-set-data <repo> refresh-now true`:
   sleep 1
-  logentry="pkcon -pvy install harbour-storeman"
+  export logentry="pkcon -pvy install harbour-storeman"
   printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
   printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
-  # The following statement must be started detached ("&"), because this
-  # script file will be removed in the process, which will likely fail,
-  # if it is still opened for executing / reading.
+  # The following statement must be started fully detached ("double fork" /
+  # "daemonize": first a detached sub shell, in which pwd, umask might and
+  # session-id must be set anew (i.e., the execution environment), then again
+  # the command proper to run as new session-leader), because this script file
+  # will be removed in the process, which will likely fail, if it is still
+  # opened for executing / reading.
   # It also shall always be the last command issued (WRT control-flow).
-  eval $logentry >> "$logfile" 2>&1 &
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
+  # "Daemonizing" / double-forking in shell-style, though I did not manage for
+  # the grandchild *not* to be a session leader (i.e., to fork again with a
+  # single shell expression).  PWD and umask do not need to be set anew, here.
+  retc=0
 else
-  logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n\n\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+  retc=$?
+  logentry="[Critical] Aborting to install harbour-storeman, because error-code $retc was returned by: $logentry"
+  printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
   printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+  sleep 1
+  export logentry="pkcon -pvy remove $called"
+  printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
+  printf '%s\n' "[Info] Execute: $logentry" | systemd-cat -t "$called" -p 6 || true
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
 fi
+exit $retc
+
