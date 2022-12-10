@@ -82,7 +82,7 @@ then
   # will be removed in the process, which will likely fail, if it is still
   # opened for executing / reading.
   # It also shall always be the last command issued (WRT control-flow).
-  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null &
   # "Daemonizing" / double-forking in shell-style, though I did not manage for
   # the grandchild *not* to be a session leader (i.e., to fork again with a
   # single shell expression).  PWD and umask do not need to be set anew, here.
