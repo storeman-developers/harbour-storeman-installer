@@ -120,7 +120,7 @@ exit 0
 
 %posttrans
 # At the very end of every install or upgrade
-systemctl --no-block start %{name}.unit || true
+systemctl --no-block start %{name}.service || true
 
 %postun
 if [ "$1" = 0 ]  # Removal
