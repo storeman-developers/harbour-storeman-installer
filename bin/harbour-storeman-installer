@@ -48,9 +48,9 @@ fi
 # started, hence provide pkcon with a little time to enqueue it, because
 # otherwise pkcon might fail enqueuing the next pkcon-job.
 sleep 1
-# `pkcon search name` is also intended to serve as a synchronisation
-# point, because most of pkcon's sub-commands wait until the package
-# management backend (on SailfishOS: libzypp) is idle:
+# `pkcon search name` is also intended to serve as a synchronisation point,
+# because most of pkcon's sub-commands wait until the package management
+# backend (on SailfishOS: libzypp) is idle:
 pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
 
 # Write first entry to logfile:
