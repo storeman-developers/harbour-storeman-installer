@@ -136,7 +136,7 @@ exit 0
 
 %changelog
 * Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.14-release1.systemd.timer
-- Overhaul and finalise "systemd.timer" variant
+- Overhaul and finalise "systemd.timer" variant (#154)
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.13-release1.systemd.timer
 - Re-introduce timer service in files section, which was missed
 * Mon Dec 05 2022 olf <Olf0@users.noreply.github.com> - 2.0.10-release1.systemd.timer
