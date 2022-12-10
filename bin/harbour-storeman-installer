@@ -24,17 +24,14 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# This script is designed to be called as detached ("&") as the last statement
-# of the %posttrans section (the last executed) of an RPM spec file, or manually.
+# This script is designed to be called either manually or fully detached
+# (by a "double fork") as the last statement of the %posttrans section 
+# (the last executed) of an RPM spec file.
 
 # Memorise how we were called:
 called="$(basename "$0")"
 
-# If logfile is already there, update its timestamp(s), else create it:
 export logfile="/var/log/${called}.log.txt"
-if ! touch "$logfile"
-then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
-fi
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
@@ -43,8 +40,8 @@ then line_breaks="\n\n\n"
 fi
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
-# which called this script in a detached ("&") manner, because pkcon might
-# fail enqueuing a pkcon-job while an RPM transaction is unfinished.
+# which called this script asynchronously, because pkcon might fail
+# enqueuing a pkcon-job while an RPM transaction is unfinished.
 sleep 2
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
@@ -80,7 +77,7 @@ then
   # will be removed in the process, which will likely fail, if it is still
   # opened for executing / reading.
   # It also shall always be the last command issued (WRT control-flow).
-  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null & || true
+  (eval setsid --fork $logentry >> "$logfile" 2>&1 < /dev/null) >> "$logfile" 2>&1 < /dev/null &
   # "Daemonizing" / double-forking in shell-style, though I did not manage for
   # the grandchild *not* to be a session leader (i.e., to fork again with a
   # single shell expression).  PWD and umask do not need to be set anew, here.
