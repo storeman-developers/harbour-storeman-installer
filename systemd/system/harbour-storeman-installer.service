@@ -7,7 +7,7 @@ ExecStartPre=/usr/bin/pkcon -p repo-set-data harbour-storeman-obs refresh-now tr
 ExecStartPre=sleep 1
 ExecStart=/usr/bin/pkcon -py install harbour-storeman
 # systemd jumps directly to ExecStopPost, if any ExecStart*= statement failed:
-ExecStopPost=systemd-cat -t harbour-storeman-installer -p 3 echo "[Critical] Failed to install harbour-storeman"
+ExecStopPost=systemd-cat -t harbour-storeman-installer -p 3 echo "[Critical] Failed to install harbour-storeman, removing harbour-storeman-installer RPM in a second!"
 ExecStopPost=sleep 1
 ExecStopPost=/usr/bin/pkcon -py remove harbour-storeman-installer
 
