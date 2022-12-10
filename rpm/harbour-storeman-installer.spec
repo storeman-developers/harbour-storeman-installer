@@ -106,17 +106,19 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
+# The %%post scriptlet is deliberately run when installing and updating.
 # Create a persistent log file, i.e., which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
-if [ "$1" = 1 ]  # Installation
+if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
 then
   curmask="$(umask)"
   umask 7022  # The first octal digit is ignored by most implementations
-  mkdir -p %{_localstatedir}/log
-  umask "$curmask"
+  [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
+  umask 7113
   touch %{_localstatedir}/log/%{name}.log.txt
   chmod 0664 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
+  umask "$curmask"
 fi
 # The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
