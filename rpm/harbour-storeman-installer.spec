@@ -27,7 +27,6 @@ BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires(post): ssu
 Requires:       PackageKit
-Requires(post): PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
 # Apparently necessary here, because neither of both packages provides an alias
@@ -35,9 +34,8 @@ Requires(post): PackageKit
 # installed, anyway (for e.g., `touch` and many other very basic UNIX tools):
 Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
-# For `setsid`, shall be already installed on SailfishOS, anyway:
+# For `setsid`:
 Requires:       util-linux
-Requires(post): util-linux
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
