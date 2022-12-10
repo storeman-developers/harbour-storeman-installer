@@ -194,3 +194,4 @@ Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 - Update translations
 * Thu Aug 19 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.0-1
 - Initial release
+
