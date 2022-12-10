@@ -26,17 +26,14 @@ cd /tmp  # Set PWD
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# This script is designed to be called as detached ("&") as the last statement
-# of the %posttrans section (the last executed) of an RPM spec file, or manually.
+# This script is designed to be called either manually or fully detached
+# (by a "double fork") as the last statement of the %posttrans section 
+# (the last executed) of an RPM spec file.
 
 # Memorise how we were called:
 called="$(basename "$0")"
 
-# If logfile is already there, update its timestamp(s), else create it:
 export logfile="/var/log/${called}.log.txt"
-if ! touch "$logfile"
-then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
-fi
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
