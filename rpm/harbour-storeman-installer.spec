@@ -42,7 +42,7 @@ Requires(posttrans): util-linux
 Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
 Conflicts:      harbour-storeman
-Obsoletes:      harbour-storeman < 0.3.0
+Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
 %global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
