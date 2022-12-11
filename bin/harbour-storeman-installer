@@ -149,6 +149,6 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$mypid"; do sleep 1; i=$(expr $i + 1); done; eval $logentry >> "$logfile" 2>&1 < /dev/null) &' >> "$logfile" 2>&1 < /dev/null
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
-# PWD and umask do not need to be set anew, here.
+# PWD and umask do not need to be set anew here, see line 9.
 exit $retc
 
