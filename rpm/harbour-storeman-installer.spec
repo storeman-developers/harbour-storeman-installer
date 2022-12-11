@@ -141,11 +141,11 @@ exit 0
 # The harbour-storeman-installer script must be started fully detached
 # (by double-forking / a "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
-# (Ab)using the %posttrans interpreter as first fork:
+# (Ab)using the %posttrans' interpreter instance as first fork:
 export gppid="$PPID"
 umask 7113
 cd /tmp
-setsid --fork /bin/sh -c '%{_bindir}/%{name} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null &' >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '(%{_bindir}/%{name} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
