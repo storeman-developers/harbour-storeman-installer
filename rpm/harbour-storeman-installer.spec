@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.19
+Version:        2.0.20
 Release:        release1.detached.script
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -140,15 +140,19 @@ exit 0
 # At the very end of every install or upgrade
 # The harbour-storeman-installer script must be started fully detached
 # (by double-forking / a "daemonize") to allow for this RPM transaction
-# to finalise (what waiting for it to finish would prevent):
-(cd /tmp; umask 7113; setsid --fork %{_bindir}/%{name} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null &
+# to finalise (what waiting for it to finish would prevent).
+# (Ab)using the %posttrans interpreter as first fork:
+export gppid="$PPID"
+umask 7113
+cd /tmp
+setsid --fork /bin/sh -c '%{_bindir}/%{name} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null &' >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.19-release1.detached.script
+* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.20-release1.detached.script
 - Update defer-inst-via-detached-script branch with changes for v1.3.6
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
