@@ -72,21 +72,21 @@ then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
 fi
 
-# Out of occasional bad experience when pkcon is being hammered with commands,
-# also prefix `pkcon repo-set-data` with a second sleep:
+# Out of occasional bad experience when pkcon is being hammered with
+# commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
 logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
 printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
 systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
-maxi=5
+maxi=4  # 4 is the minimal value, which makes sense here
 maxihalf=$(expr $maxi / 2)
-for i in $(seq -s ' ' $maxi)
+for i in $(seq $maxi)
 do
   eval $logentry >> "$logfile" 2>&1
   retc=$?
   wait=$(expr $i \* 2 + 1)
   if [ $retc = 0 ]
-  then break
+  then break  # Went fine
   elif [ $i = 1 ]
   then
     logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
@@ -104,10 +104,10 @@ do
     logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
-    logentry="[Info] Trying to terminate (i.e., sending a "TERM" signal to) all processes named ("ID") `pkcon`, then sleeping for $wait seconds."
+    logentry="[Info] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
-    killall -15 pkcon
+    killall -q -TERM pkcon
     sleep $wait
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -117,11 +117,13 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
-    logentry="[Warning] Trying to hang up  (i.e., sending a "HUP" signal to) all processes named ("ID") `pkcon`, then sleeping for $wait seconds."
+    logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -1 pkcon
-    sleep $wait
+    killall -q -INT pkcon
+    sleep $i
+    killall -q -TERM pkcon
+    sleep $i
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
@@ -129,11 +131,13 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
-    logentry="[Warning] Trying to quit  (i.e., sending a "QUIT" signal to) all processes named ("ID") `pkcon`, then sleeping for $wait seconds."
+    logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -3 pkcon
-    sleep $wait
+    killall -q -HUP pkcon
+    sleep $i
+    killall -q -KILL pkcon
+    sleep 1
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
