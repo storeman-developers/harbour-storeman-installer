@@ -149,10 +149,9 @@ exit 0
 # (by double-forking / a "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
-export gppid="$PPID"
 umask 7113
 cd /tmp
-setsid --fork /bin/sh -c '(%{_bindir}/%{name} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
