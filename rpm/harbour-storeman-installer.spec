@@ -28,6 +28,7 @@ Requires(post): ssu
 Requires:       systemd
 Requires(posttrans,postun): systemd
 Requires:       PackageKit
+Requires(posttrans): PackageKit
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
