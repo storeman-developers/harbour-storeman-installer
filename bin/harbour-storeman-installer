@@ -5,7 +5,6 @@ set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
 #set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
-export mypid="$$"
 umask 7113  # The first octal digit is ignored by most implementations
 cd /tmp  # Set PWD
 
@@ -36,8 +35,9 @@ kill "$PPID"
 # Memorise how we were called:
 called="$(basename "$0")"
 gppid="$1"
+mypid="$$"
 
-export logfile="/var/log/${called}.log.txt"
+logfile="/var/log/${called}.log.txt"
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
@@ -154,13 +154,13 @@ do
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
     sleep 1
-    export logentry="pkcon -pvy remove $called"
+    logentry="pkcon -pvy remove $called"
     printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Scheduled for execution in 30 seconds: $logentry" || true
     setsid --fork /bin/sh -c '(kill "$1"; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$2"; do sleep 1; i=$(expr $i + 1); done; sleep 30; eval $3 >> "$4" 2>&1 < /dev/null) &' sh_rm-inst-storeman "$PPID" "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
   fi
 done
-export logentry="pkcon -pvy install harbour-storeman"
+logentry="pkcon -pvy install harbour-storeman"
 printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
 systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 # Sleeping again for a second right before the next pkcon call, because pkcon
