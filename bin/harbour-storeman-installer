@@ -45,6 +45,13 @@ if [ -s "$logfile" ]
 then linebreaks="\n\n\n"
 fi
 
+# Write first entry to logfile:
+logentry="[Info] Logging to $logfile"
+if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
+then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
+else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
+fi
+
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
 # enqueuing a pkcon-job while an RPM transaction is unfinished.
@@ -66,12 +73,10 @@ sleep 1
 # backend (on SailfishOS: libzypp) is idle:
 pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
 
-# Write first entry to logfile:
-logentry="[Info] $pkgname touch'ed $logfile"
-if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
-then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
-fi
+# Write $pkgname to logfile:
+logentry="[Debug] Installed, now running: $pkgname"
+printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
 
 # Out of occasional bad experience when pkcon is being hammered with
 # commands, also prefix `pkcon repo-set-data` with a second sleep:
