@@ -55,7 +55,7 @@ do
   sleep 1
   count=$(expr $i + 1)
 done
-if [ $count -ge $maxi ]
+if [ $i -ge $maxi ]
 then rpmXact=timedout
 else rpmXact=finished
 fi
