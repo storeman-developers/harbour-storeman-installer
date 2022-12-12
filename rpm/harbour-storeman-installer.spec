@@ -29,13 +29,18 @@ Requires(post): ssu
 Requires:       PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
-# Apparently necessary here, because neither of both packages provides an alias
-# ("virtual package", e.g., named `coreutils`); either of both shall be already
-# installed, anyway (for e.g., `touch` and many other very basic UNIX tools):
+# ToDo: Check if the GNU-versions of these packages (named as alternatives below)
+# also provide the aliases ("virtual packages") denoted here, then these can be
+# used; ultimately most of these packages shall be already installed, anyway.
+# 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
 Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
-# For `setsid`:
+# 2. `util-linux` for `setsid`:
 Requires:       util-linux
+# 3. `psmisc` for `killall`:
+Requires:       (busybox-symlinks-psmisc or psmisc-tools)
+# 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
+# Requires:       (busybox-symlinks-procps or procps-ng)
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
