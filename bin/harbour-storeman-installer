@@ -75,13 +75,13 @@ fi
 # Out of occasional bad experience when pkcon is being hammered with
 # commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
-logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
-systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 maxi=4  # 4 is the minimal value, which makes sense here
 maxihalf=$(expr $maxi / 2)
 for i in $(seq $maxi)
 do
+  logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
+  printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
+  systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
   eval $logentry >> "$logfile" 2>&1
   retc=$?
   wait=$(expr $i \* 2 + 1)
@@ -136,9 +136,9 @@ do
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
     killall -q -HUP pkcon
     sleep $i
-    killall -q -KILL pkcon
+    killall -qw -KILL pkcon
     sleep 1
-    logentry="[Info] Retry #$i"
+    logentry="[Info] Final retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
     logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
@@ -148,9 +148,11 @@ do
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+    killall -qw -KILL pkcon
     logentry="[Warning] Scheduling harbour-storeman-installer for removal in 30 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
+    sleep 1
     export logentry="pkcon -pvy remove $called"
     printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Scheduled for execution in 30 seconds: $logentry" || true
