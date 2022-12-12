@@ -44,7 +44,7 @@ fi
 logentry="[Info] Logging to $logfile"
 if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
+else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
 fi
 
 # Even when started interactively, another pkcon job may have just been
