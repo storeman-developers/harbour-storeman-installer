@@ -32,8 +32,8 @@ Requires(posttrans): PackageKit
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
-# Provide an automatically presented update candidate for an installed Storeman < 0.3.0:
-Conflicts:      harbour-storeman
+# Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
+Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
