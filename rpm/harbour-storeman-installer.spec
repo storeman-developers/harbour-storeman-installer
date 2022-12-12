@@ -24,30 +24,11 @@ BuildArch:      noarch
 # the `%post` section and additionally as a general requirement after the RPM
 # transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
-Requires(post): ssu
-Requires:       PackageKit
-Requires(posttrans): PackageKit
-# `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
-# https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
-# ToDo: Check if the GNU-versions of these packages (named as alternatives below)
-# also provide the aliases ("virtual packages") denoted here, then these can be
-# used; ultimately most of these packages shall be already installed, anyway.
-# 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
-Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
-Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
-# 2. `util-linux` for `setsid`:
-Requires:       util-linux
-Requires(posttrans): util-linux
-# 3. `psmisc` for `killall`:
-Requires:       (busybox-symlinks-psmisc or psmisc-tools)
-Requires(posttrans): (busybox-symlinks-psmisc or psmisc-tools)
-# 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
-# Requires:       (busybox-symlinks-procps or procps-ng)
-# Requires(posttrans): (busybox-symlinks-procps or procps-ng)
+Requires(pretrans): ssu
+Requires(posttrans): harbour-storeman >= 0.3.0
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
-Requires(posttrans): harbour-storeman >= 0.3.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
 Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
@@ -98,19 +79,6 @@ Url:
 
 %pretrans
 # The %%pretrans scriptlet is deliberately run when installing and updating.
-# Create a persistent log file, i.e., which is not managed by RPM and hence
-# is unaffected by removing the %%{name} RPM package:
-if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
-then
-  curmask="$(umask)"
-  umask 7022  # The first octal digit is ignored by most implementations
-  [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
-  umask 7113
-  touch %{_localstatedir}/log/%{name}.log.txt
-  chmod 0664 %{_localstatedir}/log/%{name}.log.txt
-  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
-  umask "$curmask"
-fi
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -150,6 +118,7 @@ echo -n
 %files
 
 %changelog
+* Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.23-release1.rpm.only
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
