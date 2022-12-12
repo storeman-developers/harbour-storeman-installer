@@ -159,8 +159,13 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.20-release1.detached.script
-- Update defer-inst-via-detached-script branch with changes for v1.3.6
+* Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.20-release1.detached.script
+- Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
+- Update defer-inst-via-detached-script branch with changes for v1.3.6:
+  - Set umask and PWD in harbour-storeman-installer script
+  - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+  - Print version of harbour-storeman-installer package in the log file entry of each run
+  - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbor-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbor-storeman-installer` script for interactive use (#144)
