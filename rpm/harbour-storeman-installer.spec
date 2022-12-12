@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.22
-Release:        release1.detached.script
+Version:        2.0.23
+Release:        release1.rpm.only
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -47,6 +47,7 @@ Requires(posttrans): (busybox-symlinks-psmisc or psmisc-tools)
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
+Requires(posttrans): harbour-storeman >= 0.3.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
 Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
@@ -94,11 +95,9 @@ Url:
 %build
 
 %install
-mkdir -p %{buildroot}%{_bindir}
-cp bin/%{name} %{buildroot}%{_bindir}/
 
-%post
-# The %%post scriptlet is deliberately run when installing and updating.
+%pretrans
+# The %%pretrans scriptlet is deliberately run when installing and updating.
 # Create a persistent log file, i.e., which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
 if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
@@ -145,17 +144,10 @@ exit 0
 
 %posttrans
 # At the very end of every install or upgrade
-# The harbour-storeman-installer script must be started fully detached
-# (by double-forking / a "daemonize") to allow for this RPM transaction
-# to finalise (what waiting for it to finish would prevent).
-# (Ab)using the %posttrans' interpreter instance as first fork:
-umask 7113
-cd /tmp
-setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
-exit 0
+# Try to fake it:
+echo -n
 
 %files
-%attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
