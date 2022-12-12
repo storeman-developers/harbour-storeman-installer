@@ -157,7 +157,7 @@ do
     logentry="pkcon -pvy remove $called"
     printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Scheduled for execution in 30 seconds: $logentry" || true
-    setsid --fork /bin/sh -c '(kill "$1"; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$2"; do sleep 1; i=$(expr $i + 1); done; sleep 30; eval $3 >> "$4" 2>&1 < /dev/null) &' sh_rm-inst-storeman "$PPID" "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
+    setsid --fork /bin/sh -c '(kill "$PPID"; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 30; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_rm_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
@@ -173,7 +173,7 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 # will be removed in the process, which will likely fail, if it is still
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow).
-setsid --fork /bin/sh -c '(kill "$1"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$2"; do sleep 1; i=$(expr $i + 1); done; eval $3 >> "$4" 2>&1 < /dev/null) &' sh_inst-storeman "$PPID" "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
 # PWD and umask do not need to be set anew here, see line 9.
