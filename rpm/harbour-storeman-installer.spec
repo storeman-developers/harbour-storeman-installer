@@ -152,11 +152,12 @@ exit 0
 echo "'umask:' $(umask), 'pwd:' $(pwd), '$PWD:' $PWD, '$OLDPWD:' $OLDPWD" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
 umask 7113
 cd /tmp
-echo "'$PPID:' $PPID, '$$:' $$, '$PID:' $PID, '$SHELL:' $SHELL", '$LOGIN:' $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-echo "ps $PPID $$ $PID :" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+gppid="$(ps -o ppid $PPID)"
+echo "'$gppid:' $gppid, '$PPID:' $PPID, '$$:' $$, '$PID:' $PID, '$SHELL:' $SHELL, '$LOGIN:' $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+echo "ps $gppid $PPID $$ $PID :" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+echo "$(ps -o stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $gppid $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
 env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-setsid --fork /bin/sh -c 'echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+setsid --fork /bin/sh -c 'echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
