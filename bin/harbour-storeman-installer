@@ -52,6 +52,10 @@ then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
 fi
 
+# Test-instrumentation:
+echo "$(ps -o stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "$logfile" 2>&1
+env >> "$logfile" 2>&1
+
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
 # enqueuing a pkcon-job while an RPM transaction is unfinished.
