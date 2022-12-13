@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.22
-Release:        release1.detached.script
+Version:        2.0.24
+Release:        release1.detached.script.test
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -149,15 +149,21 @@ exit 0
 # (by double-forking / a "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
+echo "'umask:' $(umask), 'pwd:' $(pwd), '$PWD:' $PWD, '$OLDPWD:' $OLDPWD" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
 umask 7113
 cd /tmp
-setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+echo "'$PPID:' $PPID, '$$:' $$, '$PID:' $PID, '$SHELL:' $SHELL", '$LOGIN:' $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+echo "ps $PPID $$ $PID :" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+setsid --fork /bin/sh -c 'echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.24-release1.detached.script.test
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
