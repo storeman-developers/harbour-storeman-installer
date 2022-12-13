@@ -119,6 +119,7 @@ echo -n
 
 %changelog
 * Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.23-release1.rpm.only
+- Try starting Storeman installation via RPM measures only
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
