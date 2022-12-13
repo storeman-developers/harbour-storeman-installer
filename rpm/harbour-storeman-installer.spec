@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.17
+Version:        2.0.25
 Release:        release1.systemd.timer
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -136,7 +136,7 @@ exit 0
 %{_sysconfdir}/systemd/system/%{name}.timer
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.17-release1.systemd.timer
+* Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.25-release1.systemd.timer
 - Overhaul and finalise "systemd.timer" variant (#154)
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.13-release1.systemd.timer
 - Re-introduce timer service in files section, which was missed
