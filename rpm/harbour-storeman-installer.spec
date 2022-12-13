@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.18
+Version:        2.0.26
 Release:        release1.systemd.unit
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -134,7 +134,7 @@ exit 0
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 2.0.18-release1.systemd.unit
+* Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.26-release1.systemd.unit
 - Overhaul and finalise "systemd.unit" variant
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.11-release1.systemd.unit
 - The timer unit may be superfluous, hence eliminated it (#126)
