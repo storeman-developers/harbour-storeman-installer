@@ -7,6 +7,6 @@ OnActiveSec=2
 AccuracySec=1
 # Allows for retriggering this timer unit without rebooting, but makes debugging harder:
 RemainAfterElapse=false
-# Should not, but seems to be necessary:
-Unit=harbour-storeman-installer.service
+# Should not, but may be necessary:
+# Unit=harbour-storeman-installer.service
 
