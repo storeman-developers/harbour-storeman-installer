@@ -144,6 +144,10 @@ do
     sleep $i
     killall -qw -KILL pkcon
     sleep 1
+    systemd stop packagekit.service
+    sleep 1
+    systemd start packagekit.service
+    sleep 1
     logentry="[Info] Final retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
@@ -155,6 +159,10 @@ do
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
     killall -qw -KILL pkcon
+    sleep 1
+    systemd stop packagekit.service
+    sleep 1
+    systemd start packagekit.service
     logentry="[Warning] Scheduling harbour-storeman-installer for removal in 30 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
