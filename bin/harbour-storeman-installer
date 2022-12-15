@@ -26,18 +26,29 @@ cd /tmp  # Set PWD
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
+# Memorise how we were called:
+mypid="$$"
+ppid="$PPID"
+called="$(basename "$0")"
+gppid="$1"
+logfile="$2"
+
+# Test-instrumentation:
+{
+  echo
+  echo "3. Right after starting the harbour-storeman-installer script"
+  echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
+  env
+  echo "\$zypid: $zypid, \$ppid: $ppid, \$mypid: $mypid, \$PPID: $PPID, \$$: $$, \$!: $!"
+  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$ppid"
+  echo
+} >> "$logfile" 2>&1
+
 # This script is designed to be called fully detached (by a "double fork" /
 # a "daemonize") as the last statement of the %posttrans section 
 # (the last executed) of an RPM spec file.
 # Terminate parent, which was made session leader by `setsid --fork`:
-ppid=$PPID
 kill "$PPID"
-
-# Memorise how we were called:
-called="$(basename "$0")"
-gppid="$1"
-mypid="$$"
-logfile="$2"
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
@@ -51,17 +62,6 @@ if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
 else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
 fi
-
-# Test-instrumentation:
-{ echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL"
-  echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$ppid: $ppid, \$mypid: $mypid,\$$: $$, \$PID: $PID"
-  echo "Status TTY   PGID SesID  PPID   PID Command"
-  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$mypid|$ppid|$$|$PPID|$zypid|$PID")"
-  echo
-  env
-  echo
-  echo
-} >> "$logfile" 2>&1
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
@@ -193,5 +193,18 @@ setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps 
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
 # PWD and umask do not need to be set anew here, see line 9.
+
+# Test-instrumentation:
+{
+  cpid="$!"
+  echo
+  echo "4. Right before finishing the harbour-storeman-installer script"
+  echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
+  env
+  echo "\$ppid: $ppid, \$mypid: $mypid, \$cpid: $cpid, \$PPID: $PPID, \$$: $$, \$!: $!"
+  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$cpid"
+  echo
+} >> "$logfile" 2>&1
+
 exit $retc
 
