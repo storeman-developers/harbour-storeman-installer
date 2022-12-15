@@ -53,7 +53,7 @@ else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to wri
 fi
 
 # Test-instrumentation:
-{ echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL, \$LOGIN: $LOGIN"
+{ echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL"
   echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$ppid: $ppid, \$mypid: $mypid,\$$: $$, \$PID: $PID"
   echo "Status TTY   PGID SesID  PPID   PID Command"
   echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$mypid|$ppid|$$|$PPID|$gzypid|$zypid|$gppid|$PID")"
