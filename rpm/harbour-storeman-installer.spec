@@ -140,6 +140,8 @@ exit 0
 %{_sysconfdir}/systemd/system/%{name}.timer
 
 %changelog
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.30-release1.systemd.unit
+- Minimise "systemd.timer" variant
 * Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.25-release1.systemd.timer
 - Overhaul and finalise "systemd.timer" variant (#154)
 * Tue Dec 06 2022 olf <Olf0@users.noreply.github.com> - 2.0.13-release1.systemd.timer
