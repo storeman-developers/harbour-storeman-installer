@@ -7,7 +7,7 @@ Name:           harbour-storeman-installer
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.0.30
-Release:        release1.systemd.timer.minimal
+Release:        release1.systemd.timer
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -140,7 +140,7 @@ exit 0
 %{_sysconfdir}/systemd/system/%{name}.timer
 
 %changelog
-* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.30-release1.systemd.unit
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.30-release1.systemd.timer
 - Minimise "systemd.timer" variant
 * Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.25-release1.systemd.timer
 - Overhaul and finalise "systemd.timer" variant (#154)
