@@ -138,7 +138,7 @@ exit 0
 %{_sysconfdir}/systemd/system/%{name}.service
 
 %changelog
-* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.30-release1.systemd.unit
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.31-release1.systemd.unit
 - Minimise "systemd.unit" variant
 * Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.26-release1.systemd.unit
 - Overhaul and finalise "systemd.unit" variant
