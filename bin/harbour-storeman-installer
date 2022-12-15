@@ -36,8 +36,8 @@ kill "$PPID"
 called="$(basename "$0")"
 gppid="$1"
 mypid="$$"
-
-logfile="/var/log/${called}.log.txt"
+logfile="$2"
+ppid=$PPID
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
@@ -53,8 +53,15 @@ else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to wri
 fi
 
 # Test-instrumentation:
-echo "$(ps -o stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "$logfile" 2>&1
-env >> "$logfile" 2>&1
+{ echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL, \$LOGIN: $LOGIN"
+  echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$ppid: $ppid, \$mypid: $mypid,\$$: $$, \$PID: $PID"
+  echo "Status TTY   PGID SesID  PPID   PID Command"
+  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$mypid|$ppid|$$|$PPID|$gzypid|$zypid|$gppid|$PID")"
+  echo
+  env
+  echo
+  echo
+} >> "$logfile" 2>&1
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
