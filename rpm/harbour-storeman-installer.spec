@@ -7,7 +7,7 @@ Name:           harbour-storeman-installer
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.0.31
-Release:        release1.systemd.unit.mimimise
+Release:        release1.systemd.unit
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
