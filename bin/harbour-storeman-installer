@@ -30,6 +30,7 @@ cd /tmp  # Set PWD
 # a "daemonize") as the last statement of the %posttrans section 
 # (the last executed) of an RPM spec file.
 # Terminate parent, which was made session leader by `setsid --fork`:
+ppid=$PPID
 kill "$PPID"
 
 # Memorise how we were called:
@@ -37,7 +38,6 @@ called="$(basename "$0")"
 gppid="$1"
 mypid="$$"
 logfile="$2"
-ppid=$PPID
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
