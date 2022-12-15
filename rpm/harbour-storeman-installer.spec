@@ -161,12 +161,13 @@ export zypid="$ZYPP_IS_RUNNING"  # Is usually =$PPID
 export gzypid="$(ps -o ppid,pid | grep " $zypid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
 umask 7113
 cd /tmp
-setsid --fork /bin/sh -c '{ echo; echo "1. Within `sh -c` in the %%posttrans scriptlet"; env; ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$$|$PPID|$zypid"; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '{ echo; echo "1. Within `sh -c` in the %%posttrans scriptlet"; env; ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1; ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$$|$PPID|$zypid"; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 {
   echo
   echo "2. Right after detachedly calling the harbour-storeman-installer script in the %%posttrans scriptlet"
   echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
   echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$$: $$, \$!: $!"
+  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$$|$PPID|$zypid"
   echo
 } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
