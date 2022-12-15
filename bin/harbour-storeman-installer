@@ -1,5 +1,5 @@
 #!/bin/sh
-set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
+# set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
 # -overwrite), as this script does not potentially need that (yet).
 # Also drop "-e" for now, as it helps and hinders different aspects of debugging.
 #set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
@@ -56,7 +56,7 @@ fi
 { echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL"
   echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$ppid: $ppid, \$mypid: $mypid,\$$: $$, \$PID: $PID"
   echo "Status TTY   PGID SesID  PPID   PID Command"
-  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$mypid|$ppid|$$|$PPID|$gzypid|$zypid|$gppid|$PID")"
+  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$mypid|$ppid|$$|$PPID|$zypid|$PID")"
   echo
   env
   echo
