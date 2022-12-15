@@ -151,12 +151,12 @@ exit 0
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
 echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL, \$LOGIN: $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-export gppid="$(ps -o ppid,pid | grep " $PPID$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"
-export zypid="$ZYPP_IS_RUNNING"
-export gzypid="$(ps -o ppid,pid | grep " $ZYPP_IS_RUNNING$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"
+export gppid="$(ps -o ppid,pid | grep " $PPID$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
+export zypid="$ZYPP_IS_RUNNING"  # Is usually =$PPID
+export gzypid="$(ps -o ppid,pid | grep " $ZYPP_IS_RUNNING$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
 { echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$$: $$, \$PID: $PID"
   echo "Status TTY   PGID SesID  PPID   PID Command"
-  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$gzypid|$zypid|$gppid|$PID")"
+  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$zypid|$PID")"
   echo
   env
   echo
@@ -165,14 +165,14 @@ export gzypid="$(ps -o ppid,pid | grep " $ZYPP_IS_RUNNING$" | tr -s ' ' | rev | 
 umask 7113
 cd /tmp
 { env; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-setsid --fork /bin/sh -c '{ echo; echo "Status TTY   PGID SesID  PPID   PID Command"; echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$gzypid|$zypid|$gppid|$PID")"; echo; env; echo; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '{ echo; echo "Status TTY   PGID SesID  PPID   PID Command"; echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$zypid|$PID")"; echo; env; echo; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Mon Dec 12 2022 olf <Olf0@users.noreply.github.com> - 2.0.24-release1.detached.script.test
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.33-release1.detached.script.test
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
