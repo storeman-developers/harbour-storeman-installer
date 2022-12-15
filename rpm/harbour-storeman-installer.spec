@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.27
+Version:        2.0.30
 Release:        release1.systemd.timer.minimal
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -87,8 +87,8 @@ cp -R systemd %{buildroot}%{_sysconfdir}/
 # theoretically; practically this package always should be immediately removed
 # by the installation of harbour-storeman it triggers, if all runs well.
 #
-# This would make the depolyed unit file(s) known to systemd, ordered in
-# "reverse call chain order" (i.e., service unit(s) first), but unnecessary
+# This would make the deployed unit file(s) known to systemd, ordered in
+# "reverse call chain order" (i.e., service unit(s) first); unnecessary
 # because they are deployed in a directory systemd searches for units:
 # systemctl link %{_sysconfdir}/systemd/system/%{name}.service
 # systemctl link %{_sysconfdir}/systemd/system/%{name}.timer
