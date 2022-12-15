@@ -40,6 +40,7 @@ logfile="$2"
   echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
   env
   echo "\$zypid: $zypid, \$ppid: $ppid, \$mypid: $mypid, \$PPID: $PPID, \$$: $$, \$!: $!"
+  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$ppid"
   echo
 } >> "$logfile" 2>&1
