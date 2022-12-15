@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.24
+Version:        2.0.29
 Release:        release1.detached.script.test
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -108,7 +108,8 @@ then
   [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
   umask 7113
   touch %{_localstatedir}/log/%{name}.log.txt
-  chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  # Not necessary, because umask is set:
+  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
   umask "$curmask"
 fi
@@ -149,15 +150,22 @@ exit 0
 # (by double-forking / a "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
-echo "'umask:' $(umask), 'pwd:' $(pwd), '$PWD:' $PWD, '$OLDPWD:' $OLDPWD" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL:' $SHELL, \$LOGIN: $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+export gppid="$(ps -o ppid $PPID)"
+export zypid="$ZYPP_IS_RUNNING"
+export gzypid="$(ps -o ppid $ZYPP_IS_RUNNING)"
+{ echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$PPID: $PPID, \$$: $$, \$PID: $PID"
+  echo "Status TTY   PGID SesID  PPID   PID Command"
+  echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$gzypid|$zypid|$gppid|$PID")"
+  echo
+  env
+  echo
+  echo
+} >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
 umask 7113
 cd /tmp
-gppid="$(ps -o ppid $PPID)"
-echo "'$gppid:' $gppid, '$PPID:' $PPID, '$$:' $$, '$PID:' $PID, '$SHELL:' $SHELL, '$LOGIN:' $LOGIN" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-echo "ps $gppid $PPID $$ $PID :" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-echo "$(ps -o stat=Status,tty=TTY,pgid=pGID,sid=SessionID,ppid=PPID,pid=PID,comm=Command $gppid $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-setsid --fork /bin/sh -c 'echo "$(ps -eo stat=Status,tty=TTY,pgid=pGID,sid=SessID,ppid=PPID,pid=PID,comm=Command $PPID $$ $PID)" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; env >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+{ env; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
+setsid --fork /bin/sh -c '{ echo; echo "Status TTY   PGID SesID  PPID   PID Command"; echo "$(ps -o stat,tty,pgid,sid,ppid,pid,comm | grep -E "$$|$PPID|$gzypid|$zypid|$gppid|$PID")"; echo; env; echo; echo; } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
