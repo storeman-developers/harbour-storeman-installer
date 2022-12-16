@@ -6,7 +6,7 @@
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 umask 7113  # The first octal digit is ignored by most implementations
-cd /tmp  # Set PWD
+[ "$PWD" != /tmp ] || cd /tmp  # Set PWD to /tmp
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
 # that "-o pipefail" is available (for its use in the third line), after checking
@@ -27,11 +27,11 @@ cd /tmp  # Set PWD
 # shall stay free of bashisms.
 
 # Memorise how we were called:
-export mypid="$$"
-export ppid="$PPID"
 called="$(basename "$0")"
 export gppid="$1"
 logfile="$2"
+export mypid="$$"
+export ppid="$PPID"
 
 # Test-instrumentation:
 {
