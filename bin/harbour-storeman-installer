@@ -41,7 +41,7 @@ logfile="$2"
   env
   echo "\$zypid: $zypid, \$ppid: $ppid, \$mypid: $mypid, \$PPID: $PPID, \$$: $$, \$!: $!"
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
-  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$ppid|$$|$PPID"
+  ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$ppid|$$|$PPID"
   echo
 } >> "$logfile" 2>&1
 
@@ -204,7 +204,7 @@ setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps 
   env
   echo "\$ppid: $ppid, \$mypid: $mypid, \$cpid: $cpid, \$PPID: $PPID, \$$: $$, \$!: $!"
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
-  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$cpid"
+  ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$cpid"
   echo
 } >> "$logfile" 2>&1
 
