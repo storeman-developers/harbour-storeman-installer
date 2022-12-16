@@ -197,7 +197,7 @@ setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps 
 
 # Test-instrumentation:
 {
-  export cpid="${$!:-$mypid}"
+  export cpid="${!:-$mypid}"
   echo
   echo "4. Right before finishing the harbour-storeman-installer script"
   echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
