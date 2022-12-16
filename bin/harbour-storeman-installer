@@ -41,7 +41,7 @@ logfile="$2"
   env
   echo "\$zypid: $zypid, \$ppid: $ppid, \$mypid: $mypid, \$PPID: $PPID, \$$: $$, \$!: $!"
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
-  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$ppid|$gppid"
+  ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$zypid|$ppid|$$|$PPID"
   echo
 } >> "$logfile" 2>&1
 
@@ -49,7 +49,7 @@ logfile="$2"
 # a "daemonize") as the last statement of the %posttrans section 
 # (the last executed) of an RPM spec file.
 # Terminate parent, which was made session leader by `setsid --fork`:
-kill "$PPID"
+kill "$PPID" > /dev/null 2>&1 || true
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
