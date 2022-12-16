@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.22
+Version:        2.0.44
 Release:        release1.detached.script
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -108,7 +108,8 @@ then
   [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
   umask 7113
   touch %{_localstatedir}/log/%{name}.log.txt
-  chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  # Not necessary, because umask is set:
+  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
   umask "$curmask"
 fi
@@ -150,15 +151,15 @@ exit 0
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
 umask 7113
-cd /tmp
-setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null) &' sh_call-inst-storeman "$PPID" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+[ "$PWD" != /tmp ] || cd /tmp  # Set PWD to /tmp
+setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
 exit 0
 
 %files
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.44-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
   - Set umask and PWD in harbour-storeman-installer script
