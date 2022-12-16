@@ -14,14 +14,14 @@ logfile="$2"
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
-# This script is designed to be called fully detached (by a "double fork" /
-# a "daemonize") as the last statement of the %posttrans section 
+# This script is designed to be called fully detached (by a "double fork"
+# / a "daemonize") as the last statement of the %posttrans scriptlet
 # (the last executed) of an RPM spec file.
 # Terminate parent, which was made session leader by `setsid --fork`:
 kill "$ppid" > /dev/null 2>&1 || true
 
 umask 7113  # The first octal digit is ignored by most implementations
-[ "$PWD" != /tmp ] || cd /tmp  # Set PWD to /tmp
+[ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
 # that "-o pipefail" is available (for its use in the third line), after checking
@@ -158,6 +158,10 @@ do
     sleep $i
     killall -qw -KILL pkcon
     sleep 1
+    systemd stop packagekit.service
+    sleep 1
+    systemd start packagekit.service
+    sleep 1
     logentry="[Info] Final retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
@@ -169,6 +173,10 @@ do
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
     killall -qw -KILL pkcon
+    sleep 1
+    systemd stop packagekit.service
+    sleep 1
+    systemd start packagekit.service
     logentry="[Warning] Scheduling harbour-storeman-installer for removal in 30 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
