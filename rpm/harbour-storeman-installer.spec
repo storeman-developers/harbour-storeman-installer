@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.39
+Version:        2.0.40
 Release:        release1.detached.script.test
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -158,13 +158,13 @@ exit 0
 } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
 export mypid="$$"
 export ppid="$PPID"
-export gppid="$(ps -o ppid,pid | grep " $ppid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
+export gppid="$(ps -eo ppid,pid | grep " $ppid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
 export zypid="$ZYPP_IS_RUNNING"  # Is usually =$PPID
-export gzypid="$(ps -o ppid,pid | grep " $zypid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
+export gzypid="$(ps -eo ppid,pid | grep " $zypid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
 umask 7113
 cd /tmp
-setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) & cpid="${!:-$$}"; { echo; echo "2. Within \"sh -c\" in the %%posttrans scriptlet, after core call"; env; ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1; ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$$|$PPID|$2|$mypid|$zypid"; echo; } >> "$2" 2>&1' sh_call-inst-storeman "$PPID" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
-cpid="${$!:-$$}"
+setsid --fork /bin/sh -c '(%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) & cpid="${!:-$$}"; { echo; echo "2. Within \"sh -c\" in the %%posttrans scriptlet, after core call"; env; ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1; ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$$|$PPID|$2|$mypid|$zypid"; echo; } >> "$2" 2>&1' sh_call-inst-storeman "$ppid" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+cpid="${!:-$$}"
 {
   echo "1. Right after detachedly calling the harbour-storeman-installer script in the %%posttrans scriptlet"
   echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
@@ -179,7 +179,7 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.39-release1.detached.script.test
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.40-release1.detached.script.test
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
