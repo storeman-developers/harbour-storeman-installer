@@ -3,8 +3,23 @@
 # -overwrite), as this script does not potentially need that (yet).
 # Also drop "-e" for now, as it helps and hinders different aspects of debugging.
 #set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
+
+# Memorise how we were called:
+export mypid="$$"
+export ppid="$PPID"
+called="$(basename "$0")"
+export gppid="$1"
+logfile="$2"
+
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
+
+# This script is designed to be called fully detached (by a "double fork" /
+# a "daemonize") as the last statement of the %posttrans section 
+# (the last executed) of an RPM spec file.
+# Terminate parent, which was made session leader by `setsid --fork`:
+kill "$ppid" > /dev/null 2>&1 || true
+
 umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" != /tmp ] || cd /tmp  # Set PWD to /tmp
 
@@ -26,13 +41,6 @@ umask 7113  # The first octal digit is ignored by most implementations
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# Memorise how we were called:
-called="$(basename "$0")"
-export gppid="$1"
-logfile="$2"
-export mypid="$$"
-export ppid="$PPID"
-
 # Test-instrumentation:
 {
   echo
@@ -44,12 +52,6 @@ export ppid="$PPID"
   ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$ppid|$$|$PPID"
   echo
 } >> "$logfile" 2>&1
-
-# This script is designed to be called fully detached (by a "double fork" /
-# a "daemonize") as the last statement of the %posttrans section 
-# (the last executed) of an RPM spec file.
-# Terminate parent, which was made session leader by `setsid --fork`:
-kill "$PPID" > /dev/null 2>&1 || true
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
