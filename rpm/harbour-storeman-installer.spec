@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.35
+Version:        2.0.36
 Release:        release1.detached.script.test
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -156,8 +156,8 @@ exit 0
   env
   echo
 } >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1
-export mypid=$$
-export ppid=$PPID"
+export mypid="$$"
+export ppid="$PPID"
 export gppid="$(ps -o ppid,pid | grep " $ppid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
 export zypid="$ZYPP_IS_RUNNING"  # Is usually =$PPID
 export gzypid="$(ps -o ppid,pid | grep " $zypid$" | tr -s ' ' | rev | cut -f 2 -d ' ' | rev)"  # Yields "1"=systemd
