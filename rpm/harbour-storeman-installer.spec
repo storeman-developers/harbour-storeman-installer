@@ -168,7 +168,7 @@ cpid="${!:-$$}"
 {
   echo "1. Right after detachedly calling the harbour-storeman-installer script in the %%posttrans scriptlet"
   echo "umask: $(umask), pwd: $(pwd), \$PWD: $PWD, \$OLDPWD: $OLDPWD, \$SHELL: $SHELL"
-  echo "\$gzypid: $gzypid,\$zypid: $zypid, \$gppid: $gppid, \$ppid: $ppid, \$mypid: $mypid, \$cpid: $cpid, \$PPID: $PPID, \$$: $$, \$!: $!"
+  echo "\$gzypid: $gzypid, \$zypid: $zypid, \$gppid: $gppid, \$ppid: $ppid, \$mypid: $mypid, \$cpid: $cpid, \$PPID: $PPID, \$$: $$, \$!: $!"
   ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args | head -1
   ps -eo stat,tty,user,group,pgid,sid,ppid,pid,comm,args | grep -E "$mypid|$ppid|$zypid|$cpid"
   echo
