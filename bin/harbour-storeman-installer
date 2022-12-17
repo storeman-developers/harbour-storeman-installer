@@ -29,7 +29,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # (the last executed) of an RPM spec file.
 mypid="$$"
 # Terminate parent, which was made session leader by `setsid --fork`:
-kill -q "$PPID" || true
+kill "$PPID" > /dev/null 2>&1 || true
 
 # Memorise how we were called:
 called="$(basename "$0")"
