@@ -171,7 +171,7 @@ exit 0
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
 - Consistently set files and limit access to group "ssu"
-- Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
+- Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
