@@ -39,6 +39,9 @@ logfile="$2"
 umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
 
+umask 7113  # The first octal digit is ignored by most implementations
+[ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
+
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
 if [ -s "$logfile" ]
@@ -119,7 +122,7 @@ do
     logentry="[Info] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
-    killall -q -TERM pkcon
+    killall -q -TERM pkcon || true
     sleep $wait
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
