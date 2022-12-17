@@ -166,7 +166,7 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
