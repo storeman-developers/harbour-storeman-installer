@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.5
+Version:        1.3.6
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -19,16 +19,39 @@ URL:            https://github.com/storeman-developers/%{name}
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
+# For details on "Requires:" statements, especially "Requires(a,b,c):", see:
+# https://rpm-software-management.github.io/rpm/manual/spec.html#requires
+# Most of the following dependencies are required for both, specifically for
+# the `%post` section and additionally as a general requirement after the RPM
+# transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
-# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for & the oldest available DoD repo at Sailfish-OBS:
+Requires(post): ssu
+Requires:       PackageKit
+# `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
+# https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
+# ToDo: Check if the GNU-versions of these packages (named as alternatives below)
+# also provide the aliases ("virtual packages") denoted here, then these can be
+# used; ultimately most of these packages shall be already installed, anyway.
+# 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
+Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
+Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
+# 2. `util-linux` for `setsid`:
+Requires:       util-linux
+# 3. `psmisc` for `killall`:
+Requires:       (busybox-symlinks-psmisc or psmisc-tools)
+# 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
+# Requires:       (busybox-symlinks-procps or procps-ng)
+# The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
+# useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
-Conflicts:      harbour-storeman
+# Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
+Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
-Provides:       harbour-storeman = 0.3.0~0
+Provides:       harbour-storeman = 0.3.0~1
 
-%define localauthority_dir polkit-1/localauthority/50-local.d
-%define hicolor_icons_dir  %{_datadir}/icons/hicolor
-%define screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global localauthority_dir polkit-1/localauthority/50-local.d
+%global hicolor_icons_dir  %{_datadir}/icons/hicolor
+%global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -73,9 +96,6 @@ Url:
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
 
-mkdir -p %{buildroot}%{_localstatedir}/log
-touch %{buildroot}%{_localstatedir}/log/%{name}.log.txt
-
 mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
 cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
 #mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
@@ -91,20 +111,34 @@ done
 desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
-# The %%post scriptlet is deliberately run when installing *and* updating.
+# The %%post scriptlet is deliberately run when installing and updating.
+# Create a persistent log file, i.e., which is not managed by RPM and hence
+# is unaffected by removing the %%{name} RPM package:
+if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
+then
+  curmask="$(umask)"
+  umask 7022  # The first octal digit is ignored by most implementations
+  [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
+  umask 7113
+  touch %{_localstatedir}/log/%{name}.log.txt
+  # Not necessary, because umask is set:
+  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
+  umask "$curmask"
+fi
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
 ssu_ur=no
 ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if printf %s "$ssu_lr" | grep -Fq mentaljam-obs
+if echo "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
   rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
-if ! printf %s "$ssu_lr" | grep -Fq harbour-storeman-obs
+if ! echo "$ssu_lr" | grep -Fq harbour-storeman-obs
 then
   ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
   ssu_ur=yes
@@ -116,18 +150,28 @@ fi
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
-# https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
+# or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
+# "8d0cec9 Partially convert to semantic line breaks." in
+# https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
+exit 0
 
 %files
 %defattr(-,root,root,-)
-%attr(0755,root,root) %{_bindir}/%{name}
-%config(noreplace) %attr(0664,root,ssu) %{_localstatedir}/log/%{name}.log.txt
+%attr(0754,root,ssu) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
+- Set umask and PWD in harbour-storeman-installer script
+- Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+- Print version of harbour-storeman-installer package in the log file entry of each run
+- Consistently set files and limit access to group "ssu"
+- Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
@@ -182,3 +226,4 @@ Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 - Update translations
 * Thu Aug 19 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.0-1
 - Initial release
+

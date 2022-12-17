@@ -24,52 +24,153 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# This script is designed to be called as detached ("&") as the last statement
-# of the %posttrans section (the last executed) of an RPM spec file, or manually.
+# This script is designed to be called manually.
+mypid="$$"
 
 # Memorise how we were called:
 called="$(basename "$0")"
-
-# If logfile is already there, update its timestamp(s), else create it:
 logfile="/var/log/${called}.log.txt"
-if ! touch "$logfile"
-then printf '%s\n' "[Error] Failed to touch logfile $logfile" | systemd-cat -t "$called" -p 4 || true
+
+umask 7113  # The first octal digit is ignored by most implementations
+[ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
+
+# Prefix first output with three linebreaks, if logfile size > 0
+linebreaks=""
+if [ -s "$logfile" ]
+then linebreaks="\n\n\n"
 fi
 
 # Write first entry to logfile:
-logentry="[Info] Touch'ed logfile: $logfile"
-if printf '%s\n' "$(date -Iseconds) $logentry" >> "$logfile"
+logentry="[Info] Logging to $logfile"
+if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry" >> "$logfile"
 then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else printf '%s\n' "[Error] Failed to write to $logfile" | systemd-cat -t "$called" -p 4 || true
+else systemd-cat -t "$called" -p 4 printf '%s\n' "[Error] $pkgname failed to write to $logfile" || true
 fi
 
 # Even when started interactively, another pkcon job may have just been
 # started, hence provide pkcon with a little time to enqueue it, because
 # otherwise pkcon might fail enqueuing the next pkcon-job.
 sleep 1
-
-# `pkcon repo-set-data` is also intended to serve as a synchronisation
-# point, because most of pkcon's sub-commands wait until the package
-# management backend (on SailfishOS: RPM via libzypp) is idle:
-logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
-printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
-if eval $logentry >> "$logfile" 2>&1
-then
-  # Sleeping for a second between the two pkcon calls, because pkcon *rarely*
-  # fails installing a package ("not found") immediately after a individual
-  # repository refresh via `repo-set-data <repo> refresh-now true`:
-  sleep 1
-  logentry="pkcon -pvy install harbour-storeman"
-  printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
-  printf '%s\n' "[Debug] Execute: $logentry" | systemd-cat -t "$called" -p 7 || true
-  # The following statement must be started detached ("&"), because this
-  # script file will be removed in the process, which will likely fail,
-  # if it is still opened for executing / reading.
-  # It also shall always be the last command issued (WRT control-flow).
-  eval $logentry >> "$logfile" 2>&1 &
-else
-  logentry="[Critical] Aborting to install harbour-storeman, because error-code $? was returned by: $logentry"
-  printf '\n%s\n\n\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
-  printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+# `pkcon search name` is also intended to serve as a synchronisation point,
+# because most of pkcon's sub-commands wait until the package management
+# backend (on SailfishOS: libzypp) is idle:
+if pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+then pkgkitd=ok
+else pkgkitd=KO
 fi
+
+# Write $pkgname to logfile:
+logentry="[Debug] Installed, now running: $pkgname"
+printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+
+# Out of occasional bad experience when pkcon is being hammered with
+# commands, also prefix `pkcon repo-set-data` with a second sleep:
+sleep 1
+maxi=4  # 4 is the minimal value, which makes sense here
+maxihalf=$(expr $maxi / 2)
+for i in $(seq $maxi)
+do
+  logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
+  printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
+  systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
+  eval $logentry >> "$logfile" 2>&1
+  retc=$?
+  wait=$(expr $i \* 2 + 1)
+  if [ $retc = 0 ]
+  then break  # Went fine
+  elif [ $i = 1 ]
+  then
+    logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
+    logentry="[Debug] Sleeping for $wait seconds."
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+    sleep $wait
+    logentry="[Info] Retry #$i"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+  elif [ $i -le $maxihalf ]
+  then
+    logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
+    logentry="[Info] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    killall -q -TERM pkcon || true
+    sleep $wait
+    logentry="[Info] Retry #$i"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+  elif [ $i -lt $maxi ]
+  then
+    logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
+    logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+    killall -q -INT pkcon || true
+    sleep $i
+    killall -q -TERM pkcon || true
+    sleep $i
+    logentry="[Info] Retry #$i"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+  else
+    logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
+    logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+    killall -q -HUP pkcon || true
+    sleep $i
+    killall -qw -KILL pkcon || true
+    sleep 1
+    systemctl stop packagekit.service || true
+    sleep 1
+    systemctl start packagekit.service || true
+    sleep 1
+    logentry="[Info] Final retry #$i"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
+    printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
+    eval $logentry >> "$logfile" 2>&1 && break  # Was final try successful?
+    logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+    killall -qw -KILL pkcon || true
+    sleep 1
+    systemctl stop packagekit.service || true
+    sleep 1
+    systemctl start packagekit.service || true
+    logentry="[Info] Trying to install harbour-storeman despite the failed repository refresh."
+    printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    sleep 1
+  fi
+done
+logentry="pkcon -pvy install harbour-storeman"
+printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" >> "$logfile" || true
+systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
+# Sleeping again for a second right before the next pkcon call, because pkcon
+# *rarely* fails installing a package ("not found") immediately after an
+# individual repository refresh via `repo-set-data <repo> refresh-now true`.
+# The following statement must be started fully detached ("double fork" /
+# "daemonize": first a detached sub shell, in which pwd, umask might and
+# session-id must be set anew (i.e., the execution environment), then again
+# the command proper to run as new session-leader), because this script file
+# will be removed in the process, which will likely fail, if it is still
+# opened for executing / reading.
+# It also shall always be the last command issued (WRT control-flow).
+setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null || true
+# "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
+# this interpreter instance as first fork.
+# PWD and umask do not need to be set anew here, see line 9.
+exit $retc
+
