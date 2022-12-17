@@ -121,11 +121,11 @@ then
   [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
   umask 7113
   touch %{_localstatedir}/log/%{name}.log.txt
-  chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  # Not necessary, because umask is set:
+  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
   umask "$curmask"
 fi
-# The remaining %%post scriptlet is deliberately run when installing and updating.
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
 # is removed, but when Storeman is removed (before it was added, removed, then
 # added again when installing Storeman via Storeman Installer), which is far more
@@ -166,7 +166,7 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sat Dec 10 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run

@@ -5,8 +5,6 @@ set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
 #set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
-umask 7113  # The first octal digit is ignored by most implementations
-cd /tmp  # Set PWD
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
 # that "-o pipefail" is available (for its use in the third line), after checking
@@ -27,12 +25,14 @@ cd /tmp  # Set PWD
 # shall stay free of bashisms.
 
 # This script is designed to be called manually.
+mypid="$$"
 
 # Memorise how we were called:
 called="$(basename "$0")"
-mypid="$$"
-
 logfile="/var/log/${called}.log.txt"
+
+umask 7113  # The first octal digit is ignored by most implementations
+[ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
@@ -54,7 +54,10 @@ sleep 1
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
-pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+if pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+then pkgkitd=ok
+else pkgkitd=KO
+fi
 
 # Write $pkgname to logfile:
 logentry="[Debug] Installed, now running: $pkgname"
@@ -96,7 +99,7 @@ do
     logentry="[Info] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
-    killall -q -TERM pkcon
+    killall -q -TERM pkcon || true
     sleep $wait
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -109,9 +112,9 @@ do
     logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -q -INT pkcon
+    killall -q -INT pkcon || true
     sleep $i
-    killall -q -TERM pkcon
+    killall -q -TERM pkcon || true
     sleep $i
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -123,13 +126,13 @@ do
     logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -q -HUP pkcon
+    killall -q -HUP pkcon || true
     sleep $i
-    killall -qw -KILL pkcon
+    killall -qw -KILL pkcon || true
     sleep 1
-    systemd stop packagekit.service
+    systemdctl stop packagekit.service || true
     sleep 1
-    systemd start packagekit.service
+    systemdctl start packagekit.service || true
     sleep 1
     logentry="[Info] Final retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -141,11 +144,11 @@ do
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
-    killall -qw -KILL pkcon
+    killall -qw -KILL pkcon || true
     sleep 1
-    systemd stop packagekit.service
+    systemdctl stop packagekit.service || true
     sleep 1
-    systemd start packagekit.service
+    systemdctl start packagekit.service || true
     logentry="[Info] Trying to install harbour-storeman despite the failed repository refresh."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
@@ -165,7 +168,7 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 # will be removed in the process, which will likely fail, if it is still
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow).
-setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null || true
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
 # PWD and umask do not need to be set anew here, see line 9.
