@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.6
+Version:        1.3.7
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -119,10 +119,10 @@ then
   curmask="$(umask)"
   umask 7022  # The first octal digit is ignored by most implementations
   [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
-  umask 7113
+  umask 7111
   touch %{_localstatedir}/log/%{name}.log.txt
   # Not necessary, because umask is set:
-  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
+  # chmod 0666 %{_localstatedir}/log/%{name}.log.txt
   chgrp ssu %{_localstatedir}/log/%{name}.log.txt
   umask "$curmask"
 fi
@@ -166,7 +166,7 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.6-release1
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.7-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
