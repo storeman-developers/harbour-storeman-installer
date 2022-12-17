@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.45
+Version:        2.0.46
 Release:        release1.detached.script
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -159,6 +159,8 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Fri Dec 16 2022 olf <Olf0@users.noreply.github.com> - 2.0.46-release1.detached.script
+- Minor improvements and fixes
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
 - Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.

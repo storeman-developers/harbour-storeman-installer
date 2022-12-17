@@ -29,7 +29,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # (the last executed) of an RPM spec file.
 mypid="$$"
 # Terminate parent, which was made session leader by `setsid --fork`:
-kill "$PPID" > /dev/null 2>&1 || true
+kill -q "$PPID" || true
 
 # Memorise how we were called:
 called="$(basename "$0")"
@@ -60,21 +60,24 @@ fi
 # directly calling functions in libzypp (no rpm involved) or rpm!
 i=0
 maxi=15
-rpmXact=running
+rpmXtrct=running
 while [ $i -lt $maxi ] && ps -eo pid | grep -Fq "$gppid"
 do
   sleep 1
   count=$(expr $i + 1)
 done
 if [ $i -ge $maxi ]
-then rpmXact=timedout
-else rpmXact=finished
+then rpmXtrct=timedout
+else rpmXtrct=finished
 fi
 sleep 2
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
-pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+if pkgname="$(pkcon -p search name "$called" | grep '^Installed ' | tr -s ' ' | cut -f 2 -d ' ' | rev | cut -f 2- -d '.' | rev | grep -m 1 "^$called-[0-9]")"
+then pkgkitd=ok
+else pkgkitd=KO
+fi
 
 # Write $pkgname to logfile:
 logentry="[Debug] Installed, now running: $pkgname"
@@ -129,9 +132,9 @@ do
     logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -q -INT pkcon
+    killall -q -INT pkcon || true
     sleep $i
-    killall -q -TERM pkcon
+    killall -q -TERM pkcon || true
     sleep $i
     logentry="[Info] Retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -143,13 +146,13 @@ do
     logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -q -HUP pkcon
+    killall -q -HUP pkcon || true
     sleep $i
-    killall -qw -KILL pkcon
+    killall -qw -KILL pkcon || true
     sleep 1
-    systemd stop packagekit.service
+    systemctl stop packagekit.service || true
     sleep 1
-    systemd start packagekit.service
+    systemctl start packagekit.service || true
     sleep 1
     logentry="[Info] Final retry #$i"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
@@ -161,11 +164,11 @@ do
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
-    killall -qw -KILL pkcon
+    killall -qw -KILL pkcon || true
     sleep 1
-    systemd stop packagekit.service
+    systemctl stop packagekit.service || true
     sleep 1
-    systemd start packagekit.service
+    systemctl start packagekit.service || true
     logentry="[Warning] Scheduling harbour-storeman-installer for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
@@ -173,7 +176,7 @@ do
     logentry="pkcon -pvy remove $called"
     printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" >> "$logfile" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Self-removal in 20 seconds: $logentry" || true
-    setsid --fork /bin/sh -c '(kill "$PPID"; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 20; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_rm_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
+    setsid --fork /bin/sh -c '(kill "$PPID"; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 20; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_rm_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null || true
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
@@ -189,7 +192,7 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "[Debug] Execute: $logentry" || true
 # will be removed in the process, which will likely fail, if it is still
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow).
-setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null
+setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null || true
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
 # PWD and umask do not need to be set anew here, see line 9.
