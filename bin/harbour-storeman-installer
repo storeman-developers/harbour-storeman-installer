@@ -31,7 +31,7 @@ mypid="$$"
 called="$(basename "$0")"
 logfile="/var/log/${called}.log.txt"
 
-umask 7111  # The first octal digit is ignored by most implementations
+umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
 
 # Prefix first output with three linebreaks, if logfile size > 0
