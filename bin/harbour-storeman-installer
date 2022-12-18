@@ -167,10 +167,14 @@ systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || tru
 # the command proper to run as new session-leader), because this script file
 # will be removed in the process, which will likely fail, if it is still
 # opened for executing / reading.
-# It also shall always be the last command issued (WRT control-flow).
+# It also shall always be the last command issued (WRT control-flow),
+# except for the final log message.
 setsid --fork /bin/sh -c '(kill "$PPID"; sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2 >> "$3" 2>&1 < /dev/null) &' sh_do_storeman-installer "$mypid" "$logentry" "$logfile" >> "$logfile" 2>&1 < /dev/null || true
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
-# PWD and umask do not need to be set anew here, see line 9.
+# PWD and umask do not need to be set anew here, see lines 34 and 35.
+logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
+printf '\n%s\n' "$(date -Iseconds) $logentry" >> "$logfile" || true
+systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
 exit $retc
 
