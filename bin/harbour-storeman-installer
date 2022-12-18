@@ -37,7 +37,7 @@ umask 7111  # The first octal digit is ignored by most implementations
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
 if [ -s "$logfile" ]
-then linebreaks="\n\n\n"
+then linebreaks="\n\n------------------------------------------------------------------------------------------------------------\n\n\n"
 fi
 
 # Write first entry to logfile:
