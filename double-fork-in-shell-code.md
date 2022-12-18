@@ -6,7 +6,7 @@ This is the "generic form", the strictly static elements are the sequence:<br />
 `setsid --fork sh -c '(<cmd-list_or_script-call_which_does: kill $PPID>) &'`
 
 ## Variations
-- The environment is copied down through the call chain with all shell implemetations (as usual), *except* across the `setsid --fork sh -c ' '` sequence, for which a fresh default environment might be provided (e.g., when a different shell executable is called by setsid than the callers shell).<br />
+- The environment is copied down through the call chain with all shell implementations (as usual), *except* across the `setsid --fork sh -c ' '` sequence, for which a fresh default environment might be provided (e.g., when a different shell executable is called by setsid than the callers shell).<br />
   Hence the safe way to carry parameters across this sequence down the call chain are positional parameters, as described in the man-page of the shell of your choice for the option `-c`.<br />
   Also note that all shells must copy their environment to sub-shells opened with `( )` and commands run in a sub-shell (what most shells do for every shell-external command), additionally some shells also copy their regular variables (the ones not exported to the environment) down to sub-shells opened with `( )`, but this is implementation dependent.
 - One can set the "inner" umask and PWD (via `cd`) as it fits best: The exemplary values in the "generic form" are just often used values; I often set the umask more restrictively.<br />
