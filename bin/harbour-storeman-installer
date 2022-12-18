@@ -42,7 +42,7 @@ umask 7113  # The first octal digit is ignored by most implementations
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
 if [ -s "$logfile" ]
-then linebreaks="\n\n\n"
+then linebreaks="\n\n------------------------------------------------------------------------------------------------------------\n\n\n"
 fi
 
 # Write first entry to logfile:
@@ -60,15 +60,15 @@ fi
 # directly calling functions in libzypp (no rpm involved) or rpm!
 i=0
 maxi=15
-rpmXtrct=running
+rpmXctn=running
 while [ $i -lt $maxi ] && ps -eo pid | grep -Fq "$gppid"
 do
   sleep 1
   count=$(expr $i + 1)
 done
 if [ $i -ge $maxi ]
-then rpmXtrct=timedout
-else rpmXtrct=finished
+then rpmXctn=timedout
+else rpmXctn=finished
 fi
 sleep 2
 # `pkcon search name` is also intended to serve as a synchronisation point,
