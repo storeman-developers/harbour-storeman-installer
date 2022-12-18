@@ -1,9 +1,9 @@
 # Double-fork in shell code
 
-`(kill $PPID; umask 0022; cd /; setsid --fork sh -c '(kill $PPID; umask 0022; cd /; <command-list-to-execute [$1,$2,…]> [redirections-for-a-command]) > /dev/null 2>&1 < /dev/null &' <arbitrary-name-for-$0-"inside"-sh-c> <parameter1-for-$1-"inside"-sh-c> <parameter2-for-$2-"inside"-sh-c> …) & > /dev/null 2>&1 < /dev/null`
+`(umask 0022; cd /; setsid --fork sh -c '(umask 0022; cd /; <command-list-to-execute [$1,$2,…]> [redirections-for-a-command]) > /dev/null 2>&1 < /dev/null &' <arbitrary-name-for-$0-"inside"-sh-c> <parameter1-for-$1-"inside"-sh-c> <parameter2-for-$2-"inside"-sh-c> …) > /dev/null 2>&1 < /dev/null`
 
 This is the "generic form", the strictly static elements are the sequence:<br />
-`setsid --fork sh -c '(<cmd-list_or_script-call_which_does: kill $PPID>) &'`
+`setsid --fork sh -c '(<cmd-list>) &'`
 
 ## Variations
 - The environment is copied down through the call chain with all shell implementations (as usual), *except* across the `setsid --fork sh -c ' '` sequence, for which a fresh default environment might be provided (e.g., when a different shell executable is called by setsid than the callers shell).<br />
@@ -12,7 +12,7 @@ This is the "generic form", the strictly static elements are the sequence:<br />
 - One can set the "inner" umask and PWD (via `cd`) as it fits best: The exemplary values in the "generic form" are just often used values; I often set the umask more restrictively.<br />
   Note that the directory to change into must exist (you do not want a `cd` at this point to fail), hence `/` is a safe value, as e.g., `/tmp` is not available early in the boot-phase (not relevant for actions triggered by a regular user).
 - One sure can redirect from or to anywhere else than `/dev/null` or redirect StdIN and StdERR differently.
-- With a proper POSIX-compliant shell, one can close any file descriptor with "-", e.g., for StdIN `>&-`, instead of redirecting it from or to `/dev/null`.<br />
+- With a proper POSIX-compliant shell, one can close any file descriptor with "&-", e.g., for StdIN `>&-`, instead of redirecting it from or to `/dev/null`.<br />
   But e.g., busybox's ash is not POSIX-compliant.<br />
   Also note that when closing StdOUT or StdERR, anything writing to a closed file descriptor will (/ might / should / must?  POSIX might tell.) fail, just as reading from a closed StdIN, in contrast to redirections to `/dev/null`.  This is fine if one ensures that the commands executed do not use any closed file descriptors.
 
