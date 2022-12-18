@@ -25,7 +25,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # shall stay free of bashisms.
 
 # This script is designed to be started manually, either via GUI invoker (when
-# a user taps on the desktop ("laucher") icon or directly (e.g., in a shell).
+# a user taps on the desktop ("launcher") icon or directly (e.g., in a shell).
 
 # Memorise how we were called:
 mypid="$$"
