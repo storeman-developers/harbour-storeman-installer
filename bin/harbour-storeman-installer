@@ -24,10 +24,11 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# This script is designed to be called manually.
-mypid="$$"
+# This script is designed to be started manually, either via GUI invoker (when
+# a user taps on the desktop ("laucher") icon or directly (e.g., in a shell).
 
 # Memorise how we were called:
+mypid="$$"
 called="$(basename "$0")"
 logfile="/var/log/${called}.log.txt"
 
