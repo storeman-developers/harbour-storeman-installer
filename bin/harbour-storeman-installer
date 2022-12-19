@@ -1,9 +1,10 @@
 #!sh
-set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
-# -overwrite), as this script does not potentially need that (yet).
-# Also drop "-e" for now, as it helps and hinders different aspects of debugging.
-#set -o pipefail  # Not used (yet), hence also dropping interpreter #!bash
-#export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
+set -uFC  # "-u" (error when using uninitialised variables),
+# "-f" (disable pathname expansion) and "-C" (no-clobber / -overwrite).
+# Ultimately decided against "-e", because this script better runs through,
+# despite minor errors.
+set -o pipefail  # May not be supported, busybox's ash and bash do.
+export POSIXLY_CORRECT=1  # Can have side-effects (positive and negative).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
@@ -51,8 +52,8 @@ fi
 # Write first entry to logfile:
 logentry="[Info] PID $mypid is logging to $logfile"
 if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry"
-then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6 || true
-else systemd-cat -t "$called" -p 4 printf '%s\n' "[Warning] PID $mypid failed to write to $logfile" || true
+then printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 6
+else systemd-cat -t "$called" -p 4 printf '%s\n' "[Warning] PID $mypid failed to write to $logfile"
 fi
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
@@ -67,7 +68,7 @@ rpmXctn=running
 while [ $i -lt $maxi ] && ps -eo pid | grep -Fq "$gppid"
 do
   sleep 1
-  count=$(expr $i + 1)
+  count=$(($i+1))
 done
 if [ $i -ge $maxi ]
 then rpmXctn=timedout
@@ -84,107 +85,106 @@ fi
 
 # Write $pkgname to logfile:
 logentry="[Debug] Installed, now running: $pkgname"
-printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+printf '\n%s\n' "$(date -Iseconds) $logentry"
+systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
 
 # Out of occasional bad experience when pkcon is being hammered with
 # commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
 maxi=4  # 4 is the minimal value, which makes sense here
-maxihalf=$(expr $maxi / 2)
+maxihalf=$(($maxi/2))
 for i in $(seq $maxi)
 do
   logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-  printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" || true
-  systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || true
+  printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry"
+  systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry"
   eval $logentry
   retc=$?
-  wait=$(expr $i \* 2 + 1)
+  wait=$(($i*2+1))
   if [ $retc = 0 ]
   then break  # Went fine
   elif [ $i = 1 ]
   then
     logentry="[Notice] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5 || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 5
     logentry="[Debug] Sleeping for $wait seconds."
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
     sleep $wait
     logentry="[Info] Retry #$i"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry"
   elif [ $i -le $maxihalf ]
   then
     logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4
     logentry="[Notice] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
-    killall -q -TERM pkcon || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry"
+    killall -q -TERM pkcon
     sleep $wait
     logentry="[Info] Retry #$i"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry"
   elif [ $i -lt $maxi ]
   then
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4 || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3
     logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
-    killall -q -INT pkcon || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 4 printf '%s\n' "$logentry"
+    killall -q -INT pkcon
     sleep $i
-    killall -q -TERM pkcon || true
+    killall -q -TERM pkcon
     sleep $i
     logentry="[Info] Retry #$i"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry"
   else
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3 || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3
     logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 4 printf '%s\n' "$logentry" || true
-    killall -q -HUP pkcon || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 4 printf '%s\n' "$logentry"
+    killall -q -HUP pkcon
     sleep $i
-    killall -qw -KILL pkcon || true
+    killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service || true
+    systemctl stop packagekit.service
     sleep 1
-    systemctl start packagekit.service || true
+    systemctl start packagekit.service
     sleep 1
     logentry="[Notice] Final retry #$i"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry"
     logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
-    printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry" || true
-    systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) [Step 1 / 2] $logentry"
+    systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry"
     eval $logentry && break  # Was final try successful?
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 2 || true
-    killall -qw -KILL pkcon || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 2
+    killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service || true
+    systemctl stop packagekit.service
     sleep 1
-    systemctl start packagekit.service || true
+    systemctl start packagekit.service
     logentry="[Notice] Scheduling harbour-storeman-installer for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
-    printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry" || true
+    printf '\n%s\n' "$(date -Iseconds) $logentry"
+    systemd-cat -t "$called" -p 5 printf '%s\n' "$logentry"
     sleep 1
     logentry="pkcon -pvy remove $called"
-    printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" || true
-    systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Self-removal in 20 seconds: $logentry" || true
-    setsid --fork sh -c '(i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 20; eval $2) &' sh_rm_storeman-installer "$mypid" "$logentry" || true
+    setsid --fork sh -c '(i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done; sleep 20;\
+                        printf '\n%s\n' "$(date -Iseconds) [Self-removal] $2";\
+                        systemd-cat -t "$3" -p 6 printf '%s\n' "[Info] Self-removal in 20 seconds: $2";\
+                        eval $2) &' sh_rm_storeman-installer "$mypid" "$logentry" "$called"
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
-printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry" || true
-systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || true
 # Sleeping again for a second right before the next pkcon call, because pkcon
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
@@ -196,12 +196,15 @@ systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || tru
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow),
 # except for the final log message.
-setsid --fork sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2) &' sh_do_storeman-installer "$mypid" "$logentry" || true
+setsid --fork sh -c '(sleep 1; i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
+                    printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $2";\
+                    systemd-cat -t "$3" -p 6 printf '%s\n' "[Info] Executing: $2";\
+                    eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
-# this interpreter instance as first fork.
+# this interpreter / its grandparent for the preamble (setting ENV).
 # PWD and umask do not need to be set anew here, see lines 39 and 40.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
-printf '\n%s\n' "$(date -Iseconds) $logentry" || true
-systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry" || true
+printf '\n%s\n' "$(date -Iseconds) $logentry"
+systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
 exit $retc
 

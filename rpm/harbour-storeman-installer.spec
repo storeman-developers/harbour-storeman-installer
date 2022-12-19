@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.49
-Release:        release1.detached.script
+Version:        2.0.50
+Release:        release2
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -60,9 +60,9 @@ Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
-%global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
-%global logdir          %{_localstatedir}/log
-%global logfile         %{logdir}/%{name}.log.txt
+%global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global logdir             %{_localstatedir}/log
+%global logfile            %{logdir}/%{name}.log.txt
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -170,7 +170,16 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Fri Dec 16 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release1
+- Cleanup
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
+- Set umask and PWD in harbour-storeman-installer script
+- Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+- Print version of harbour-storeman-installer package in the log file entry of each run
+- Consistently set files and limit access to group "ssu"
+- Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
+- Fix according to double-fork-in-shell-code.md: https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell-code.md
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
 - Fixes, improvements and simplifications
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
