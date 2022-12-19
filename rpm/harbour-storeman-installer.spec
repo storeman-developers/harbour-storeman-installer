@@ -161,8 +161,8 @@ exit 0
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance for preamble:
 umask 7113  # Most implementations ignore the first octet
-# [ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp; omitted, because 
-# the scriptlets are executed with PWD safely set to / (or /tmp).
+# [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
+# because the scriptlets are executed with PWD safely set to /.
 setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2") &' sh_call-inst-storeman "$$" >> "%{logfile}" 2>&1 <&-
 exit 0
 
