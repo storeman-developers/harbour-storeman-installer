@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.0.48
+Version:        2.0.49
 Release:        release1.detached.script
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -33,17 +33,23 @@ Requires(posttrans): PackageKit
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
 # 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
-Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
-Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
+# Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
+Requires:       coreutils
+# Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
+Requires(post,posttrans): coreutils
 # 2. `util-linux` for `setsid`:
 Requires:       util-linux
 Requires(posttrans): util-linux
 # 3. `psmisc` for `killall`:
-Requires:       (busybox-symlinks-psmisc or psmisc-tools)
-Requires(posttrans): (busybox-symlinks-psmisc or psmisc-tools)
+# Requires:       (busybox-symlinks-psmisc or psmisc-tools)
+Requires:       psmisc
+# Requires(posttrans): (busybox-symlinks-psmisc or psmisc-tools)
+Requires(posttrans): psmisc
 # 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
 # Requires:       (busybox-symlinks-procps or procps-ng)
+#Requires:       procps
 # Requires(posttrans): (busybox-symlinks-procps or procps-ng)
+#Requires(posttrans): procps
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
@@ -53,8 +59,8 @@ Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
 %global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
-%global logdir %{_localstatedir}/log
-%global logfile %{logdir}/%{name}.log.txt
+%global logdir          %{_localstatedir}/log
+%global logfile         %{logdir}/%{name}.log.txt
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -149,21 +155,21 @@ exit 0
 %posttrans
 # At the very end of every install or upgrade
 # The harbour-storeman-installer script must be started fully detached
-# (by double-forking / a "daemonize") to allow for this RPM transaction
+# (by a double-fork / "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
-# (Ab)using the %posttrans' interpreter instance as first fork:
+# (Ab)using the %posttrans' interpreter instance for preamble:
 umask 7113  # Most implementations ignore the first octet
 # [ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp; omitted, because 
 # the scriptlets are executed with PWD safely set to / (or /tmp).
-setsid --fork sh -c '(%{_bindir}/%{name} "$1" $2") &' sh_call-inst-storeman "$$" >> "%{logfile}" 2>&1 <&-
+setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2") &' sh_call-inst-storeman "$$" >> "%{logfile}" 2>&1 <&-
 exit 0
 
 %files
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Fri Dec 16 2022 olf <Olf0@users.noreply.github.com> - 2.0.48-release1.detached.script
-- Minor improvements and fixes
+* Fri Dec 16 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
+- Fixes, improvements and simplifications
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
 - Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
