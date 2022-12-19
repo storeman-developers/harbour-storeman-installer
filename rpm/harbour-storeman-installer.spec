@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.8
+Version:        1.3.9
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -29,18 +29,24 @@ Requires(post): ssu
 Requires:       PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
+# But the SailfishOS-OBS' does not, either due to the antique release or `tar_git`:
+# https://github.com/MeeGoIntegration/obs-service-tar-git
 # ToDo: Check if the GNU-versions of these packages (named as alternatives below)
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
 # 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
-Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
-Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
+# Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
+Requires:       coreutils
+# Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
+Requires(post,posttrans): coreutils
 # 2. `util-linux` for `setsid`:
 Requires:       util-linux
 # 3. `psmisc` for `killall`:
-Requires:       (busybox-symlinks-psmisc or psmisc-tools)
+# Requires:       (busybox-symlinks-psmisc or psmisc-tools)
+Requires:       psmisc
 # 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
 # Requires:       (busybox-symlinks-procps or procps-ng)
+#Requires:       procps
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
@@ -52,6 +58,8 @@ Provides:       harbour-storeman = 0.3.0~1
 %global localauthority_dir polkit-1/localauthority/50-local.d
 %global hicolor_icons_dir  %{_datadir}/icons/hicolor
 %global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global logdir             %{_localstatedir}/log
+%global logfile            %{logdir}/%{name}.log.txt
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -114,16 +122,16 @@ desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/application
 # The %%post scriptlet is deliberately run when installing and updating.
 # Create a persistent log file, i.e., which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
-if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
+if [ ! -e %{logfile} ]
 then
   curmask="$(umask)"
   umask 7022  # The first octal digit is ignored by most implementations
-  [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
+  [ ! -e %{logdir} ] && mkdir -p %{logdir}
   umask 7113
-  touch %{_localstatedir}/log/%{name}.log.txt
+  touch %{logfile}
   # Not necessary, because umask is set:
-  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
-  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
+  # chmod 0664 %{logfile}
+  chgrp ssu %{logfile}
   umask "$curmask"
 fi
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -166,12 +174,13 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
 - Consistently set files and limit access to group "ssu"
 - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
+- Fix according to double-fork-in-shell-code.md: https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell-code.md
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
