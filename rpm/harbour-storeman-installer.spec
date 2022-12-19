@@ -201,6 +201,9 @@ exit 0
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
 - Log file needs to be writeable (#146)
+* Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
+- Start the `harbour-storeman-installer` script as detached ("&") in the `%posttrans` scriptlet
+- Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
 - The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
