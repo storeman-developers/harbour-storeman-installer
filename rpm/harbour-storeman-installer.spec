@@ -29,6 +29,8 @@ Requires(post): ssu
 Requires:       PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
+# But the SailfishOS-OBS' does not, either due to the antique release or `tar_git`:
+# https://github.com/MeeGoIntegration/obs-service-tar-git
 # ToDo: Check if the GNU-versions of these packages (named as alternatives below)
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
