@@ -60,9 +60,9 @@ Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
-%global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
-%global logdir          %{_localstatedir}/log
-%global logfile         %{logdir}/%{name}.log.txt
+%global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global logdir             %{_localstatedir}/log
+%global logfile            %{logdir}/%{name}.log.txt
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
