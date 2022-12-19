@@ -53,6 +53,8 @@ Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~1
 
 %global screenshots_url https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
+%global logdir %{_localstatedir}/log
+%global logfile %{logdir}/%{name}.log.txt
 
 # This description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
@@ -101,16 +103,16 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 # The %%post scriptlet is deliberately run when installing and updating.
 # Create a persistent log file, i.e., which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
-if [ ! -e %{_localstatedir}/log/%{name}.log.txt ]
+if [ ! -e %{logfile} ]
 then
   curmask="$(umask)"
   umask 7022  # The first octal digit is ignored by most implementations
-  [ ! -e %{_localstatedir}/log ] && mkdir -p %{_localstatedir}/log
+  [ ! -e %{logdir} ] && mkdir -p %{logdir}
   umask 7113
-  touch %{_localstatedir}/log/%{name}.log.txt
+  touch %{logfile}
   # Not necessary, because umask is set:
-  # chmod 0664 %{_localstatedir}/log/%{name}.log.txt
-  chgrp ssu %{_localstatedir}/log/%{name}.log.txt
+  # chmod 0664 %{logfile}
+  chgrp ssu %{logfile}
   umask "$curmask"
 fi
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
@@ -151,8 +153,9 @@ exit 0
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %posttrans' interpreter instance as first fork:
 umask 7113  # Most implementations ignore the first octet
-[ "$PWD" = /tmp ] || cd /  # Set PWD to /tmp
-setsid --fork /bin/sh -c 'umask 7113; [ "$PWD" = /tmp ] || cd /tmp; (%{_bindir}/%{name} "$1" "$2" >> "$2" 2>&1 < /dev/null) &' sh_call-inst-storeman "$$" "%{_localstatedir}/log/%{name}.log.txt" >> "%{_localstatedir}/log/%{name}.log.txt" 2>&1 < /dev/null
+# [ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp; omitted, because 
+# the scriptlets are executed with PWD safely set to / (or /tmp).
+setsid --fork sh -c '(%{_bindir}/%{name} "$1" $2") &' sh_call-inst-storeman "$$" >> "%{logfile}" 2>&1 <&-
 exit 0
 
 %files
