@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.9
-Release:        release1
+Version:        1.4.0
+Release:        release3
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -53,7 +53,7 @@ Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
 Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
-Provides:       harbour-storeman = 0.3.0~1
+Provides:       harbour-storeman = 0.3.0~2
 
 %global localauthority_dir polkit-1/localauthority/50-local.d
 %global hicolor_icons_dir  %{_datadir}/icons/hicolor
@@ -174,10 +174,12 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release1
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
+- Clean up and optimise a bit
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
 - Simplify
-* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release1
-- Cleanup
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release2
+- Clean up
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
