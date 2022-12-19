@@ -174,10 +174,10 @@ logentry="pkcon -pvy install harbour-storeman"
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow),
 # except for the final log message.
-setsid --fork sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
-                     printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $2";\
-                     systemd-cat -t "$3" -p 6 printf '%s\n' "[Info] Executing: $2";\
-                     eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
+setsid --fork sh -c '(sleep 1; i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
+                    printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $2";\
+                    systemd-cat -t "$3" -p 6 printf '%s\n' "[Info] Executing: $2";\
+                    eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter / its grandparent for the preamble (setting ENV).
 # PWD and umask do not need to be set anew here, see lines 34 and 35.
