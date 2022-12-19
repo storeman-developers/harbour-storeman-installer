@@ -12,7 +12,7 @@
 `(umask 0022; cd /; setsid --fork sh -c '(while ps -eo pid | fgrep $1; do sleep 1; done; <commmand-list>)' <choose-a-process-name> $$) > /dev/null 2>&1 < /dev/null`
 
 ##### Waiting for the caller to finish with timeout, then terminating it
-`(umask 0022; cd /; setsid --fork sh -c '(i=0; while [ $i != $2 ] && ps -eo pid | fgrep $1; do sleep 1; expr ($i + 1); done; [ $i = $2 ] && echo "Timed out after $i seconds, killing grandparent now!" > logfile.txt; kill $1; <commmand-list>)' <choose-a-process-name> $$ <timeout-in-seconds>) > /dev/null 2>&1 < /dev/null`
+`(umask 0022; cd /; setsid --fork sh -c '(i=0; while [ $i != $2 ] && ps -eo pid | fgrep $1; do sleep 1; $(($i+1)); done; [ $i = $2 ] && echo "Timed out after $i seconds, killing grandparent now!" > logfile.txt; kill $1; <commmand-list>)' <choose-a-process-name> $$ <timeout-in-seconds>) > /dev/null 2>&1 < /dev/null`
 
 #### "Generic form"
 `(umask 0022; cd /; setsid --fork sh -c '(<command-list-to-execute [$1] [$2] [<…>] [individual-redirections-for-a-command]>)' [<arbitrary-name-for-$0-of-sh-c> [<parameter1-for-$1-"inside"-sh-c>] [<parameter2-for-$2-"inside"-sh-c>] [<…>]] [global-redirections-for-the-whole-command-list]) > /dev/null 2>&1 < /dev/null`
@@ -21,13 +21,13 @@
 `setsid --fork sh -c '(<commmand-list>)'`
 
 ## Variations
-- One can set umask and PWD (via `cd`) as it fits best: The exemplary values in the "generic form" are just often used values; I usually set the umask more restrictively.<br />
+- One can set umask and PWD (via `cd`) as it fits best: The exemplary values in the "generic form" are just often used ones; I usually set the umask more restrictively.<br />
   Mind that the directory to change to must exist (you do not want a `cd` at this point to fail), hence `/` is a safe value, as e.g., `/tmp` is not available early in the boot-phase (not relevant for actions triggered by a regular user).
 - One sure can redirect from or to anywhere else than `/dev/null` or redirect StdIN and StdERR differently.<br />
   Also consider where you want the output in error cases to go (both, StdOUT and StdERR) to be visible for debugging.
 - If one only calls an own shell-script `sh -c '(<myscript>)'`, one could consider to pull setting the umask and PWD early inside that script and also take care of input- and output-redirections there; do not, because if the initial values are dynamic (i.e., variable, hence unknown at the time the code is written) or may become invalid after the double-fork (e.g., the caller subsequently deletes the directory, which was PWD at call time) you shall set them as early as possible.
 - With a POSIX-compliant shell, one can close any file descriptor with "&-" (e.g., for StdIN `<&-`, for StdOUT `>&-` and for StdERR `2>&-`), instead of redirecting it from or to `/dev/null`.<br />
-  Also note that when closing StdOUT or StdERR, anything writing to a closed file descriptor will (/ might / should / must?  POSIX might tell.) fail, just as reading from a closed StdIN, in contrast to redirections to `/dev/null`.  This is fine if one ensures that the commands executed do not use any closed file descriptors, e.g., by redirecting them individually for single commands or commands grouped by `{ <commands> ; }`.
+  Also note that when closing StdOUT or StdERR, anything writing to a closed file descriptor will (/ might / should / must?  POSIX might tell.) fail, just as reading from a closed StdIN, in contrast to redirections to `/dev/null`.  This is fine if one ensures that the commands executed do not use any closed file descriptors, e.g., by redirecting them individually for single commands or commands grouped by `{ <command-list> ; }`.
 
 ## Notes
 - It is strongly recommended to explicitly set umask, PWD, StdIN, StdOUT and StdERR to known good values (or ensure that they are already sane) at the top level, because they are part of the environment, as depicted in the "generic form" above.
@@ -63,9 +63,9 @@
   `umask $curmask`<br />
   `popd`<br />
   `…`<br />
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.45/bin/harbour-storeman-installer#L147).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.50/rpm/harbour-storeman-installer.spec#L116).
 - Because a long \<command-list\> "inside" the `setsid --fork sh -c '…'` is not nice to handle and maintain, one can simply put the \<command-list\> in a shell script (which might consume positional parameters) and call that via `setsid --fork sh -c '(myscript $1 $2 …)' <name-for-$0> $$ <param2-for-$2> > /dev/null 2>&1 < /dev/null`<br />
-  Then `myscript` might perform the necessary actions (*except* for setting the environment, which shall be perforemd as early as possible: umask, PWD, redirections), e.g. (continuing to use the example introduced one bullet point above):
+  Then `myscript` might perform the necessary actions (*except* for setting the environment, which shall be performed as early as possible: umask, PWD, redirections), e.g. (continuing to use the example introduced one bullet point above):
   ```
   #!/bin/sh
   while ps -eo pid | fgrep $1
@@ -75,7 +75,7 @@
   <cmd-list [$2]>
   …
   ```
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.45/bin/harbour-storeman-installer#L31) with the [\<Wait for process with PID $1 to die\>](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.45/bin/harbour-storeman-installer#L55) further down in this shell script.
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.50/bin/harbour-storeman-installer#L59).
 
 ## Background
 
@@ -87,7 +87,7 @@ I know that other people have solved this by utilising `cron` or `systemd`, but 
 - One does not want any time-based waiting, because no one can tell how long the initial "installer" package installation will take on a non-deterministic software stack (i.e., not a real-time system); imagine a machine is heavily swapping and hence (almost) grinding to a halt.  Thus timer units or cron jobs are not suitable to implement this robustly.
 - Consequently one has to transmit the PID of the `%posttrans` scriptlet interpreter (usually `bash`) to the fully detached process, when it is instanciated, so it can wait for the `%posttrans` interpreter to finish execution of the scriptlet.  Systemd allows for a single parameter to be transmitted to "instanciated units", but the wait function (a `while` or `until` loop) has to be implemented in an external script called by an `ExecStartPre=` statement (or pack the whole wait function awkwardly in an `sh -c '…'`), because systemd does not allow for loops or any other kind of programme flow control.
 - That was the moment I realised that a single, own shell script is more elegant and provides one with many more degrees of freedom than being limited to systemd's unit syntax.  The only open design question was then how to become fully detached from the caller.  I remembered the concept of double-forking / "daemonizing" for UNIX daemons, which were once usually written in C, to fully detach a process from its caller.
-- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.45/bin/harbour-storeman-installer#L192), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable rpm package.
+- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.50/bin/harbour-storeman-installer#L199), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable rpm package.
 
 #### General information about various aspects of double forking / daemonising
 Hence I started searching the WWW for how to perform a double fork / daemonise in shell code, without finding anything really useful for UNIX shells, but really good explanations and examples in C, Python, Ruby etc.:
