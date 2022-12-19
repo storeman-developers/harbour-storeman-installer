@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.0
-Release:        release3
+Version:        2.1.1
+Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -170,12 +170,15 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.0-release3
-- Optimise a bit
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
 - Clean up and optimise a bit
-* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release2
-- Clean up
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
+- Clean up further
+- Optimise a bit more
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
+- Clean up and optimise a bit
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
+- Simplify
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release2
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
