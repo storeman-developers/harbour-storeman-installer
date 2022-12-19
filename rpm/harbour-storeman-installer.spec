@@ -170,8 +170,15 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release1.detached.script
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 2.0.50-release1
 - Cleanup
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
+- Set umask and PWD in harbour-storeman-installer script
+- Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+- Print version of harbour-storeman-installer package in the log file entry of each run
+- Consistently set files and limit access to group "ssu"
+- Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
+- Fix according to double-fork-in-shell-code.md: https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell-code.md
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
 - Fixes, improvements and simplifications
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script

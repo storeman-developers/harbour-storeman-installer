@@ -40,6 +40,11 @@ logfile="$2"
 # exec >> "$logfile"  # Redirect StdOUT, appendingly
 # exec 2>&1           # Map StdERR to (redirected) StdOUT
 
+# Set these redirections now, as there is no chance to do so earlier:
+exec <&-            # Close StdIN
+exec >> "$logfile"  # Redirect StdOUT, appendingly
+exec 2>&1           # Map StdERR to (redirected) StdOUT
+
 umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
@@ -132,7 +137,7 @@ do
   then
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
-    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 4
+    printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3
     logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
