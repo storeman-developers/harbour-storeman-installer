@@ -75,7 +75,7 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
 # commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
 maxi=4  # 4 is the minimal value, which makes sense here
-maxihalf=$(expr $maxi / 2)
+maxihalf=$(($maxi/2))
 for i in $(seq $maxi)
 do
   logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
@@ -83,7 +83,7 @@ do
   systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry"
   eval $logentry
   retc=$?
-  wait=$(expr $i \* 2 + 1)
+  wait=$(($i*2+1))
   if [ $retc = 0 ]
   then break  # Went fine
   elif [ $i = 1 ]
@@ -163,8 +163,6 @@ do
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
-printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $logentry"
-systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry"
 # Sleeping again for a second right before the next pkcon call, because pkcon
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
@@ -176,9 +174,12 @@ systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry"
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow),
 # except for the final log message.
-setsid --fork sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2) &' sh_do_storeman-installer "$mypid" "$logentry"
+setsid --fork sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
+                     printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $2";\
+                     systemd-cat -t "$3" -p 6 printf '%s\n' "[Info] Executing: $2";\
+                     eval $2) &' sh_do_storeman-installer "$mypid" "$logentry" "$called"
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
-# this interpreter instance as first fork.
+# this interpreter / its grandparent for the preamble (setting ENV).
 # PWD and umask do not need to be set anew here, see lines 34 and 35.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf '\n%s\n' "$(date -Iseconds) $logentry"
