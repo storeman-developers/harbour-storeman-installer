@@ -1,8 +1,8 @@
-#!/bin/sh
+#!sh
 set -u  # Do not use "-f" (disable pathname expansion) and "-C" (no-clobber /
 # -overwrite), as this script does not potentially need that (yet).
 # Also drop "-e" for now, as it helps and hinders different aspects of debugging.
-#set -o pipefail  # Not used (yet), hence also dropping interpreter #!/bin/bash
+#set -o pipefail  # Not used (yet), hence also dropping interpreter #!bash
 #export POSIXLY_CORRECT=1  # Leave it for now, can have side-effects (positive and negative), apparently not needed (yet).
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
 
@@ -179,7 +179,7 @@ do
     logentry="pkcon -pvy remove $called"
     printf '\n%s\n' "$(date -Iseconds) [Self-removal] $logentry" || true
     systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Self-removal in 20 seconds: $logentry" || true
-    setsid --fork /bin/sh -c '(i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 20; eval $2) &' sh_rm_storeman-installer "$mypid" "$logentry" || true
+    setsid --fork sh -c '(i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; sleep 20; eval $2) &' sh_rm_storeman-installer "$mypid" "$logentry" || true
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
@@ -196,7 +196,7 @@ systemd-cat -t "$called" -p 6 printf '%s\n' "[Info] Executing: $logentry" || tru
 # opened for executing / reading.
 # It also shall always be the last command issued (WRT control-flow),
 # except for the final log message.
-setsid --fork /bin/sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2) &' sh_do_storeman-installer "$mypid" "$logentry" || true
+setsid --fork sh -c '(sleep 1; i=0; while [ $i -lt 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(expr $i + 1); done; eval $2) &' sh_do_storeman-installer "$mypid" "$logentry" || true
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter instance as first fork.
 # PWD and umask do not need to be set anew here, see lines 39 and 40.
