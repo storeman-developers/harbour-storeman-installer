@@ -34,8 +34,13 @@ called="$(basename "$0")"
 gppid="$1"
 logfile="$2"
 
+# $called was called with these redirections already set in %posttrans
+# exec <&-            # Close StdIN
+# exec >> "$logfile"  # Redirect StdOUT, appendingly
+# exec 2>&1           # Map StdERR to (redirected) StdOUT
+
 umask 7113  # The first octal digit is ignored by most implementations
-[ "$PWD" = /tmp ] || cd /tmp  # Set PWD to /tmp
+[ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
