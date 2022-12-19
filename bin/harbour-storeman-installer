@@ -140,7 +140,7 @@ do
     printf '%s\n' "$logentry" | systemd-cat -t "$called" -p 3
     logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
     printf '\n%s\n' "$(date -Iseconds) $logentry"
-    systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
+    systemd-cat -t "$called" -p 4 printf '%s\n' "$logentry"
     killall -q -INT pkcon
     sleep $i
     killall -q -TERM pkcon
