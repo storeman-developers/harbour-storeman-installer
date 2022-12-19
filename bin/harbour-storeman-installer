@@ -40,11 +40,6 @@ logfile="$2"
 # exec >> "$logfile"  # Redirect StdOUT, appendingly
 # exec 2>&1           # Map StdERR to (redirected) StdOUT
 
-# Set these redirections now, as there is no chance to do so earlier:
-exec <&-            # Close StdIN
-exec >> "$logfile"  # Redirect StdOUT, appendingly
-exec 2>&1           # Map StdERR to (redirected) StdOUT
-
 umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
