@@ -179,7 +179,7 @@ setsid --fork sh -c '(sleep 1;\
                     systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Executing: $2";\
                     eval $2)' sh_do_inst-storeman "$mypid" "$logentry" "$called"
 # Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
-# interpreter instance for the preamble (setting the environment).
+# interpreter instance for the preamble (setting the environment):
 # PWD and umask do not need to be set anew here, see lines 41 and 42.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
