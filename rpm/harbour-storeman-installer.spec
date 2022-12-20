@@ -163,7 +163,7 @@ exit 0
 umask 7113  # Most implementations ignore the first octet
 # [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
 # because the scriptlets are executed with PWD safely set to /.
-setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call-inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
+setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
 exit 0
 
 %files
