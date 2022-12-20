@@ -167,8 +167,8 @@ logentry="pkcon -pvy install harbour-storeman"
 # Sleeping again for a second right before the next pkcon call, because pkcon
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
-# The following statement must be started fully detached ("double fork" /
-# "daemonize", because this script file will be removed when installing
+# The following statement must be started fully detached (by a "double fork"
+# / "daemonize", because this script file will be removed when installing
 # Storeman (because the Installer package conflicts with it), which might
 # cause issues, if it is still opened for executing / reading it.
 # It also shall always be the last command issued (WRT control-flow),
@@ -178,8 +178,8 @@ setsid --fork sh -c '(sleep 1;\
                     printf "\n%s\n" "$(date -Iseconds) [Step 2 / 2] $2";\
                     systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Executing: $2";\
                     eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
-# "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
-# this interpreter / its grandparent for the preamble (setting ENV).
+# Double-fork / "Daemonise" ("SysV-style") in Shell code, (ab)using this
+# interpreter instance for the preamble (setting the environment).
 # PWD and umask do not need to be set anew here, see lines 34 and 35.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
