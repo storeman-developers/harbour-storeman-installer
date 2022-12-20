@@ -6,7 +6,7 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.1
+Version:        2.1.2
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
@@ -159,7 +159,7 @@ exit 0
 # The harbour-storeman-installer script must be started fully detached
 # (by a double-fork / "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
-# (Ab)using the %posttrans' interpreter instance for preamble:
+# (Ab)using the %posttrans' interpreter instance for the preamble:
 umask 7113  # Most implementations ignore the first octet
 # [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
 # because the scriptlets are executed with PWD safely set to /.
@@ -170,12 +170,16 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
+- More clean-up and optimisations
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
+- Clean up and optimise a bit
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
 - Clean up
 - Optimise
 * Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
 - Simplify
-* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release2
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
