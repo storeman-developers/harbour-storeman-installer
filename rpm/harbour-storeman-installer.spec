@@ -170,7 +170,7 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
+* Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
 - More clean-up and optimisations
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
 - Clean up and optimise a bit
