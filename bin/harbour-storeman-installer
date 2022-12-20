@@ -202,7 +202,7 @@ setsid --fork sh -c '(sleep 1;\
                     eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
 # "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
 # this interpreter / its grandparent for the preamble (setting ENV).
-# PWD and umask do not need to be set anew here, see lines 39 and 40.
+# PWD and umask do not need to be set anew here, see lines 43 and 43.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf "%s\n" "$logentry"
