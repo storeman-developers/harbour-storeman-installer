@@ -182,7 +182,7 @@ do
     setsid --fork sh -c '(i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
                         sleep 20; printf "\n%s\n" "$(date -Iseconds) [Self-removal] $2";\
                         systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Self-removal in 20 seconds: $2";\
-                        eval $2)' sh_rm_storeman-installer "$mypid" "$logentry" "$called"
+                        eval $2)' sh_rm_inst-storeman "$mypid" "$logentry" "$called"
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
@@ -199,9 +199,9 @@ setsid --fork sh -c '(sleep 1;\
                     i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
                     printf "\n%s\n" "$(date -Iseconds) [Step 2 / 2] $2";\
                     systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Executing: $2";\
-                    eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
-# Double-fork / "Daemonise" ("SysV-style") in Shell code, (ab)using this
-# interpreter instance for the preamble (setting the environment).
+                    eval $2)' sh_do_inst-storeman "$mypid" "$logentry" "$called"
+# Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
+# interpreter instance for the preamble (setting the environment):
 # PWD and umask do not need to be set anew here, see lines 43 and 44.
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
