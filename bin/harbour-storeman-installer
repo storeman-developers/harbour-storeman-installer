@@ -168,7 +168,7 @@ logentry="pkcon -pvy install harbour-storeman"
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
 # The following statement must be started fully detached (by a "double fork"
-# / "daemonize", because this script file will be removed when installing
+# / "daemonize"), because this script file will be removed when installing
 # Storeman (because the Installer package conflicts with it), which might
 # cause issues, if it is still opened for executing / reading it.
 # It also shall always be the last command issued (WRT control-flow),
