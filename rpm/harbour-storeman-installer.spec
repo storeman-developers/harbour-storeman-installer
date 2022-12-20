@@ -164,6 +164,9 @@ umask 7113  # Most implementations ignore the first octet
 # [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
 # because the scriptlets are executed with PWD safely set to /.
 setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
+# The first 15 characters of the spawned process' name
+# (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+# sh_call_inst-st
 exit 0
 
 %files
