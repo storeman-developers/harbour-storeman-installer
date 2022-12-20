@@ -100,10 +100,9 @@ do
   systemd-cat -t "$called" -p 6 printf "%s\n" "[Info] Executing: $logentry"
   eval $logentry
   retc=$?
+  [ $retc = 0 ] && break  # Went fine
   wait=$(($i*2+1))
-  if [ $retc = 0 ]
-  then break  # Went fine
-  elif [ $i = 1 ]
+  if [ $i = 1 ]
   then
     logentry="[Notice] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf "\n%s\n" "$(date -Iseconds) $logentry"
@@ -164,7 +163,9 @@ do
     logentry="pkcon -pv repo-set-data harbour-storeman-obs refresh-now true"
     printf "\n%s\n" "$(date -Iseconds) [Step 1 / 2] $logentry"
     systemd-cat -t "$called" -p 6 printf "%s\n" "[Info] Executing: $logentry"
-    eval $logentry && break  # Was final try successful?
+    eval $logentry
+    retc=$?
+    [ $retc = 0 ] && break  # Went fine
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf "\n%s\n" "$(date -Iseconds) $logentry"
     printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 2
@@ -189,11 +190,9 @@ logentry="pkcon -pvy install harbour-storeman"
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
 # The following statement must be started fully detached ("double fork" /
-# "daemonize": first a detached sub shell, in which pwd, umask might and
-# session-id must be set anew (i.e., the execution environment), then again
-# the command proper to run as new session-leader), because this script file
-# will be removed in the process, which will likely fail, if it is still
-# opened for executing / reading.
+# "daemonize", because this script file will be removed when installing
+# Storeman (because the Installer package conflicts with it), which might
+# cause issues, if it is still opened for executing / reading it.
 # It also shall always be the last command issued (WRT control-flow),
 # except for the final log message.
 setsid --fork sh -c '(sleep 1;\
