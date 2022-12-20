@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.3.9
-Release:        release1
+Version:        1.4.0
+Release:        release3
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -53,7 +53,7 @@ Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
 Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
-Provides:       harbour-storeman = 0.3.0~1
+Provides:       harbour-storeman = 0.3.0~2
 
 %global localauthority_dir polkit-1/localauthority/50-local.d
 %global hicolor_icons_dir  %{_datadir}/icons/hicolor
@@ -174,17 +174,39 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
-* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release1
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
+- Clean up and optimise a bit
+* Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
+- Clean up
+- Optimise
+* Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
+- Simplify
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
 - Print version of harbour-storeman-installer package in the log file entry of each run
 - Consistently set files and limit access to group "ssu"
 - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
 - Fix according to double-fork-in-shell-code.md: https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell-code.md
+* Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
+- Fixes, improvements and simplifications
+* Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
+- Finalise defer-inst-via-detached-script branch
+- Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
+* Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
+- Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
+- Update defer-inst-via-detached-script branch with changes for v1.3.6:
+  - Set umask and PWD in harbour-storeman-installer script
+  - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
+  - Print version of harbour-storeman-installer package in the log file entry of each run
+  - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
 - Log file needs to be writeable (#146)
+* Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
+- Start the `harbour-storeman-installer` script as detached ("&") in the `%posttrans` scriptlet
+- Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
 - The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
