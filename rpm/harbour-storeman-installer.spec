@@ -175,7 +175,7 @@ exit 0
 
 %changelog
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 1.4.1-release4
-- The same "more clean-up and optimisations" for v1.x.y
+- Apply "more clean-up and optimisations" from v2.1.2 to v1.x.y
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
 - More clean-up and optimisations
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
