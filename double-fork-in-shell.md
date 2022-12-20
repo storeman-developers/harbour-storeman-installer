@@ -63,7 +63,7 @@
   `umask $curmask`<br />
   `popd`<br />
   `…`<br />
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.1/rpm/harbour-storeman-installer.spec#L116).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.2/rpm/harbour-storeman-installer.spec#L116).
 - Because a long \<command-list\> "inside" the `setsid --fork sh -c '…'` is not nice to handle and maintain, one can simply put the \<command-list\> in a shell script (which might consume positional parameters) and call that via `setsid --fork sh -c '(myscript $1 $2 …)' <name-for-$0> $$ <param2-for-$2> > /dev/null 2>&1 < /dev/null`<br />
   Then `myscript` might perform the necessary actions (*except* for setting the environment, which shall be performed as early as possible: umask, PWD, redirections), e.g. (continuing to use the example introduced one bullet point above):
   ```
@@ -75,7 +75,7 @@
   <cmd-list [$2]>
   …
   ```
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.1/bin/harbour-storeman-installer#L59).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.2/bin/harbour-storeman-installer#L59).
 
 ## Background
 
