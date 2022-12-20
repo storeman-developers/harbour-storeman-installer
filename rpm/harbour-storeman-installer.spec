@@ -174,6 +174,10 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 1.4.1-release4
+- The same "more clean-up and optimisations" for v1.x.y
+* Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
+- More clean-up and optimisations
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
 - Clean up and optimise a bit
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
