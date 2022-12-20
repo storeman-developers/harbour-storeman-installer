@@ -31,7 +31,7 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Memorise how we were called:
 mypid="$$"
 called="$(basename "$0")"
-logfile="/var/log/${called}.log.txt"
+logfile="$1"
 
 # Set these redirections now, as there is no chance to do so earlier:
 exec <&-            # Close StdIN
