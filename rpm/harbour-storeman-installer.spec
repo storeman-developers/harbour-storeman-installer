@@ -120,8 +120,8 @@ then
   umask 7113
   touch %{logfile}
   # Not necessary, because umask is set:
-  # chmod 0664 %{logfile}
-  chgrp ssu %%{logfile}
+  # chmod 0664 %%{logfile}
+  chgrp ssu %{logfile}
   umask "$curmask"
 fi
 # The added harbour-storeman-obs repository is not removed when Storeman Installer
