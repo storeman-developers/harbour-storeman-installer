@@ -27,12 +27,22 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 
 # This script is designed to be called fully detached (by a "double fork"
 # / a "daemonize") as the last statement of the %posttrans scriptlet
-# (the last executed) of an RPM spec file.
+# (the last executed) of an RPM spec file or directly (e.g., in a shell).
 
-# Memorise how we were called:
+# Memorise how we were called (argument checks are primarily intended for interactive use):
 mypid="$$"
 called="$(basename "$0")"
+if [ $# != 2 ]
+then
+  echo "[{$called}] Number of parameters is not two: exiting!" >&2
+  exit 67
+fi
 gppid="$1"
+if echo "$gppid" | grep -q '^[0-9][0-9]*$'
+then
+  echo "[{$called}] The first parameter $gppid is not a number: exiting!" >&2
+  exit 68
+fi
 logfile="$2"
 
 # $called was called with these redirections already set in %posttrans
