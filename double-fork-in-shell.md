@@ -63,7 +63,7 @@
   `umask $curmask`<br />
   `popd`<br />
   `…`<br />
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.2/rpm/harbour-storeman-installer.spec#L116).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/rpm/harbour-storeman-installer.spec#L116-L124).
 - Because a long \<command-list\> "inside" the `setsid --fork sh -c '…'` is not nice to handle and maintain, one can simply put the \<command-list\> in a shell script (which might consume positional parameters) and call that via `setsid --fork sh -c '(myscript $1 $2 …)' <name-for-$0> $$ <param2-for-$2> > /dev/null 2>&1 < /dev/null`<br />
   Then `myscript` might perform the necessary actions (*except* for setting the environment, which shall be performed as early as possible: umask, PWD, redirections), e.g. (continuing to use the example introduced one bullet point above):
   ```
@@ -75,7 +75,7 @@
   <cmd-list [$2]>
   …
   ```
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.2/bin/harbour-storeman-installer#L59).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/bin/harbour-storeman-installer#L59-L77).
 
 ## Background
 
@@ -87,7 +87,7 @@ I know that other people have solved this by utilising `cron` or `systemd`, but 
 - One does not want any time-based waiting, because no one can tell how long the initial "installer" package installation will take on a non-deterministic software stack (i.e., not a real-time system); imagine a machine is heavily swapping and hence (almost) grinding to a halt.  Thus timer units or cron jobs are not suitable to implement this robustly.
 - Consequently one has to transmit the PID of the `%posttrans` scriptlet interpreter (usually `bash`) to the fully detached process, when it is instanciated, so it can wait for the `%posttrans` interpreter to finish execution of the scriptlet.  Systemd allows for a single parameter to be transmitted to "instanciated units", but the wait function (a `while` or `until` loop) has to be implemented in an external script called by an `ExecStartPre=` statement (or pack the whole wait function awkwardly in an `sh -c '…'`), because systemd does not allow for loops or any other kind of programme flow control.
 - That was the moment I realised that a single, own shell script is more elegant and provides one with many more degrees of freedom than being limited to systemd's unit syntax.  The only open design question was then how to become fully detached from the caller.  I remembered the concept of double-forking / "daemonizing" for UNIX daemons, which were once usually written in C, to fully detach a process from its caller.
-- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.0.50/bin/harbour-storeman-installer#L199), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable rpm package.
+- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/bin/harbour-storeman-installer#L197-L213), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable rpm package.
 
 #### General information about various aspects of double forking / daemonising
 Hence I started searching the WWW for how to perform a double fork / daemonise in shell code, without finding anything really useful for UNIX shells, but really good explanations and examples in C, Python, Ruby etc.:
