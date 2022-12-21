@@ -22,7 +22,7 @@ BuildRequires:  desktop-file-utils
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
 # Most of the following dependencies are required for both, specifically for
-# the `%post` section and additionally as a general requirement after the RPM
+# the `%%post` section and additionally as a general requirement after the RPM
 # transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
 Requires(post): ssu
@@ -38,7 +38,8 @@ Requires:       PackageKit
 # Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires:       coreutils
 # Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
-Requires(post,posttrans): coreutils
+Requires(post): coreutils
+Requires(posttrans): coreutils
 # 2. `util-linux` for `setsid`:
 Requires:       util-linux
 # 3. `psmisc` for `killall`:
@@ -130,7 +131,7 @@ then
   umask 7113
   touch %{logfile}
   # Not necessary, because umask is set:
-  # chmod 0664 %{logfile}
+  # chmod 0664 %%{logfile}
   chgrp ssu %{logfile}
   umask "$curmask"
 fi
