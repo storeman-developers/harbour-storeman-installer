@@ -175,7 +175,7 @@ exit 0
 
 %changelog
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
-- Beautifications of code and log output etc.
+- Beautifications of code and log output, etc.
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 1.4.2-release5
 - Apply changes from v2.1.4 to v1.x.y
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 2.1.4-release3
