@@ -153,8 +153,9 @@ do
     sleep $i
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     sleep 1
     logentry="[Notice] Final retry #$i"
