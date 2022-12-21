@@ -54,10 +54,6 @@ then printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 6
 else systemd-cat -t "$called" -p 4 printf "%s\n" "[Warning] PID $mypid failed to write to $logfile"
 fi
 
-# Even when started interactively, another pkcon job may have just been
-# started, hence provide pkcon with a little time to enqueue it, because
-# otherwise pkcon might fail enqueuing the next pkcon-job.
-sleep 1
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
@@ -136,8 +132,9 @@ do
     sleep $i
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     sleep 1
     logentry="[Notice] Final retry #$i"
@@ -154,8 +151,9 @@ do
     printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 2
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     logentry="[Notice] Trying to install harbour-storeman despite the failed repository refresh."
     printf "\n%s\n" "$(date -Iseconds) $logentry"
@@ -167,8 +165,8 @@ logentry="pkcon -pvy install harbour-storeman"
 # Sleeping again for a second right before the next pkcon call, because pkcon
 # *rarely* fails installing a package ("not found") immediately after an
 # individual repository refresh via `repo-set-data <repo> refresh-now true`.
-# The following statement must be started fully detached ("double fork" /
-# "daemonize", because this script file will be removed when installing
+# The following statement must be started fully detached (by a "double fork"
+# / "daemonize"), because this script file will be removed when installing
 # Storeman (because the Installer package conflicts with it), which might
 # cause issues, if it is still opened for executing / reading it.
 # It also shall always be the last command issued (WRT control-flow),
@@ -177,10 +175,15 @@ setsid --fork sh -c '(sleep 1;\
                     i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
                     printf "\n%s\n" "$(date -Iseconds) [Step 2 / 2] $2";\
                     systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Executing: $2";\
-                    eval $2)' sh_do_storeman-installer "$mypid" "$logentry" "$called"
-# "Daemonizing" / double-forking ("SysV-style") in Shell code, (ab)using
-# this interpreter / its grandparent for the preamble (setting ENV).
-# PWD and umask do not need to be set anew here, see lines 34 and 35.
+                    eval $2)' sh_do_inst-storeman "$mypid" "$logentry" "$called"
+                    # The first 15 characters of the spawned process' name
+                    # (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+                    # sh_do_inst-stor
+# Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
+# interpreter instance for the preamble (setting the environment):
+# PWD and umask do not need to be set anew here, see lines 41 and 42.
+# For a detailed description of double-forking in shell code, see
+# https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell.md
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf "%s\n" "$logentry"
