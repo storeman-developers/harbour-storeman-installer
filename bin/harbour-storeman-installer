@@ -151,8 +151,9 @@ do
     printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 2
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     logentry="[Notice] Trying to install harbour-storeman despite the failed repository refresh."
     printf "\n%s\n" "$(date -Iseconds) $logentry"
