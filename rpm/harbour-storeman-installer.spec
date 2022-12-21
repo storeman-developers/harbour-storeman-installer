@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.4.2
-Release:        release5
+Version:        1.4.3
+Release:        release6
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -37,9 +37,8 @@ Requires:       PackageKit
 # 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
 # Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires:       coreutils
-# Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
+# Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
 Requires(post): coreutils
-Requires(posttrans): coreutils
 # 2. `util-linux` for `setsid`:
 Requires:       util-linux
 # 3. `psmisc` for `killall`:
@@ -175,9 +174,13 @@ exit 0
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
+- Apply changes from v2.1.5 to v1.x.y
+* Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
+- Beautifications of code and log output etc.
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 1.4.2-release5
-- Apply changes from v2.1.3 to v1.x.y
-* Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 2.1.3-release3
+- Apply changes from v2.1.4 to v1.x.y
+* Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 2.1.4-release3
 - Handle a stalled packagekit better
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 1.4.1-release4
 - Apply "more clean-up and optimisations" from v2.1.2 to v1.x.y
