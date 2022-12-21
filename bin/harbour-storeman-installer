@@ -54,10 +54,6 @@ then printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 6
 else systemd-cat -t "$called" -p 4 printf "%s\n" "[Warning] PID $mypid failed to write to $logfile"
 fi
 
-# Even when started interactively, another pkcon job may have just been
-# started, hence provide pkcon with a little time to enqueue it, because
-# otherwise pkcon might fail enqueuing the next pkcon-job.
-sleep 1
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
@@ -136,8 +132,9 @@ do
     sleep $i
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     sleep 1
     logentry="[Notice] Final retry #$i"
