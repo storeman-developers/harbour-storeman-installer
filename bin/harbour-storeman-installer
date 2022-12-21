@@ -59,22 +59,22 @@ fi
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
 # enqueuing a pkcon-job while an RPM transaction is unfinished.
-# One MUST use the PID of the %postttrans scriptlet as "gppid", NOT the
+# One MUST use the PID of the %posttrans scriptlet as "gppid", NOT the
 # PPID of that scriptlet, because that might be the packagekit daemon
 # directly calling functions in libzypp (no rpm involved) or rpm!
 i=0
-maxi=15
+maxi=3
 rpmXctn=running
-while [ $i -lt $maxi ] && ps -eo pid | grep -Fq "$gppid"
+while [ $i != $maxi ] && ps -eo pid | grep -Fq "$gppid"
 do
   sleep 1
-  count=$(($i+1))
+  i=$(($i+1))
 done
-if [ $i -ge $maxi ]
+if [ $i = $maxi ]
 then rpmXctn=timedout
 else rpmXctn=finished
 fi
-sleep 2
+sleep 1
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
@@ -171,8 +171,9 @@ do
     printf "%s\n" "$logentry" | systemd-cat -t "$called" -p 2
     killall -qw -KILL pkcon
     sleep 1
-    systemctl stop packagekit.service
+    pkcon -pv quit
     sleep 1
+    systemctl stop packagekit.service
     systemctl start packagekit.service
     logentry="[Notice] Scheduling harbour-storeman-installer for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf "\n%s\n" "$(date -Iseconds) $logentry"
