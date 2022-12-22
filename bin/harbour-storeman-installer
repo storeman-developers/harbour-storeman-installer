@@ -220,7 +220,7 @@ setsid --fork sh -c '(sleep 1;\
                     # sh_do_inst-stor
 # Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
 # interpreter instance for the preamble (setting the environment):
-# PWD and umask do not need to be set anew here, see lines 43 and 44.
+# PWD and umask do not need to be set anew here, see lines 53 and 54.
 # For a detailed description of double-forking in shell code, see
 # https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell.md
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
