@@ -8,8 +8,6 @@ Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS
 
 The Storeman Installer works on any SailfishOS release ≥&nbsp;3.1.0 and all supported CPU-architectures (armv7hl, i486 and aarch64).  The current Storeman Installer RPM can be obtained from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) and [the SailfishOS-OBS](https://build.merproject.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
 
-If you use the SailfishOS:Chum community repository, e.g., via [the SailfishOS:Chum GUI application](https://chumrpm.netlify.app/), you can install Storeman from there, without the indirection via Storeman Installer.
-
 The current RPMs of Storeman proper can be obtained for manual installation from [Storeman's releases section at GitHub](https://github.com/storeman-developers/harbour-storeman/releases); the RPMs of older Storeman releases are also available there, e.g., v0.1.8 which works on SailfishOS 2.2.1.<br />
 Alternatively the current RPMs of Storeman proper can be obtained from [the SailfishOS-OBS](https://build.merproject.org/project/show/home:olf:harbour-storeman).
 
@@ -34,7 +32,7 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
   3. You need to enable *olf*'s repository in the top pulley menu, if you did not enable it before.
   4. Install *Storeman Installer*
 
-* Installation via SailfishOS:Chum
+* Installation via SailfishOS:Chum GUI application
   1. Search for *Installer* in "Applications"
   2. Select *Storeman Installer*
   3. Install *Storeman Installer*
@@ -55,7 +53,7 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
 Open another termial window on or ssh session to your device an execute:
 `[defaultuser@sailfishos ] tail -f /var/log/harbour-storeman-installer.log.txt`
 Then return to the first terminal window or ssh session:
-`[root@sailfishos ] pkcon --install-local <path/to/downloaded/harbour-storeman-installer-?.?.?-release*.noarch.rpm>`  # Insert real values for `?` (a single arbitrary character) and `*` (multiple arbitrary characters).
+`[root@sailfishos ] pkcon --install-local <path/to/downloaded/harbour-storeman-installer-?.?.?-*.noarch.rpm>`  # Insert real values for `?` (a single character, here a single digit number) and `*` (multiple characters).
 If you have already enabled a package repository, which offers Storeman Installer (e.g. OpenRepos/olf or SailfischOS:Chum), a simpler command works, without manually downloading the *harbour-storeman-installer* RPM package:
 `[root@sailfishos ] pkcon install harbour-storeman-installer`
 BTW, you can list all installed or online available (but not instaled) Storeman-related packages by issueing:
