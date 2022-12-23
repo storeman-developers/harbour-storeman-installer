@@ -29,7 +29,7 @@ Alternatively the current RPMs of Storeman proper can be obtained from [the Sail
 
 * Installation via Storeman (i.e., updating from Storeman < 0.2.9)
   1. Search for *Installer*
-  2. Select the *Storeman Installer* by *olf*
+  2. Select the *Storeman Installer* by *olf*<br />
      <sub>Side note: If you select the outdated *Storeman Installer* by *osetr*, that will install an outdated *Storeman*, with which you can install a recent *Storeman*; save yourself this indirection and potential issues with software which was never tested on recent SailfishOS releases by installing a recent *Storeman Installer* by *olf*.</sub>
   3. You need to enable *olf*'s repository in the top pulley menu, if you did not enable it before.
   4. Install *Storeman Installer*
