@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.5
-Release:        release4
+Version:        2.1.6
+Release:        release5
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -153,6 +153,10 @@ fi
 # committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
 # "8d0cec9 Partially convert to semantic line breaks." in
 # https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
+# Hence I have the impression, that only the main section of a spec file is
+# interpreted by `rpmbuild` in a shell called with the option `-e', but not the
+# scriptlets (`%pre`, `%post`, `%preun`, `%postun`, `%pretrans`, `%posttrans`,
+# `%trigger*` and `%file*`), which are also not interpreted by `rpmbuild`!
 exit 0
 
 %posttrans
