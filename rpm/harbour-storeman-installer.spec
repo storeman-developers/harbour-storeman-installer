@@ -178,6 +178,12 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
+- Overhaul REDAME while updating it for v1.3.8+ and v2+
+- Minor changes
+- First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
+* Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
+- Apply changes from v2.1.5 to v1.x.y
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
 - Beautifications of code and log output, etc.
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 1.4.2-release5
