@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # comprises one of {alpha,beta,rc,release} postfixed with a natural number
 # greater or equal to 1 (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.4.3
-Release:        release6
+Version:        2.1.6
+Release:        release5
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of ${name} is also the
@@ -18,7 +18,6 @@ URL:            https://github.com/storeman-developers/%{name}
 # Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
 Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
-BuildRequires:  desktop-file-utils
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
 # Most of the following dependencies are required for both, specifically for
@@ -27,6 +26,7 @@ BuildRequires:  desktop-file-utils
 Requires:       ssu
 Requires(post): ssu
 Requires:       PackageKit
+Requires(posttrans): PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
 # But the SailfishOS-OBS' does not, either due to the antique release or `tar_git`:
@@ -37,16 +37,22 @@ Requires:       PackageKit
 # 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
 # Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires:       coreutils
-# Requires(post): (busybox-symlinks-coreutils or gnu-coreutils)
+# Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
 Requires(post): coreutils
+Requires(posttrans): coreutils
 # 2. `util-linux` for `setsid`:
 Requires:       util-linux
+Requires(posttrans): util-linux
 # 3. `psmisc` for `killall`:
 # Requires:       (busybox-symlinks-psmisc or psmisc-tools)
 Requires:       psmisc
+# Requires(posttrans): (busybox-symlinks-psmisc or psmisc-tools)
+Requires(posttrans): psmisc
 # 4. `procps` for `pkill` / `pgrep`: Used `killall` instead, which suits better here.
 # Requires:       (busybox-symlinks-procps or procps-ng)
 #Requires:       procps
+# Requires(posttrans): (busybox-symlinks-procps or procps-ng)
+#Requires(posttrans): procps
 # The oldest SailfishOS release Storeman ≥ 0.2.9 compiles for, plus the oldest
 # useable DoD-repo at https://build.merproject.org/project/subprojects/sailfishos
 Requires:       sailfish-version >= 3.1.0
@@ -55,8 +61,6 @@ Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
 Provides:       harbour-storeman = 0.3.0~2
 
-%global localauthority_dir polkit-1/localauthority/50-local.d
-%global hicolor_icons_dir  %{_datadir}/icons/hicolor
 %global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 %global logdir             %{_localstatedir}/log
 %global logfile            %{logdir}/%{name}.log.txt
@@ -103,20 +107,6 @@ Url:
 %install
 mkdir -p %{buildroot}%{_bindir}
 cp bin/%{name} %{buildroot}%{_bindir}/
-
-mkdir -p %{buildroot}%{_sharedstatedir}/%{localauthority_dir}
-cp %{localauthority_dir}/* %{buildroot}%{_sharedstatedir}/%{localauthority_dir}/
-#mkdir -p %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}
-#cp %%{localauthority_dir}/* %%{buildroot}%%{_sysconfdir}/%%{localauthority_dir}/
-
-for s in 86 108 128 172
-do
-  prof=${s}x${s}
-  mkdir -p %{buildroot}%{hicolor_icons_dir}/$prof/apps
-  cp icons/$prof/%{name}.png %{buildroot}%{hicolor_icons_dir}/$prof/apps/
-done
-
-desktop-file-install --delete-original --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
 %post
 # The %%post scriptlet is deliberately run when installing and updating.
@@ -169,15 +159,29 @@ fi
 # `%trigger*` and `%file*`), which are also not interpreted by `rpmbuild`!
 exit 0
 
+%posttrans
+# At the very end of every install or upgrade
+# The harbour-storeman-installer script must be started fully detached
+# (by a double-fork / "daemonize") to allow for this RPM transaction
+# to finalise (what waiting for it to finish would prevent).
+# (Ab)using the %posttrans' interpreter instance for the preamble:
+umask 7113  # Most implementations ignore the first octet
+# [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
+# because the scriptlets are executed with PWD safely set to /.
+setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
+# The first 15 characters of the spawned process' name
+# (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+# sh_call_inst-st
+exit 0
+
 %files
-%defattr(-,root,root,-)
 %attr(0754,root,ssu) %{_bindir}/%{name}
-%{_datadir}/applications/%{name}.desktop
-%{hicolor_icons_dir}/*/apps/%{name}.png
-%{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
-#%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
+- Overhaul REDAME while updating it for v1.3.8+ and v2+
+- Minor changes
+- First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
 - Apply changes from v2.1.5 to v1.x.y
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
