@@ -25,18 +25,30 @@ export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/969
 # Nevertheless, this script is still a Bourne (not-"Again") Shell script and
 # shall stay free of bashisms.
 
-# This script is designed to be started manually, either via GUI invoker (when a
-# user taps on the desktop ("launcher") icon) or directly (e.g., in a shell).
+# This script is designed to be called fully detached (by a "double fork"
+# / a "daemonize") as the last statement of the %posttrans scriptlet
+# (the last executed) of an RPM spec file or directly (e.g., in a shell).
 
-# Memorise how we were called:
+# Memorise how we were called (argument checks are primarily intended for interactive use):
 mypid="$$"
 called="$(basename "$0")"
-logfile="/var/log/${called}.log.txt"
+if [ $# != 2 ]
+then
+  echo "[${called}] Number of parameters is not 2, but ${#}: exiting!" >&2
+  exit 67
+fi
+gppid="$1"
+if ! echo "$gppid" | grep -q '^[1-9][0-9]*$'
+then
+  echo "[${called}] The first parameter $gppid is not a number: exiting!" >&2
+  exit 68
+fi
+logfile="$2"
 
-# Set these redirections now, as there is no chance to do so earlier:
-exec <&-            # Close StdIN
-exec >> "$logfile"  # Redirect StdOUT, appendingly
-exec 2>&1           # Map StdERR to (redirected) StdOUT
+# $called was called with these redirections already set in %posttrans
+# exec <&-            # Close StdIN
+# exec >> "$logfile"  # Redirect StdOUT, appendingly
+# exec 2>&1           # Map StdERR to (redirected) StdOUT
 
 umask 7113  # The first octal digit is ignored by most implementations
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
@@ -54,6 +66,25 @@ then systemd-cat -t "$called" -p 6 printf "%s\n" "$logentry"
 else systemd-cat -t "$called" -p 4 printf "%s\n" "[Warning] PID $mypid failed to write to $logfile"
 fi
 
+# Provide RPM with a little time to proceed finishing the RPM transaction,
+# which called this script asynchronously, because pkcon might fail
+# enqueuing a pkcon-job while this RPM transaction is unfinished.
+# One MUST use the PID of the %posttrans scriptlet as "gppid", NOT the
+# PPID of that scriptlet, because that might be the packagekit daemon
+# directly calling functions in libzypp (no rpm involved) or rpm!
+i=0
+maxi=3
+rpmXctn=running
+while [ $i != $maxi ] && ps -eo pid | grep -Fq "$gppid"
+do
+  sleep 1
+  i=$(($i+1))
+done
+if [ $i = $maxi ]
+then rpmXctn=timedout
+else rpmXctn=finished
+fi
+sleep 1
 # `pkcon search name` is also intended to serve as a synchronisation point,
 # because most of pkcon's sub-commands wait until the package management
 # backend (on SailfishOS: libzypp) is idle:
@@ -155,10 +186,18 @@ do
     sleep 1
     systemctl stop packagekit.service
     systemctl start packagekit.service
-    logentry="[Notice] Trying to install harbour-storeman despite the failed repository refresh."
+    logentry="[Notice] Scheduling harbour-storeman-installer for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf "%s\n" "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 5 printf "%s\n" "$logentry"
     sleep 1
+    logentry="pkcon -pvy remove $called"
+    setsid --fork sh -c '(i=0; while [ $i -le 9 ] && ps -eo pid | grep -Fq "$1"; do sleep 1; i=$(($i+1)); done;\
+                        sleep 20; printf "\n%s\n" "$(date -Iseconds) [Self-removal] $2";\
+                        systemd-cat -t "$3" -p 6 printf "%s\n" "[Info] Self-removal in 20 seconds: $2";\
+                        eval $2)' sh_rm_inst-storeman "$mypid" "$logentry" "$called"
+                        # The first 15 characters of the spawned process' name
+                        # (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+                        # sh_rm_inst-stor
   fi
 done
 logentry="pkcon -pvy install harbour-storeman"
@@ -181,7 +220,7 @@ setsid --fork sh -c '(sleep 1;\
                     # sh_do_inst-stor
 # Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
 # interpreter instance for the preamble (setting the environment):
-# PWD and umask do not need to be set anew here, see lines 41 and 42.
+# PWD and umask do not need to be set anew here, see lines 53 and 54.
 # For a detailed description of double-forking in shell code, see
 # https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell.md
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
