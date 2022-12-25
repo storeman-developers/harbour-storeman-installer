@@ -26,10 +26,10 @@ RPMs of [older Storeman releases are available at OpenRepos](https://openrepos.n
   4. Preferably disable "Allow untrusted software" again.
 
 * Installation via Storeman (i.e., updating from Storeman <&nbsp; 0.2.9)
-  * <sup>If you have [*olf*'s repository at OpenRepos](https://openrepos.net/user/5928/programs) enabled, *Storeman Installer* shall be offered as an update candidate for the outdated *Storeman* installed: Just accept this offer.<br />Otherwise:</sup>
+  * <sup>If you have [olf's repository at OpenRepos](https://openrepos.net/user/5928/programs) enabled, *Storeman Installer* shall be offered as an update candidate for the outdated *Storeman* installed: Just accept this offer.<br />Otherwise:</sup>
   1. Search for *Installer*.
   2. Select the *Storeman Installer* by *olf*.
-  3. Enable *olf*'s repository in the top pulley menu.
+  3. Enable olf's repository in the top pulley menu.
   4. Install *Storeman Installer*.
 
 * Installation via SailfishOS:Chum GUI application
