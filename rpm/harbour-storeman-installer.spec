@@ -22,7 +22,7 @@ BuildRequires:  desktop-file-utils
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
 # Most of the following dependencies are required for both, specifically for
-# the `%%post` section and additionally as a general requirement after the RPM
+# the %%post scriptlet and additionally as a general requirement after the RPM
 # transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
 Requires(post): ssu
@@ -61,7 +61,7 @@ Provides:       harbour-storeman = 0.3.0~2
 %global logdir             %{_localstatedir}/log
 %global logfile            %{logdir}/%{name}.log.txt
 
-# This description section includes metadata for SailfishOS:Chum, see
+# This %%description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
 Storeman Installer selects, downloads and installs the right variant of
@@ -177,7 +177,23 @@ exit 0
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
+umask 7113  # Most implementations ignore the first octet
+# [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
+# because the scriptlets are executed with PWD safely set to /.
+setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
+# The first 15 characters of the spawned process' name
+# (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+# sh_call_inst-st
+exit 0
+
+%files
+%attr(0754,root,ssu) %{_bindir}/%{name}
+
 %changelog
+* Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
+- Overhaul REDAME while updating it for v1.3.8+ and v2+
+- Minor changes
+- First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
 - Apply changes from v2.1.5 to v1.x.y
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
@@ -194,7 +210,6 @@ exit 0
 - Clean up and optimise a bit
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
 - Clean up
-- Optimise
 * Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
 - Simplify
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
@@ -208,7 +223,7 @@ exit 0
 - Fixes, improvements and simplifications
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
-- Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
+- Specifically: Only wait for %%posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
@@ -217,22 +232,22 @@ exit 0
   - Print version of harbour-storeman-installer package in the log file entry of each run
   - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
-- Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
-- Re-adapt `harbour-storeman-installer` script for interactive use (#144)
+- Update harbour-storeman-installer script to version in defer-inst-via-detached-script branch (#144)
+- Re-adapt harbour-storeman-installer script for interactive use (#144)
 - Log file needs to be writeable (#146)
 * Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
-- Start the `harbour-storeman-installer` script as detached ("&") in the `%posttrans` scriptlet
+- Start the harbour-storeman-installer script as detached ("&") in the %%posttrans scriptlet
 - Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
-- Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
-- The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
+- Radically rewrite harbour-storeman-installer script in /usr/bin (#136)
+- The harbour-storeman-installer script ultimately issues pkcon install harbour-storeman … & (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
 * Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
 - Tidy spec file as implemented in v2.0 (#130)
 - Clarify comment (#128)
 * Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
-- Refine %%post section of the spec file (#96)
+- Refine %%post scriptlet of the spec file (#96)
 * Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
 * Tue Nov 29 2022 olf <Olf0@users.noreply.github.com> - 1.3.0-release1
@@ -250,7 +265,6 @@ exit 0
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
-Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 * Sun Mar 20 2022 olf <Olf0@users.noreply.github.com> - 1.2.2-1
 - .desktop file: Trivially bail out of SailJail #38
 * Thu Mar 17 2022 olf <Olf0@users.noreply.github.com> - 1.2.1-1
