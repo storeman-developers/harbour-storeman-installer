@@ -21,7 +21,7 @@ BuildArch:      noarch
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
 # Most of the following dependencies are required for both, specifically for
-# the %%post section and additionally as a general requirement after the RPM
+# the %%post scriptlet and additionally as a general requirement after the RPM
 # transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
 Requires(post): ssu
@@ -178,7 +178,6 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
 - Minor changes
