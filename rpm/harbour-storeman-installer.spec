@@ -65,7 +65,7 @@ Provides:       harbour-storeman = 0.3.0~2
 %global logdir             %{_localstatedir}/log
 %global logfile            %{logdir}/%{name}.log.txt
 
-# This description section includes metadata for SailfishOS:Chum, see
+# This %%description section includes metadata for SailfishOS:Chum, see
 # https://github.com/sailfishos-chum/main/blob/main/Metadata.md
 %description
 Storeman Installer selects, downloads and installs the right variant of
@@ -254,7 +254,7 @@ exit 0
 - Clarify comment (#128)
 
 * Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
-- Refine %%post section of the spec file (#96)
+- Refine %%post scriptlet of the spec file (#96)
 
 * Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
