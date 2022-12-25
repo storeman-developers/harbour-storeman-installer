@@ -51,7 +51,7 @@ Alternatively, the current RPMs of Storeman proper can be obtained from [the Sai
 `[root@sailfishos ] touch /var/log/harbour-storeman-installer.log.txt`<br />
 `[root@sailfishos ] chmod 0664 /var/log/harbour-storeman-installer.log.txt`<br />
 `[root@sailfishos ] chhgrp ssu /var/log/harbour-storeman-installer.log.txt`<br />
-Open another terminal window on or ssh session to your device an execute:<br />
+Open another terminal window on or ssh session to your device and execute:<br />
 `[defaultuser@sailfishos ] tail -f /var/log/harbour-storeman-installer.log.txt`<br />
 Then return to the first terminal window or ssh session:<br />
 `[root@sailfishos ] pkcon --install-local <path/to/downloaded/harbour-storeman-installer-?.?.?-*.noarch.rpm>`  # Insert real values for `?` (a single character, here a single digit number) and `*` (multiple characters).<br />
