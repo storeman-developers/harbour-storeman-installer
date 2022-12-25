@@ -21,7 +21,7 @@ BuildArch:      noarch
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
 # Most of the following dependencies are required for both, specifically for
-# the `%%post` section and additionally as a general requirement after the RPM
+# the %%post section and additionally as a general requirement after the RPM
 # transaction has finished, but shall be already installed on SailfishOS:
 Requires:       ssu
 Requires(post): ssu
@@ -164,7 +164,7 @@ exit 0
 # The harbour-storeman-installer script must be started fully detached
 # (by a double-fork / "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
-# (Ab)using the %posttrans' interpreter instance for the preamble:
+# (Ab)using the %%posttrans' interpreter instance for the preamble:
 umask 7113  # Most implementations ignore the first octet
 # [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
 # because the scriptlets are executed with PWD safely set to /.
@@ -225,7 +225,7 @@ exit 0
 
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
-- Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
+- Specifically: Only wait for %%posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
 
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
@@ -236,17 +236,17 @@ exit 0
   - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
 
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
-- Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
-- Re-adapt `harbour-storeman-installer` script for interactive use (#144)
+- Update harbour-storeman-installer script to version in defer-inst-via-detached-script branch (#144)
+- Re-adapt harbour-storeman-installer script for interactive use (#144)
 - Log file needs to be writeable (#146)
 
 * Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
-- Start the `harbour-storeman-installer` script as detached ("&") in the `%posttrans` scriptlet
+- Start the harbour-storeman-installer script as detached ("&") in the %%posttrans scriptlet
 - Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
 
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
-- Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
-- The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
+- Radically rewrite harbour-storeman-installer script in /usr/bin (#136)
+- The harbour-storeman-installer script ultimately issues pkcon install harbour-storeman … & (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
 
 * Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
