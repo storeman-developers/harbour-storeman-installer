@@ -177,18 +177,6 @@ exit 0
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
-umask 7113  # Most implementations ignore the first octet
-# [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
-# because the scriptlets are executed with PWD safely set to /.
-setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
-# The first 15 characters of the spawned process' name
-# (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
-# sh_call_inst-st
-exit 0
-
-%files
-%attr(0754,root,ssu) %{_bindir}/%{name}
-
 %changelog
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
