@@ -45,17 +45,4 @@ RPMs of [older Storeman releases are available at OpenRepos](https://openrepos.n
 * [Storeman Installer 1.3.8](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.8) and all later versions create a persistent log file `/var/log/harbour-storeman-installer.log.txt`.
 * Storeman Installer 2 runs "unattended": I.e., without any manual steps, after its installation has been triggered, until Storeman is installed.
 * Storeman Installer is slow, because it calls `pkcon` two (releases before v1.3.8) to three times (releases from v[1.3.8](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.8) on), which acts quite slowly.  The minimal run time for Storeman Installer 2 is about 7 seconds, the typical run time is rather 10 seconds (measured from the moment Storeman Installer's installation has been triggered, until ultimately Storeman is installed).  This is already a lot, but I rarely experienced a stalled Packagekit daemon (for which `pkcon` is just a command line frontend, communicating with the daemon via D-Bus) during heavy testing, which can be observed with the crude `pkmon` utility (`Ctrl-C` gets you out :wink:), so Storeman Installer now tries to detect these "hangs" and to counter them: If that happens, its run time can be up to slightly more than 1 minute.  In the worst case a stalled PackakgeKit daemon (and with it its `pkcon` client process(es)) stalls Storeman Installer, until the PackageKit daemon reaches its idle time out of 300 seconds (5 minutes; this could theoretically happen three times, resulting in a likely unsuccessful run time of more than 15 minutes).
-* You can follow Storeman Installer's actions with a `tail -f /var/log/harbour-storeman-installer.log.txt`, but mind that this file has to exist before telling `tail` to read it.  Storeman Installer will create this log file during its installation, but here you want to start the `tail -f` right *before* that happens.  This can be easly achieved by:<br />
-`[defaultuser@sailfishos ] devel-su`<br />
-`[root@sailfishos ] touch /var/log/harbour-storeman-installer.log.txt`<br />
-`[root@sailfishos ] chmod 0664 /var/log/harbour-storeman-installer.log.txt`<br />
-`[root@sailfishos ] chhgrp ssu /var/log/harbour-storeman-installer.log.txt`<br />
-Open another terminal window on or ssh session to your device and execute:<br />
-`[defaultuser@sailfishos ] tail -f /var/log/harbour-storeman-installer.log.txt`<br />
-Then return to the first terminal window or ssh session:<br />
-`[root@sailfishos ] pkcon --install-local <path/to/downloaded/harbour-storeman-installer-?.?.?-*.noarch.rpm>`  # Insert real values for `?` (a single character, here a single digit number) and `*` (multiple characters).<br />
-If you have already enabled a package repository, which offers Storeman Installer (e.g. OpenRepos/olf or SailfischOS:Chum), a simpler command works, without manually downloading the *harbour-storeman-installer* RPM package:<br />
-`[root@sailfishos ] pkcon install harbour-storeman-installer`<br />
-BTW, you can list all installed or online available (but not installed) Storeman-related packages by issueing:<br />
-`[defaultuser@sailfishos ] pkcon search name storeman`
- 
+
