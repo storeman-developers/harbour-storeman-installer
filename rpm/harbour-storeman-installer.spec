@@ -178,29 +178,40 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
 - Minor changes
 - First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
+
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
 - Apply changes from v2.1.5 to v1.x.y
+
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
 - Beautifications of code and log output, etc.
+
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 1.4.2-release5
 - Apply changes from v2.1.4 to v1.x.y
+
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 2.1.4-release3
 - Handle a stalled packagekit better
+
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 1.4.1-release4
 - Apply "more clean-up and optimisations" from v2.1.2 to v1.x.y
+
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
 - More clean-up and optimisations
+
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
 - Clean up and optimise a bit
+
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
 - Clean up
 - Optimise
+
 * Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
 - Simplify
+
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
 - Set umask and PWD in harbour-storeman-installer script
 - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
@@ -208,11 +219,14 @@ exit 0
 - Consistently set files and limit access to group "ssu"
 - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true
 - Fix according to double-fork-in-shell-code.md: https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell-code.md
+
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 2.0.49-release1.detached.script
 - Fixes, improvements and simplifications
+
 * Wed Dec 14 2022 olf <Olf0@users.noreply.github.com> - 2.0.45-release1.detached.script
 - Finalise defer-inst-via-detached-script branch
 - Specifically: Only wait for %posttrans scriptlet to finish, not its parent process, because that might be the packagekit daemon (calling functions of libzypp directly; pkcon is just a frontend, which triggers the packagekit daemon to take action), which usually has an idle timeout of 600 seconds (10 minutes) set.
+
 * Sun Dec 11 2022 olf <Olf0@users.noreply.github.com> - 2.0.22-release1.detached.script
 - Start harbour-storeman-installer script fully detached ("double fork" / daemonize) in %%posttrans
 - Update defer-inst-via-detached-script branch with changes for v1.3.6:
@@ -220,47 +234,60 @@ exit 0
   - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
   - Print version of harbour-storeman-installer package in the log file entry of each run
   - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
+
 * Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update `harbour-storeman-installer` script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt `harbour-storeman-installer` script for interactive use (#144)
 - Log file needs to be writeable (#146)
+
 * Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
 - Start the `harbour-storeman-installer` script as detached ("&") in the `%posttrans` scriptlet
 - Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
+
 * Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite `harbour-storeman-installer` script in `/usr/bin` (#136)
 - The `harbour-storeman-installer` script ultimately issues `pkcon install harbour-storeman … &` (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
+
 * Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
 - Tidy spec file as implemented in v2.0 (#130)
 - Clarify comment (#128)
+
 * Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
 - Refine %%post section of the spec file (#96)
+
 * Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
+
 * Tue Nov 29 2022 olf <Olf0@users.noreply.github.com> - 1.3.0-release1
 - Now should automatically remove an installed Storeman < 0.3.0 when being installed (#95)
 - Enhance multiple aspects of the spec file (#89, #91, #93)
 - Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
+
 * Sat Jun 04 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
 - pkcon expects options before the command (#74)
+
 * Sun May 15 2022 olf <Olf0@users.noreply.github.com> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
+
 * Sun Apr 10 2022 olf <Olf0@users.noreply.github.com> - 1.2.7-release1
 - Fix icon deployment
+
 * Thu Apr 07 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
-Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
+
 * Sun Mar 20 2022 olf <Olf0@users.noreply.github.com> - 1.2.2-1
 - .desktop file: Trivially bail out of SailJail #38
+
 * Thu Mar 17 2022 olf <Olf0@users.noreply.github.com> - 1.2.1-1
 - spec file: Add SailfishOS:Chum metadata (#23) plus spec file: Add categories (#31) and #30
 - Create help-template.md (#24)
 - Create and enhance README (#25, #29, #30, #32, #33, #34, #35)
+
 * Sun Mar 13 2022 olf <Olf0@users.noreply.github.com> - 1.2.0-1
 - Change group from users to ssu
 - polkit: Limit allowed actions to the necessary ones
@@ -271,10 +298,13 @@ Versions 1.2.3, 1.2.4 and 1.2.5 are unreleased test versions.
 - Update repository configuration
 - Add URL: to spec file
 - Update spec file
+
 * Mon Sep  6 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.1.0-1
 - Update translations
+
 * Sun Aug 22 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.1-1
 - Update translations
+
 * Thu Aug 19 2021 Petr Tsymbarovich <petr@tsymbarovich.ru> - 1.0.0-1
 - Initial release
 
