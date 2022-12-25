@@ -26,16 +26,16 @@ RPMs of [older Storeman releases are available at OpenRepos](https://openrepos.n
   4. Preferably disable "Allow untrusted software" again.
 
 * Installation via Storeman (i.e., updating from Storeman <&nbsp; 0.2.9)
-  1. Search for *Installer*
-  2. Select the *Storeman Installer* by *olf*<br />
-     <sup>Side note: If you select the outdated *Storeman Installer* by *osetr*, that will install an outdated *Storeman*, with which you can install the current *Storeman* release; save yourself this indirection and potential issues with software which was never tested on recent SailfishOS releases by installing the current *Storeman Installer* by *olf*.</sup>
-  3. You need to enable *olf*'s repository in the top pulley menu, if you did not enable it before.
-  4. Install *Storeman Installer*
+  * <sup>If you have *olf*'s repository at OpenRepos enabled, *Storeman Installer* shall be offered as an update candidate for the outdated *Storeman* installed: Just accept this offer.<br />Otherwise:</sup>
+  1. Search for *Installer*.
+  2. Select the *Storeman Installer* by *olf*.
+  3. Enable *olf*'s repository in the top pulley menu.
+  4. Install *Storeman Installer*.
 
 * Installation via SailfishOS:Chum GUI application
-  1. Search for *Installer* in "Applications"
-  2. Select *Storeman Installer*
-  3. Install *Storeman Installer*
+  1. Search for *Installer* in "Applications".
+  2. Select *Storeman Installer*.
+  3. Install *Storeman Installer*.
 
 ### Features of Storeman Installer
 
@@ -44,5 +44,5 @@ RPMs of [older Storeman releases are available at OpenRepos](https://openrepos.n
 * Installing [Storeman Installer 1.3.1](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.1) and all later versions also automatically removes an installed Storeman (*harbour-storeman* package) <&nbsp;0.2.99, which eliminates the former necessity to manually remove ("uninstall") an old Storeman. 
 * [Storeman Installer 1.3.8](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.8) and all later versions create a persistent log file `/var/log/harbour-storeman-installer.log.txt`.
 * Storeman Installer 2 runs "unattended": I.e., without any manual steps, after its installation has been triggered, until Storeman is installed.
-* Storeman Installer is slow, because it calls `pkcon` two (releases before v1.3.8) to three times (releases from v[1.3.8](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.8) on), which acts quite slowly.  The minimal run time for Storeman Installer 2 is about 7 seconds, the typical run time is rather 10 seconds (measured from the moment Storeman Installer's installation has been triggered, until ultimately Storeman is installed).  This is already a lot, but I rarely experienced a stalled Packagekit daemon (for which `pkcon` is just a command line frontend, communicating with the daemon via D-Bus) during heavy testing, which can be observed with the crude `pkmon` utility (`Ctrl-C` gets you out :wink:), so Storeman Installer now tries to detect these "hangs" and to counter them: If that happens, its run time can be up to slightly more than 1 minute.  In the worst case a stalled PackakgeKit daemon (and with it its `pkcon` client process(es)) stalls Storeman Installer, until the PackageKit daemon reaches its idle time out of 300 seconds (5 minutes; this could theoretically happen three times, resulting in a likely unsuccessful run time of more than 15 minutes).
+* Storeman Installer is slow, because it calls `pkcon` two (releases before v1.3.8) to three times (releases from v[1.3.8](https://github.com/storeman-developers/harbour-storeman-installer/releases/tag/1.3.8) on), which acts quite slowly.  The minimal run time for Storeman Installer 2 is about 7 seconds, the typical run time is rather 10 seconds (measured from the moment Storeman Installer's installation has been triggered, until ultimately Storeman is installed).  This is already a lot, but I rarely experienced a stalled Packagekit daemon (for which `pkcon` is just a command line frontend, communicating with the daemon via D-Bus) during heavy testing, which can be observed with the crude `pkmon` utility (`Ctrl-C` gets you out.:smiley:), so Storeman Installer now tries to detect these "hangs" and to counter them: If that happens, its run time can be up to slightly more than 1 minute.  In the worst case a stalled PackageKit daemon (and with it its `pkcon` client process(es)) stalls Storeman Installer, until the PackageKit daemon reaches its idle time out of 300 seconds (5 minutes; this could theoretically happen three times, resulting in a likely unsuccessful run time of more than 15 minutes).
 
