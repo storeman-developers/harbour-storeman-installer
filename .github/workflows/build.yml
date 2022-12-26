@@ -1,4 +1,4 @@
-name: CI build - master branch on SFOS 3.0.1.11 (armv7hl)
+name: CI build on SFOS 3.0.1.11 (armv7hl)
 
 on:
   push:
