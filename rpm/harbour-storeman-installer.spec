@@ -80,7 +80,7 @@ Categories:
  - System
  - Network
  - PackageManager
-DeveloperName: Storeman developers (mentaljam)
+DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icons/%{name}.svg
