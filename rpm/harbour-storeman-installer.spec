@@ -74,7 +74,7 @@ of the device and its installed SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
-Type: desktop-application
+Type: generic
 Categories:
  - Utilities
  - System
