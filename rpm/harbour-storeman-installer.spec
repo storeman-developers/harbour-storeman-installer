@@ -1,10 +1,10 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-# The Git release tag format must adhere to just <version> since version 1.2.6.
-# The <version> field adheres to semantic versioning and the <release> field 
-# comprises one of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
+# The Git release tag format must adhere to just <version>.  The <version>
+# field adheres to semantic versioning and the <release> field comprises a
+# natural number greater or equal to 1, which may be prefixed with one of
+# {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.1.6
 Release:        release5
