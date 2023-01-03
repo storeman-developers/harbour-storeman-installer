@@ -1,22 +1,22 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-# The Git release tag format must adhere to just <version> since version 1.2.6.
-# The <version> field adheres to semantic versioning and the <release> field 
-# comprises one of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
+# The Git release tag format must adhere to just <version>.  The <version>
+# field adheres to semantic versioning and the <release> field comprises a
+# natural number greater or equal to 1, which may be prefixed with one of
+# {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.1.6
 Release:        release5
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
-# These "Source:" lines below require that the value of ${name} is also the
-# project name at GitHub and the value of ${version} is also the name of a
+# These "Source:" lines below require that the value of %%{name} is also the
+# project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
-# Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
-Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# Source:       %%{url}/archive/%%{version}.tar.gz
+# Source:       %%{url}/archive/refs/tags/%%{version}.tar.gz
+Source:         %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
@@ -74,13 +74,13 @@ of the device and its installed SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
-Type: desktop-application
+Type: generic
 Categories:
  - Utilities
  - System
  - Network
  - PackageManager
-DeveloperName: Storeman developers (mentaljam)
+DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icons/%{name}.svg
