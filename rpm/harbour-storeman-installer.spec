@@ -97,6 +97,7 @@ Url:
   Homepage: %{url}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
+  Donation: https://openrepos.net/donate
 %endif
 
 %prep
