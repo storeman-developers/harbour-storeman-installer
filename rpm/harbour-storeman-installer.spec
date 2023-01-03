@@ -178,6 +178,8 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Wed Jan 04 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
+- Enhance spec file comments
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
 - Minor changes
