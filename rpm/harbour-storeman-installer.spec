@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # natural number greater or equal to 1, which may be prefixed with one of
 # {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.6
-Release:        release5
+Version:        2.1.7
+Release:        release6
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of %%{name} is also the
