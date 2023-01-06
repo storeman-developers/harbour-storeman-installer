@@ -40,8 +40,7 @@ jobs:
         echo "/ :"
         ls -la /
         echo
-        echo "$GITHUB_ACTIONS :"
-        ls -la "$GITHUB_ACTIONS"
+        echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
         echo "$GITHUB_WORKSPACE :"
         ls -la "$GITHUB_WORKSPACE"
