@@ -38,7 +38,7 @@ jobs:
     - name: Debug output
       run: |
         pwd
-        find -L / -type f -size 500M -printf "%s  %p\n"
+        find -L /home /imagegeneration /media /mnt /opt /root /run /srv /tmp /var -type f -size 500M -printf "%s  %p\n"
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
