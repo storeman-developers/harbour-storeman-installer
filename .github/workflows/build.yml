@@ -1,4 +1,4 @@
-name: CI on SFOS 3.1.0.12
+name: CI on SFOS 3.1.0
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout
-    - uses: actions/checkout@v3
+      uses: actions/checkout@v3
 
     - name: Prepare
       run: mkdir RPMS
