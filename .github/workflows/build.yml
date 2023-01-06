@@ -23,22 +23,35 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: 'coderus/github-sfos-build*'
+        path: 'Olf0/github-sfos-build*'
         key: cache
 
     - name: Prepare
       run: mkdir RPMS
 
     - name: Build armv7hl
-      uses: coderus/github-sfos-build@old-stable
+      uses: Olf0/github-sfos-build@old-stable
       with:
         release: 3.1.0.12
         arch: armv7hl
 
     - name: Debug output
       run: |
-        pwd
-        sudo find /home /imagegeneration /media /mnt /opt /root /run /srv /tmp /var -type f -size 500M -printf "%s  %p\n"
+        echo "/ :"
+        ls -la /
+        echo
+        echo "$GITHUB_ACTIONS :"
+        ls -la "$GITHUB_ACTIONS"
+        echo
+        echo "$GITHUB_WORKSPACE :"
+        ls -la "$GITHUB_WORKSPACE"
+        echo
+        echo "/home :"
+        ls -la /home
+        echo
+        echo "$(pwd) :"
+        ls -la
+        sudo find /home /imagegeneration /media /mnt /opt /root /run /srv /tmp /var -type f -size 200M -printf "%s  %p\n"
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
