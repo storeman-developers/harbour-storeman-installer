@@ -36,7 +36,7 @@ jobs:
         arch: armv7hl
 
     - name: Debug output
-      run: ls -lar
+      run: ls -laR . /
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
