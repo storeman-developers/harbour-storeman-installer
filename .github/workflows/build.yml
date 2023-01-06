@@ -23,7 +23,7 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: 'storeman-developers/github-sfos-build*'
+        path: /var/lib/docker/overlay2/*
         key: cache
 
     - name: Prepare
@@ -40,26 +40,23 @@ jobs:
         echo "ls -la $GITHUB_WORKSPACE/"
         sudo ls -la "$GITHUB_WORKSPACE/"
         echo
-        echo "du -h $GITHUB_WORKSPACE/.git/"
-        sudo du -h "$GITHUB_WORKSPACE/.git/"
+        echo "du -sch --apparent-size $GITHUB_WORKSPACE/.git/"
+        sudo du -sch --apparent-size "$GITHUB_WORKSPACE/.git/"
         echo
         echo "ls -la $GITHUB_WORKSPACE/.git/"
         sudo ls -la "$GITHUB_WORKSPACE/.git/"
         echo
-        echo "du -h /var/lib/docker/overlay2/"
-        sudo du -h /var/lib/docker/overlay2/
+        echo "du -sch --apparent-size /var/lib/docker/overlay2/"
+        sudo du -sch --apparent-size /var/lib/docker/overlay2/
         echo
         echo "ls -la /var/lib/docker/overlay2/"
         sudo ls -la /var/lib/docker/overlay2/
         echo
-        echo "du -h /var/lib/docker/"
-        sudo du -h /var/lib/docker/
+        echo "du -sch --apparent-size /var/lib/docker/"
+        sudo du -sch --apparent-size /var/lib/docker/
         echo
         echo "ls -la /var/lib/docker/"
         sudo ls -la /var/lib/docker/
-        echo
-        echo "docker image inspect '*github-sfos-build*'"
-        sudo docker image inspect '*github-sfos-build*'
         echo
         echo "docker info"
         sudo docker info
@@ -75,8 +72,11 @@ jobs:
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
-        echo "Files > 100 MB:"
+        echo "Files > 50 MB:"
         sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
+        echo
+        echo "docker image inspect coderus/sailfishos-platform-sdk"
+        sudo docker image inspect coderus/sailfishos-platform-sdk     
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
