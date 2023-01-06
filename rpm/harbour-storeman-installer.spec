@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # natural number greater or equal to 1, which may be prefixed with one of
 # {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.6
-Release:        release5
+Version:        2.1.7
+Release:        release6
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source:" lines below require that the value of %%{name} is also the
@@ -29,8 +29,8 @@ Requires:       PackageKit
 Requires(posttrans): PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
-# But the SailfishOS-OBS' does not, either due to the antique release or `tar_git`:
-# https://github.com/MeeGoIntegration/obs-service-tar-git
+# But the SailfishOS-OBS' does not support `or`, either due to the antique OBS
+# release or `tar_git`: https://github.com/MeeGoIntegration/obs-service-tar-git
 # ToDo: Check if the GNU-versions of these packages (named as alternatives below)
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
@@ -97,6 +97,7 @@ Url:
   Homepage: %{url}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
+  Donation: https://openrepos.net/donate
 %endif
 
 %prep
@@ -150,13 +151,12 @@ fi
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
 # See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
 # or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
-# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
-# "8d0cec9 Partially convert to semantic line breaks." in
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) in
 # https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
 # Hence I have the impression, that only the main section of a spec file is
-# interpreted by `rpmbuild` in a shell called with the option `-e', but not the
-# scriptlets (`%%pre`, `%%post`, `%%preun`, `%%postun`, `%%pretrans`, `%%posttrans`
-# , `%%trigger*` and `%%file*`), which are also not interpreted by `rpmbuild`!
+# interpreted in a shell called with the option `-e', but not the scriptlets
+# (`%%pre`, `%%post`, `%%preun`, `%%postun`, `%%pretrans`, `%%posttrans`,
+# `%%trigger*` and `%%file*`).
 exit 0
 
 %posttrans
@@ -178,6 +178,8 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
+* Wed Jan 04 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
+- Enhance spec file comments
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
 - Minor changes
