@@ -37,11 +37,26 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -laR $GITHUB_WORKSPACE/.git"
-        sudo ls -laR "$GITHUB_WORKSPACE/.git"
+        echo "ls -la $GITHUB_WORKSPACE/"
+        sudo ls -la "$GITHUB_WORKSPACE/"
         echo
-        echo "ls -laR /var/lib/docker/"
-        sudo ls -laR /var/lib/docker/
+        echo "du -h $GITHUB_WORKSPACE/.git/"
+        sudo du -h "$GITHUB_WORKSPACE/.git/"
+        echo
+        echo "ls -la $GITHUB_WORKSPACE/.git/"
+        sudo ls -la "$GITHUB_WORKSPACE/.git/"
+        echo
+        echo "du -h /var/lib/docker/overlay2/"
+        sudo du -h /var/lib/docker/overlay2/
+        echo
+        echo "ls -la /var/lib/docker/overlay2/"
+        sudo ls -la /var/lib/docker/overlay2/
+        echo
+        echo "du -h /var/lib/docker/"
+        sudo du -h /var/lib/docker/
+        echo
+        echo "ls -la /var/lib/docker/"
+        sudo ls -la /var/lib/docker/
         echo
         echo "docker image inspect '*github-sfos-build*'"
         sudo docker image inspect '*github-sfos-build*'
