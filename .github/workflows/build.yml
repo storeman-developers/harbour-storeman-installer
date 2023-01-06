@@ -23,14 +23,14 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: 'Olf0/github-sfos-build*'
+        path: 'storeman-developers/github-sfos-build*'
         key: cache
 
     - name: Prepare
       run: mkdir RPMS
 
     - name: Build armv7hl
-      uses: Olf0/github-sfos-build@old-stable
+      uses: storeman-developers/github-sfos-build@old-stable
       with:
         release: 3.1.0.12
         arch: armv7hl
