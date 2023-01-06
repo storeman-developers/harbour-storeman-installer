@@ -23,7 +23,7 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: /var/lib/docker/overlay2/*
+        path: /var/lib/docker/overlay2/
         key: cache
 
     - name: Prepare
@@ -37,14 +37,8 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -la /var/lib/docker/overlay2/*"
-        sudo ls -la /var/lib/docker/overlay2/*
-        echo
         echo "du -hd 2 /var/lib/docker/overlay2"
         sudo du -hd 2 /var/lib/docker/overlay2
-        echo
-        echo "ls -la /var/lib/docker/*"
-        sudo ls -la /var/lib/docker/*
         echo
         echo "du -hd 2 /var/lib/docker"
         sudo du -hd 2 /var/lib/docker
@@ -58,14 +52,8 @@ jobs:
         echo "$(pwd) :"
         sudo ls -la
         echo
-        echo "ls -la /home/*"
-        sudo ls -la /home/*
-        echo
         echo "du -hd 2 /home"
         sudo du -hd 2 /home
-        echo
-        echo "ls -la /"
-        sudo ls -la /
         echo
         echo "du -hd 2 /"
         sudo du -hd 2 /
@@ -77,6 +65,9 @@ jobs:
         echo
         echo "docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12"
         sudo docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12    
+        echo
+        echo "ls -la /var/lib/docker/overlay2/*"
+        sudo ls -la '/var/lib/docker/overlay2/*' || true
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
