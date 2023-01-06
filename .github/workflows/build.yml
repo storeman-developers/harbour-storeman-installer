@@ -37,17 +37,17 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -laR /var/lib/docker/overlay2/"
-        sudo ls -laR /var/lib/docker/overlay2/
+        echo "ls -la /var/lib/docker/overlay2/"
+        sudo ls -la /var/lib/docker/overlay2/
         echo
-        echo "du -sch --apparent-size /var/lib/docker/overlay2/"
-        sudo du -sch --apparent-size /var/lib/docker/overlay2/
+        echo "du -sch --apparent-size /var/lib/docker/overlay2/*"
+        sudo du -sch --apparent-size /var/lib/docker/overlay2/*
         echo
         echo "ls -la /var/lib/docker/"
         sudo ls -la /var/lib/docker/
         echo
-        echo "du -sch --apparent-size /var/lib/docker/"
-        sudo du -sch --apparent-size /var/lib/docker/
+        echo "du -sch --apparent-size /var/lib/docker/*"
+        sudo du -sch --apparent-size /var/lib/docker/*
         echo
         echo "docker info"
         sudo docker info
@@ -61,8 +61,14 @@ jobs:
         echo "ls -la /home"
         sudo ls -la /home
         echo
+        echo "du -sch --apparent-size /home/*"
+        sudo du -sch --apparent-size /home/*
+        echo
         echo "ls -la /"
         sudo ls -la /
+        echo
+        echo "du -sch --apparent-size /*"
+        sudo du -sch --apparent-size /*
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
