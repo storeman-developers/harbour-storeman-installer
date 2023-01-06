@@ -30,7 +30,7 @@ jobs:
       run: mkdir RPMS
 
     - name: Build armv7hl
-      uses: coderus/github-sfos-build@old-stable
+      uses: coderus/github-sfos-build@*
       with:
         release: 3.1.0.12
         arch: armv7hl
@@ -40,3 +40,4 @@ jobs:
       with:
         name: rpm-build-result
         path: RPMS/
+
