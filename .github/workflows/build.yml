@@ -37,29 +37,23 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -la $GITHUB_WORKSPACE/"
-        sudo ls -la "$GITHUB_WORKSPACE/"
-        echo
-        echo "du -sch --apparent-size $GITHUB_WORKSPACE/.git/"
-        sudo du -sch --apparent-size "$GITHUB_WORKSPACE/.git/"
-        echo
-        echo "ls -la $GITHUB_WORKSPACE/.git/"
-        sudo ls -la "$GITHUB_WORKSPACE/.git/"
+        echo "ls -laR /var/lib/docker/overlay2/"
+        sudo ls -laR /var/lib/docker/overlay2/
         echo
         echo "du -sch --apparent-size /var/lib/docker/overlay2/"
         sudo du -sch --apparent-size /var/lib/docker/overlay2/
         echo
-        echo "ls -la /var/lib/docker/overlay2/"
-        sudo ls -la /var/lib/docker/overlay2/
+        echo "ls -la /var/lib/docker/"
+        sudo ls -la /var/lib/docker/
         echo
         echo "du -sch --apparent-size /var/lib/docker/"
         sudo du -sch --apparent-size /var/lib/docker/
         echo
-        echo "ls -la /var/lib/docker/"
-        sudo ls -la /var/lib/docker/
-        echo
         echo "docker info"
         sudo docker info
+        echo
+        echo "ls -la $GITHUB_WORKSPACE/"
+        sudo ls -la "$GITHUB_WORKSPACE/"
         echo
         echo "$(pwd) :"
         sudo ls -la
@@ -75,8 +69,8 @@ jobs:
         echo "Files > 50 MB:"
         sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
         echo
-        echo "docker image inspect coderus/sailfishos-platform-sdk"
-        sudo docker image inspect coderus/sailfishos-platform-sdk     
+        echo "docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12"
+        sudo docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12    
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
