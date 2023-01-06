@@ -23,7 +23,7 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: '[1-9]*.[0-9].[0-9].[1-9]*'
+        path: 'coderus/github-sfos-build*'
         key: cache
 
     - name: Prepare
@@ -38,7 +38,7 @@ jobs:
     - name: Debug output
       run: |
         pwd
-        ls -laR ~
+        find -L / -type f -size 500M -printf "%s  %p\n"
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
