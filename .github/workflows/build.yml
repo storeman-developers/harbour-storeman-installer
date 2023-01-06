@@ -37,20 +37,31 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "/ :"
+        echo "ls -laR $GITHUB_WORKSPACE"
+        ls -laR "$GITHUB_WORKSPACE"
+        echo
+        echo "ls -laR /var/lib/docker/"
+        ls -laR /var/lib/docker/
+        echo
+        echo "docker image inspect '*github-sfos-build*'"
+        docker image inspect '*github-sfos-build*'
+        echo
+        echo "docker info"
+        docker info
+        echo
+        echo "$(pwd) :"
+        ls -la
+        echo
+        echo "ls -la /home"
+        ls -la /home
+        echo
+        echo "ls -la /"
         ls -la /
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
-        echo "$GITHUB_WORKSPACE :"
-        ls -la "$GITHUB_WORKSPACE"
-        echo
-        echo "/home :"
-        ls -la /home
-        echo
-        echo "$(pwd) :"
-        ls -la
-        sudo find /home /imagegeneration /media /mnt /opt /root /run /srv /tmp /var -type f -size 200M -printf "%s  %p\n"
+        echo "Files > 100 MB:"
+        sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
