@@ -37,26 +37,26 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -laR $GITHUB_WORKSPACE"
-        ls -laR "$GITHUB_WORKSPACE"
+        echo "ls -laR $GITHUB_WORKSPACE/.git"
+        sudo ls -laR "$GITHUB_WORKSPACE/.git"
         echo
         echo "ls -laR /var/lib/docker/"
-        ls -laR /var/lib/docker/
+        sudo ls -laR /var/lib/docker/
         echo
         echo "docker image inspect '*github-sfos-build*'"
-        docker image inspect '*github-sfos-build*'
+        sudo docker image inspect '*github-sfos-build*'
         echo
         echo "docker info"
-        docker info
+        sudo docker info
         echo
         echo "$(pwd) :"
-        ls -la
+        sudo ls -la
         echo
         echo "ls -la /home"
-        ls -la /home
+        sudo ls -la /home
         echo
         echo "ls -la /"
-        ls -la /
+        sudo ls -la /
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
