@@ -37,26 +37,18 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "du -hd 2 /var/lib/docker/overlay2"
-        sudo du -hd 2 /var/lib/docker/overlay2
+        echo "ls -la /var/lib/docker/overlay2"
+        sudo ls -la /var/lib/docker/overlay2
         echo
-        echo "du -hd 2 /var/lib/docker"
-        sudo du -hd 2 /var/lib/docker
+        echo "du -chd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
+        sudo du -chd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
         echo
         echo "docker info"
         sudo docker info
         echo
-        echo "ls -la $GITHUB_WORKSPACE/"
-        sudo ls -la "$GITHUB_WORKSPACE/"
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
         echo
-        echo "$(pwd) :"
-        sudo ls -la
-        echo
-        echo "du -hd 2 /home"
-        sudo du -hd 2 /home
-        echo
-        echo "du -hd 2 /"
-        sudo du -hd 2 /
+        echo "PWD: $(pwd)"
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
         echo
