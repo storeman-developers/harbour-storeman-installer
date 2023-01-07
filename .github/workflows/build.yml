@@ -19,15 +19,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Prepare
+      run: |
+        mkdir RPMS
+        sudo su
+
     - name: Cache SDK image
       id: cache-sdk
       uses: actions/cache@v3
       with:
         path: '/var/lib/docker/overlay2/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
         key: cache
-
-    - name: Prepare
-      run: mkdir RPMS
 
     - name: Build armv7hl
       uses: storeman-developers/github-sfos-build@old-stable
@@ -37,12 +39,12 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -laR /var/lib/docker/overlay2"
-        sudo ls -laR /var/lib/docker/overlay2
-        echo
-        echo "du -ach /home/runner/runners"
-        sudo du -ach /home/runner/runners
-        echo
+        # echo "ls -laR /var/lib/docker/overlay2"
+        # sudo ls -laR /var/lib/docker/overlay2
+        # echo
+        # echo "du -ach /home/runner/runners"
+        # sudo du -ach /home/runner/runners
+        # echo
         echo "docker info"
         sudo docker info
         echo
@@ -68,7 +70,6 @@ jobs:
         a='/var/lib/docker/overlay2/*'
         echo "ls -la $a"
         sudo ls -la $a || true
-        sudo su
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
