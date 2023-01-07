@@ -51,7 +51,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Its source code is [hosted at GitHub](https://github.com/moby/moby) and uses the Apache-2.0 license.
 * Created and maintained as [a by-product](https://github.com/moby/moby/tree/v23.0.0-rc.1/contrib#readme) of a [lively project](https://github.com/moby/moby/pulse).
 * Provides [tagged, stable releases](https://github.com/moby/moby/releases), e.g. (latest as of 2023-01-07), [v20.10.22](https://github.com/moby/moby/blob/v20.10.22/contrib/download-frozen-image-v2.sh).
-* Is a simple and small shell-script (< 400 sloc, ~ 13 KB), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
+* Is a simple and small shell-script (< 400 sloc, ~ 13 KBytes), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
 * My favorite third-party tool for this approach.
 
 #### ● [Scopeo](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
@@ -60,11 +60,26 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Provides [tagged, stable releases](https://github.com/containers/skopeo/releases).
 * Is a capable container image management utility written in Go, hence first needs to be compiled.
 
-#### ● [Container storage](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
+#### ● [storage](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/storage) and uses the Apache-2.0 license.
 * Created and maintained by a [lively project](https://github.com/containers/storage/pulse).
 * Provides [tagged, stable releases](https://github.com/containers/storage/releases).
 * Is a capable container storage management library written in Go, hence first needs to be compiled.
-* Provides the [containers-storage CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
+* Provides the [`containers-storage` CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
 
+#### ● [docker-drag](https://github.com/NotGlop/docker-drag) also by [NotGlop](https://github.com/NotGlop)
+* Its source code is [hosted at GitHub](https://github.com/NotGlop/docker-drag) and carries no license.
+* Apparently unmaintained.
+* Does not provide releases or git tags.
+* Is a simple and small Python script (187 sloc, 7,3 KBytes), called [`docker_pull.py`](https://github.com/NotGlop/docker-drag/blob/master/docker_pull.py).
+
+#### ● [docker_pull](https://github.com/ahdrr/docker_pull) also by [ahdrr](https://github.com/ahdrr)
+* Its source code is [hosted at GitHub](https://github.com/ahdrr/docker_pull) and carries no license.
+* Created in 2022.
+* Does provide two releases (as of 2023-01-07) and git tags.
+* Written in Go, [pre-compiled versions are 11,6 MBytes large](https://github.com/ahdrr/docker_pull/releases).
+* Inspired by / an implementation in Go of `docker-drag`, the tool discussed one bullet point above.
+* `http` only?
+
+### 
 
