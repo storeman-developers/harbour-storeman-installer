@@ -43,19 +43,28 @@ The only real alternative solution is to host container images "locally" at GitH
 
 The most trivial way to cope with "action `cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace"), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/) or [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
 
-Mind that the git repository is also checked out with the "runner workspace" (`$GITHUB_ACTIONS`) as root directory, so do pay attention to not clobber any files or dirctories of your source repository.
+Mind that the git repository is also checked out to the "runner workspace" (`$GITHUB_ACTIONS`) as root directory, so do pay attention to not clobber any files or directories of your source repository.
 
 #### Suitable tools to download docker images to arbitrary locations in the local file-system:
 
 #### ● [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh) by the [Moby Project](https://mobyproject.org/)
-* Its source code is [hosted at GitHub](https://github.com/moby/moby) and uses the Apache-2.0 license
-* [A by-product](https://github.com/moby/moby/tree/v23.0.0-rc.1/contrib#readme) of a [lively project](https://github.com/moby/moby/pulse)
-* Provides [tagged, stable releases](https://github.com/moby/moby/releases), e.g. (latest as of 2023-01-07), [v20.10.22](https://github.com/moby/moby/blob/v20.10.22/contrib/download-frozen-image-v2.sh)
+* Its source code is [hosted at GitHub](https://github.com/moby/moby) and uses the Apache-2.0 license.
+* Created and maintained as [a by-product](https://github.com/moby/moby/tree/v23.0.0-rc.1/contrib#readme) of a [lively project](https://github.com/moby/moby/pulse).
+* Provides [tagged, stable releases](https://github.com/moby/moby/releases), e.g. (latest as of 2023-01-07), [v20.10.22](https://github.com/moby/moby/blob/v20.10.22/contrib/download-frozen-image-v2.sh).
 * Is a simple and small shell-script (< 400 sloc, ~ 13 KB), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
-* My favorite third-party tool for this approach
+* My favorite third-party tool for this approach.
 
-#### ● [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh) by the [Moby Project](https://mobyproject.org/)
-* I
+#### ● [Scopeo](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
+* Its source code is [hosted at GitHub](https://github.com/containers/skopeo) and uses the Apache-2.0 license.
+* Created and maintained by a [lively project](https://github.com/containers/skopeo/pulse).
+* Provides [tagged, stable releases](https://github.com/containers/skopeo/releases).
+* Is a capable container image management utility written in Go, hence first needs to be compiled.
 
+#### ● [Container storage](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
+* Its source code is [hosted at GitHub](https://github.com/containers/storage) and uses the Apache-2.0 license.
+* Created and maintained by a [lively project](https://github.com/containers/storage/pulse).
+* Provides [tagged, stable releases](https://github.com/containers/storage/releases).
+* Is a capable container storage management library written in Go, hence first needs to be compiled.
+* Provides the [containers-storage CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
 
 
