@@ -23,7 +23,7 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: /var/lib/docker/overlay2/
+        path: '/var/lib/docker/overlay2/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
         key: cache
 
     - name: Prepare
@@ -40,8 +40,8 @@ jobs:
         echo "ls -la /var/lib/docker/overlay2"
         sudo ls -la /var/lib/docker/overlay2
         echo
-        echo "du -chd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
-        sudo du -chd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
+        echo "du -chfd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
+        sudo du -chfd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
         echo
         echo "docker info"
         sudo docker info
@@ -51,6 +51,8 @@ jobs:
         echo "PWD: $(pwd)"
         echo
         echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
+        echo
+        echo "WhoAmI: $(whoami)"
         echo
         echo "Files > 50 MB:"
         sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
