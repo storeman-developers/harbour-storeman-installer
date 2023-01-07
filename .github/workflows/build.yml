@@ -37,11 +37,11 @@ jobs:
 
     - name: Debug output
       run: |
-        echo "ls -la /var/lib/docker/overlay2"
-        sudo ls -la /var/lib/docker/overlay2
+        echo "ls -laR /var/lib/docker/overlay2"
+        sudo ls -laR /var/lib/docker/overlay2
         echo
-        echo "du -achd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
-        sudo du -achd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
+        echo "du -ach /home/runner/runners"
+        sudo du -ach /home/runner/runners
         echo
         echo "docker info"
         sudo docker info
@@ -54,15 +54,21 @@ jobs:
         echo
         echo "WhoAmI: $(whoami)"
         echo
-        echo "Files > 50 MB:"
-        sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
+        echo "MyGroups: $(groups)"
         echo
+        echo "/etc/group"
+        cat /etc/group
+        echo
+        # echo "Files > 50 MB:"
+        # sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
+        # echo
         echo "docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12"
         sudo docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12    
         echo
         a='/var/lib/docker/overlay2/*'
         echo "ls -la $a"
-        sudo ls -la "$a" || true
+        sudo ls -la $a || true
+        sudo su
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
