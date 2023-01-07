@@ -18,15 +18,27 @@ Caching "locally" means, with the measure(s) provided at GitHub, e.g., GitHub "a
 
 Other "solutions", as an external, caching proxy server, are implicitly not very effective.
 
-Reducing the size of the docker images used is always a valid approach, has some potential (many docker images carry large amounts of unnecessary cruft), but is time consuming and futile, as the creation and distribution of such images are inviting to a "quick & dirty" approach (i.e., they way quicker and easier to create and distributed than optimised).
+Reducing the size of docker images is always a valid approach, has some potential (many docker images carry large amounts of unnecessary cruft), but is time consuming and futile, as the creation and distribution of such images are inviting to a "quick & dirty" approach (i.e., they way quicker and easier to create and distribute than optimised).
 
-The only real alternative solution is to host the images "locally" at GitHub, i.e. at [GitHub's container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).  For an introduction, see GitHub's documentation for [creating, managing and distributing "GitHub packages"](https://docs.github.com/en/packages).
+The only real alternative solution is to host container images "locally" at GitHub, i.e. at [GitHub's container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).  For an introduction, see GitHub's documentation for [creating, managing and distributing "GitHub packages"](https://docs.github.com/en/packages).
 
-### Properties of GitHub's "action" `cache`
+### Basic properties of GitHub's "action" `cache`
 
 * The ["action" `cache`](https://github.com/actions/cache) seems to be implicitly run in the context of the user `runner`.  While a `sudo su` executed as part of a `run:` statement is effective for subsequent shell commands (tested with the Ubuntu-Linux runner environment provided by GitHub in 2023), I have not found a way to let an "action" run in a different user context.
 
 * The "action" `cache` only accepts download targets (i.e., local paths) to be configured as items to cache, not download sources.
 
-* The first two properties of GitHub's "action" `cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images).
+* These first two properties of GitHub's "action" `cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images) on Linux, utilising [overlayfs](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt).
 
+* The "action" `cache` only caches items used in a *successful* CI run.  Sometimes it makes sense to always cache items, which are known be independent of the outcome of a CI run, e.g., classic prerequisites for it; exactly what the Sailfish-SDK images constitute for building software for SailfishOS at GitHub.
+  
+  Others have also noticed that long ago and trivially patched the original "action" `cache` (e.g., [[1]](https://github.com/actions/cache/compare/main...pat-s:always-upload-cache:main#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L24-R24), [[2]](https://github.com/actions/cache/compare/master...gerbal:always-cache:master#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L21-R21)), but very often this ultimately results in stale forks.  Hence [applying this trivial change by "live patching"](https://github.com/mxxk/gh-actions-cache-always) is the only maintainable solution, which resulted in [an improved version of the "live patching" approach](https://github.com/actions/cache/issues/92#issuecomment-1263067512).
+  
+  ~~Unfortunately~~ GitHub has ~~not~~ provided a way to adjust this behaviour by a CI configuration, ~~despite~~ \[see\] [issue \#92](https://github.com/actions/cache/issues/92) (and subsequent issues [\#165](https://github.com/actions/cache/issues/165), [\#334](https://github.com/actions/cache/issues/334) etc.) has been filed for GitHub's "action" `cache` long ago.<br />
+  *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020), although [this extension of the original "action `cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" still has some appeal due to the simpler usage of the GitHub's original "action" `cache` compared to their new ones `save` and `restore`, which all three are now and continue to be maintained.
+
+## Exploring the solution space
+
+### Pre-download the container images
+
+The most trivial way to cope with 
