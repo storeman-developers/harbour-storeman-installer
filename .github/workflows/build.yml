@@ -28,7 +28,9 @@ jobs:
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: '/var/lib/docker/overlay2/[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]*'
+        path: |
+          '/var/lib/docker/overlay2/[0-9a-f][0-9a-f]*/diff/*'
+          '/var/lib/docker/overlay2/[0-9a-f][0-9a-f]*/lower'
         key: cache
 
     - name: Build armv7hl
