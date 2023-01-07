@@ -67,13 +67,13 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Is a capable container storage management library written in Go, hence first needs to be compiled.
 * Provides the [`containers-storage` CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
 
-#### ● [docker-drag](https://github.com/NotGlop/docker-drag) also by [NotGlop](https://github.com/NotGlop)
+#### ● [docker-drag](https://github.com/NotGlop/docker-drag) by [NotGlop](https://github.com/NotGlop)
 * Its source code is [hosted at GitHub](https://github.com/NotGlop/docker-drag) and carries no license.
 * Apparently unmaintained.
 * Does not provide releases or git tags.
 * Is a simple and small Python script (187 sloc, 7,3 KBytes), called [`docker_pull.py`](https://github.com/NotGlop/docker-drag/blob/master/docker_pull.py).
 
-#### ● [docker_pull](https://github.com/ahdrr/docker_pull) also by [ahdrr](https://github.com/ahdrr)
+#### ● [docker_pull](https://github.com/ahdrr/docker_pull) by [ahdrr](https://github.com/ahdrr)
 * Its source code is [hosted at GitHub](https://github.com/ahdrr/docker_pull) and carries no license.
 * Created in 2022.
 * Does provide two releases (as of 2023-01-07) and git tags.
