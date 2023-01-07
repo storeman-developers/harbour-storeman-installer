@@ -40,8 +40,8 @@ jobs:
         echo "ls -la /var/lib/docker/overlay2"
         sudo ls -la /var/lib/docker/overlay2
         echo
-        echo "du -chfd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
-        sudo du -chfd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
+        echo "du -achd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache"
+        sudo du -achd 2 /usr/local /usr/share /home/runner/runners /opt/az /opt/hostedtoolcache
         echo
         echo "docker info"
         sudo docker info
@@ -60,8 +60,9 @@ jobs:
         echo "docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12"
         sudo docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12    
         echo
-        echo "ls -la /var/lib/docker/overlay2/*"
-        sudo ls -la '/var/lib/docker/overlay2/*' || true
+        a='/var/lib/docker/overlay2/*'
+        echo "ls -la $a"
+        sudo ls -la "$a" || true
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
