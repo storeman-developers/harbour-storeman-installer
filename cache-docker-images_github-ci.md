@@ -18,9 +18,9 @@ Caching "locally" means, with the measure(s) provided at GitHub, e.g., GitHub "a
 
 Other "solutions", as an external, caching proxy server, are implicitly not very effective.
 
-Reducing the size of docker images is always a valid approach, has some potential (many docker images carry large amounts of unnecessary cruft), but is time consuming and futile, as the creation and distribution of such images are inviting to a "quick & dirty" approach (i.e., they way quicker and easier to create and distribute than optimised).
+Reducing the size of docker images is always a valid approach, has some potential (many docker images carry large amounts of unnecessary cruft), but is time consuming and futile, as the creation and distribution of such images are inviting to a "quick & dirty" approach (i.e., they are much quicker and easier to create and distribute than optimised).
 
-The only real alternative solution is to host container images "locally" at GitHub, i.e. at [GitHub's container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).  For an introduction, see GitHub's documentation for [creating, managing and distributing "GitHub packages"](https://docs.github.com/en/packages).
+The only real alternative solution is to host container images "locally" at GitHub, i.e., at [GitHub's container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).  For an introduction, see GitHub's documentation for [creating, managing and distributing "GitHub packages"](https://docs.github.com/en/packages).
 
 ### Basic properties of GitHub's "action" `cache`
 
@@ -41,11 +41,11 @@ The only real alternative solution is to host container images "locally" at GitH
 
 ### Pre-download the container images
 
-The most trivial way to cope with "action `cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace"), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/) or [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
+The most trivial way to cope with "action `cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace"), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) (or [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/)) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
 
 Mind that the git repository is also checked out to the "runner workspace" (`$GITHUB_ACTIONS`) as root directory, so do pay attention to not clobber any files or directories of your source repository.
 
-#### Suitable tools to download docker images to arbitrary locations in the local file-system:
+#### Suitable tools for downloading docker images to arbitrary locations in the local file-system:
 
 #### ● [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh) by the [Moby Project](https://mobyproject.org/)
 * Its source code is [hosted at GitHub](https://github.com/moby/moby) and uses the Apache-2.0 license.
@@ -54,31 +54,31 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Is a simple and small shell-script (< 400 sloc, ~ 13 KBytes), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
 * My favorite third-party tool for this approach.
 
-#### ● [Scopeo](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
+#### ● [*Scopeo*](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/skopeo) and uses the Apache-2.0 license.
 * Created and maintained by a [lively project](https://github.com/containers/skopeo/pulse).
 * Provides [tagged, stable releases](https://github.com/containers/skopeo/releases).
 * Is a capable container image management utility written in Go, hence first needs to be compiled.
 
-#### ● [storage](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
+#### ● [*storage*](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/storage) and uses the Apache-2.0 license.
 * Created and maintained by a [lively project](https://github.com/containers/storage/pulse).
 * Provides [tagged, stable releases](https://github.com/containers/storage/releases).
 * Is a capable container storage management library written in Go, hence first needs to be compiled.
 * Provides the [`containers-storage` CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
 
-#### ● [docker-drag](https://github.com/NotGlop/docker-drag) by [NotGlop](https://github.com/NotGlop)
+#### ● [*docker-drag*](https://github.com/NotGlop/docker-drag) by [NotGlop](https://github.com/NotGlop)
 * Its source code is [hosted at GitHub](https://github.com/NotGlop/docker-drag) and carries no license.
 * Apparently unmaintained.
 * Does not provide releases or git tags.
 * Is a simple and small Python script (187 sloc, 7,3 KBytes), called [`docker_pull.py`](https://github.com/NotGlop/docker-drag/blob/master/docker_pull.py).
 
-#### ● [docker_pull](https://github.com/ahdrr/docker_pull) by [ahdrr](https://github.com/ahdrr)
+#### ● [*docker_pull*](https://github.com/ahdrr/docker_pull) by [ahdrr](https://github.com/ahdrr)
 * Its source code is [hosted at GitHub](https://github.com/ahdrr/docker_pull) and carries no license.
 * Created in 2022.
 * Does provide two releases (as of 2023-01-07) and git tags.
 * Written in Go, [pre-compiled versions are 11,6 MBytes large](https://github.com/ahdrr/docker_pull/releases).
-* Inspired by / an implementation in Go of `docker-drag`, the tool discussed one bullet point above.
+* Inspired by / an implementation in Go of *docker-drag*, the tool discussed one bullet point above.
 * `http` only?
 
 ### 
