@@ -12,7 +12,7 @@ Specifically, using the Sailfish-SDK images provided by Coderus for a CI run res
 
 ### Initial assessment
 
-Caching "locally" means, with the measure(s) provided at GitHub, e.g., GitHub "actions".  Ultimately all these solutions use [GitHub's "action" `cache`](https://github.com/actions/cache), which provides 10 GB of cache, expiring its content when unaccessed for a week.  But as some research shows, there are many variants and indirections how to utilise this `cache` "action".
+Caching "locally" means, with the measure(s) provided at GitHub, e.g., GitHub "actions".  Ultimately all these solutions use [GitHub's "action" `cache`](https://github.com/actions/cache), which provides (as of 2023) 10 GB of cache, expiring cached items [LRU based](https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU) or when an item was not accessed for a week.  But as some research shows, there are many variants and indirections how to utilise this `cache` "action".
 
 ### Alternative solutions
 
@@ -28,17 +28,34 @@ The only real alternative solution is to host container images "locally" at GitH
 
 * The "action" `cache` only accepts download targets (i.e., local paths) to be configured as items to cache, not download sources.
 
-* These first two properties of GitHub's "action" `cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images) on Linux, utilising [overlayfs](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt).
+* These first two properties of GitHub's "action" `cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images) on Linux, utilising [overlayfs](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt), because `/var/lib/docker` and all its sub-directories are assigned to the user and group `root` and provide no access for others.  Adding the user `runner` to the group `root` does not help, because this only provides search rights in directories (i.e., the `x` bit is set for directories), but still no access to the files in `/var/lib/docker/[<storage-driver>](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)/`.
 
 * The "action" `cache` only caches items used in a *successful* CI run.  Sometimes it makes sense to always cache items, which are known be independent of the outcome of a CI run, e.g., classic prerequisites for it; exactly what the Sailfish-SDK images constitute for building software for SailfishOS at GitHub.
   
   Others have also noticed that long ago and trivially patched the original "action" `cache` (e.g., [[1]](https://github.com/actions/cache/compare/main...pat-s:always-upload-cache:main#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L24-R24), [[2]](https://github.com/actions/cache/compare/master...gerbal:always-cache:master#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L21-R21)), but very often this ultimately results in stale forks.  Hence [applying this trivial change by "live patching"](https://github.com/mxxk/gh-actions-cache-always) is the only maintainable solution, which resulted in [an improved version of the "live patching" approach](https://github.com/actions/cache/issues/92#issuecomment-1263067512).
   
   ~~Unfortunately~~ GitHub has ~~not~~ provided a way to adjust this behaviour by a CI configuration, ~~despite~~ \[see\] [issue \#92](https://github.com/actions/cache/issues/92) (and subsequent issues [\#165](https://github.com/actions/cache/issues/165), [\#334](https://github.com/actions/cache/issues/334) etc.) has been filed for GitHub's "action" `cache` long ago.<br />
-  *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020), although [this extension of the original "action `cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" still has some appeal due to the simpler usage of the GitHub's original "action" `cache` compared to their new ones `save` and `restore`, which all three are now and continue to be maintained.
+  *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020), although [this extension of the original "action `cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" still has some appeal due to the simpler usage of the GitHub's original "action" `cache` compared to their new ones `save` and `restore`, which all three are now and continue to be maintained.  As their basic properties are the same (except for this point), the remainder of this document can stay unchanged.
 
 ## Exploring the solution space
 
 ### Pre-download the container images
 
-The most trivial way to cope with 
+The most trivial way to cope with "action `cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace"), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/) or [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
+
+Mind that the git repository is also checked out with the "runner workspace" (`$GITHUB_ACTIONS`) as root directory, so do pay attention to not clobber any files or dirctories of your source repository.
+
+#### Suitable tools to download docker images to arbitrary locations in the local file-system:
+
+#### ● [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh) by the [Moby Project](https://mobyproject.org/)
+* Its source code is [hosted at GitHub](https://github.com/moby/moby) and uses the Apache-2.0 license
+* [A by-product](https://github.com/moby/moby/tree/v23.0.0-rc.1/contrib#readme) of a [lively project](https://github.com/moby/moby/pulse)
+* Provides [tagged, stable releases](https://github.com/moby/moby/releases), e.g. (latest as of 2023-01-07), [v20.10.22](https://github.com/moby/moby/blob/v20.10.22/contrib/download-frozen-image-v2.sh)
+* Is a simple and small shell-script (< 400 sloc, ~ 13 KB), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
+* My favorite third-party tool for this approach
+
+#### ● [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh) by the [Moby Project](https://mobyproject.org/)
+* I
+
+
+
