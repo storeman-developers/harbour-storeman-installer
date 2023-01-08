@@ -81,5 +81,47 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Inspired by / an implementation in Go of *docker-drag*, the tool discussed one bullet point above.
 * `http` only?
 
-### 
+### Use an "action", which utilises `action/cache` 
+
+#### Suitable "actions" to cache downloaded docker images:
+
+#### ● [*HTTP Cache Proxy*](https://github.com/marketplace/actions/http-cache-proxy) by [Cirrus Labs](https://github.com/cirruslabs)
+* Its source code is [hosted at GitHub](https://github.com/cirruslabs/http-cache-action) and uses the MIT license.
+* Does provide two releases (as of 2023-01-07) and two corresponding git tags.
+* Written in Go.
+* Not much used.
+* Initially appeared to be an easy an elegant soultion, but …
+* `http` only?
+
+#### ● [*Build docker images using cache*](https://github.com/marketplace/actions/build-docker-images-using-cache) by [Juan Abadie (whoan)](https://github.com/whoan)
+* Its source code is [hosted at GitHub](https://github.com/whoan/docker-build-with-cache-action) and uses the MIT license.
+* Does provide stable releases and git tags (lots!).
+* Written in bash, heavily uses bash specific features.
+* Small, the two bash scripts summarised are < 600 sloc, < 15 KBytes.
+* Aimed at a different purpose: To cache docker images which are needed for building an own image.
+* Initially it appeared to be (ab)usable for solely caching the download of docker images, but a little ananlysis shows, that one would have to dissect the main bash script and adapt it for this purpose: Currently a `docker build` call is unavoidable.
+
+#### ● [*Cached Docker Build*](https://github.com/marketplace/actions/cached-docker-build) by [Matt Kadenbach (mattes)](https://github.com/mattes)
+* Its source code is [hosted at GitHub](https://github.com/mattes/cached-docker-build-action) and uses the Unlicense license.
+* Does provide two releases (as of 2023-01-07) and git tags.
+* Written in JavaScript.
+* Small, summarised < 700 sloc, < 25 KBytes.
+* Appears to be unmaintained.
+* Nobody seems to use it.
+* Appears to be easier to (ab)use for only caching the downloaded docker images than *Build docker images using cache* (discussed one bulet point above).
+
+#### ● *cached-dependencies* by [Jesse Yang (ktmud)](https://github.com/ktmud)
+* Its source code is [hosted at GitHub](https://github.com/ktmud/cached-dependencies) and uses the MIT license.
+* Does provide a single git tag.
+* Written in TypeScript (Microsoft's superset of JavaScript).
+* Smallish, < 100 KBytes.
+* Appears to be a generic caching solution.
+* Despite [extensive documentation](https://github.com/ktmud/cached-dependencies#readme), I fail to quickly comprehend:
+  * How to configure a different source (Docker Hub).
+  * If it is also limited to downloads in the runner's "workspace".
+* Appears to be unmaintained.
+* Pulled from the "GitHub marketplace"?  See https://github.com/marketplace/actions/cached-dependencies
+
+
+
 
