@@ -35,7 +35,7 @@ The only real alternative solution is to host container images "locally" at GitH
   Others have also noticed that long ago and trivially patched the original `action/cache` (e.g., [[1]](https://github.com/actions/cache/compare/main...pat-s:always-upload-cache:main#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L24-R24), [[2]](https://github.com/actions/cache/compare/master...gerbal:always-cache:master#diff-1243c5424efaaa19bd8e813c5e6f6da46316e63761421b3e5f5c8ced9a36e6b6L21-R21)), but very often this ultimately results in stale forks.  Hence [applying this trivial change by "live patching"](https://github.com/mxxk/gh-actions-cache-always) is the only maintainable solution, which resulted in [an improved version of the "live patching" approach](https://github.com/actions/cache/issues/92#issuecomment-1263067512).
   
   ~~Unfortunately~~ GitHub has ~~not~~ provided a way to adjust this behaviour by a CI configuration, ~~despite~~ \[see\] [issue \#92](https://github.com/actions/cache/issues/92) (and subsequent issues [\#165](https://github.com/actions/cache/issues/165), [\#334](https://github.com/actions/cache/issues/334) etc.) has been filed for GitHub's `action/cache` long ago.<br />
-  *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020), which introduces `actions/cache/save` and `actions/cache/restore`; although [this extension of the original `action/cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set and is structurally analog to GitHub's new `actions/cache/save` and `actions/cache/restore`.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" still has some appeal due to the simpler usage of the GitHub's original `action/cache` compared to their new ones action/cache/save` and action/cache/restore`, which all three are now and continue to be maintained.  As their basic properties are the same (except for this point), the remainder of this document can stay unchanged.
+  *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020) by the initial release of `actions/cache/save` and `actions/cache/restore` in December 2022; although [this extension of the original `action/cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set and is structurally analog to GitHub's new `actions/cache/save` and `actions/cache/restore`.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" GitHub's original `action/cache` to also cache when the job fails still has some appeal due to the simpler usage of `action/cache` compared to the new `action/cache/save` and `action/cache/restore`, which all three are now and continue to be maintained by GitHub.  As their basic properties are the same (except for this point), the remainder of this document can stay unchanged.
 
 ## Exploring the solution space
 
@@ -54,26 +54,26 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Is a simple and small shell-script (< 400 sloc, ~ 13 KBytes), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
 * My favorite third-party tool for this approach.
 
-#### ● [*Scopeo*](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
+#### ● [Scopeo](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/skopeo) and uses the Apache-2.0 license.
 * Created and maintained by a [lively project](https://github.com/containers/skopeo/pulse).
 * Provides [tagged, stable releases](https://github.com/containers/skopeo/releases).
 * Is a capable container image management utility written in Go, hence first needs to be compiled.
 
-#### ● [*storage*](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
+#### ● [storage](https://github.com/containers/storage#readme) also by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/storage) and uses the Apache-2.0 license.
 * Created and maintained by a [lively project](https://github.com/containers/storage/pulse).
 * Provides [tagged, stable releases](https://github.com/containers/storage/releases).
 * Is a capable container storage management library written in Go, hence first needs to be compiled.
 * Provides the [`containers-storage` CLI wrapper](https://github.com/containers/storage/tree/main/cmd/containers-storage#readme) for manual and scripting use.
 
-#### ● [*docker-drag*](https://github.com/NotGlop/docker-drag) by [NotGlop](https://github.com/NotGlop)
+#### ● [docker-drag](https://github.com/NotGlop/docker-drag) by [NotGlop](https://github.com/NotGlop)
 * Its source code is [hosted at GitHub](https://github.com/NotGlop/docker-drag) and carries no license.
 * Apparently unmaintained.
 * Does not provide releases or git tags.
 * Is a simple and small Python script (187 sloc, 7,3 KBytes), called [`docker_pull.py`](https://github.com/NotGlop/docker-drag/blob/master/docker_pull.py).
 
-#### ● [*docker_pull*](https://github.com/ahdrr/docker_pull) by [ahdrr](https://github.com/ahdrr)
+#### ● [docker_pull](https://github.com/ahdrr/docker_pull) by [ahdrr](https://github.com/ahdrr)
 * Its source code is [hosted at GitHub](https://github.com/ahdrr/docker_pull) and carries no license.
 * Created in 2022.
 * Does provide two releases (as of 2023-01-07) and git tags.
@@ -85,7 +85,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 
 #### Suitable "actions" to cache downloaded docker images:
 
-#### ● [*HTTP Cache Proxy*](https://github.com/marketplace/actions/http-cache-proxy) by [Cirrus Labs](https://github.com/cirruslabs)
+#### ● [HTTP Cache Proxy](https://github.com/marketplace/actions/http-cache-proxy) by [Cirrus Labs](https://github.com/cirruslabs)
 * Its source code is [hosted at GitHub](https://github.com/cirruslabs/http-cache-action) and uses the MIT license.
 * Does provide two releases (as of 2023-01-07) and two corresponding git tags.
 * Written in Go.
@@ -93,7 +93,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Initially appeared to be an easy an elegant soultion, but …
 * `http` only?
 
-#### ● [*Build docker images using cache*](https://github.com/marketplace/actions/build-docker-images-using-cache) by [Juan Abadie (whoan)](https://github.com/whoan)
+#### ● [Build docker images using cache](https://github.com/marketplace/actions/build-docker-images-using-cache) by [Juan Abadie (whoan)](https://github.com/whoan)
 * Its source code is [hosted at GitHub](https://github.com/whoan/docker-build-with-cache-action) and uses the MIT license.
 * Does provide stable releases and git tags (lots!).
 * Written in bash, heavily uses bash specific features.
@@ -101,7 +101,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Aimed at a different purpose: To cache docker images which are needed for building an own image.
 * Initially it appeared to be (ab)usable for solely caching the download of docker images, but a little ananlysis shows, that one would have to dissect the main bash script and adapt it for this purpose: Currently a `docker build` call is unavoidable.
 
-#### ● [*Cached Docker Build*](https://github.com/marketplace/actions/cached-docker-build) by [Matt Kadenbach (mattes)](https://github.com/mattes)
+#### ● [Cached Docker Build](https://github.com/marketplace/actions/cached-docker-build) by [Matt Kadenbach (mattes)](https://github.com/mattes)
 * Its source code is [hosted at GitHub](https://github.com/mattes/cached-docker-build-action) and uses the Unlicense license.
 * Does provide two releases (as of 2023-01-07) and git tags.
 * Written in JavaScript.
@@ -110,7 +110,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Nobody seems to use it.
 * Appears to be easier to (ab)use for only caching the downloaded docker images than *Build docker images using cache* (discussed one bulet point above).
 
-#### ● [*cached-dependencies*](https://github.com/marketplace/actions/cached-dependencies) by [Jesse Yang (ktmud)](https://github.com/ktmud)
+#### ● [cached-dependencies](https://github.com/marketplace/actions/cached-dependencies) by [Jesse Yang (ktmud)](https://github.com/ktmud)
 * Its source code is [hosted at GitHub](https://github.com/ktmud/cached-dependencies) and uses the MIT license.
 * Does provide a single git tag.
 * Written in TypeScript (Microsoft's superset of JavaScript).
@@ -123,7 +123,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
   * If it is also limited to downloads in the runner's "workspace".
 * Pulled from the "GitHub marketplace" (yesterday it was still there and is still [found via the search](https://github.com/marketplace?type=actions&query=cached-+))?  See https://github.com/marketplace/actions/cached-dependencies
 
-#### ● [*Docker Cache*](https://github.com/marketplace/actions/docker-cache) by [ScribeMD](https://github.com/ScribeMD)
+#### ● [Docker Cache](https://github.com/marketplace/actions/docker-cache) by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/docker-cache) and uses the MIT license.
 * Does provide stable releases and git tags (lots!).
 * Written in TypeScript (Microsoft's superset of JavaScript).
@@ -132,7 +132,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be a generic caching solution for Docker images.
 * Explicitly denotes the use case "pull images from Docker Hub"!
 
-#### ● [*Rootless Docker*](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
+#### ● [Rootless Docker](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/rootless-docker) and uses the MIT license.
 * Does provide stable releases and git tags (lots!).
 * Seem to be primarily written in Python with some JavaScript / TypeScript (Microsoft's superset of JavaScript).
@@ -143,6 +143,6 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 
 ## Down-selection of possible solutions to try
 
-1. [*Rootless Docker*](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
-2. [*Docker Cache*](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache
+1. [Rootless Docker](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
+2. [Docker Cache](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache
 3. [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh): https://github.com/moby/moby/tree/master/contrib#readme
