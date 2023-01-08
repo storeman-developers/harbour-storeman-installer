@@ -41,7 +41,7 @@ The only real alternative solution is to host container images "locally" at GitH
 
 ### Pre-download the container images
 
-The most trivial way to cope with "`action/cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace"), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) (or [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/)) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
+The most trivial way to cope with `action/cache`'s access limitations is to pre-download images expicitly.  For this one creates a download directory by issuing `mkdir -p $GITHUB_ACTIONS/<image-name>` (the `-p` is only used to prevent an error, when the dirctory already exists; `$GITHUB_ACTIONS` resolves to `/home/runner` on Linux, GitHub calls this location "runner workspace", it is naturally also the initial PWD), download the image by some third party tool (the docker CLI commands do not allow for setting the download location), then execute a [`docker image load`](https://docs.docker.com/engine/reference/commandline/image_load/) (or [`docker image import`](https://docs.docker.com/engine/reference/commandline/image_import/)) and ultimately continue as before  (e.g., instanciating and starting a docker container by [`docker run`](https://docs.docker.com/engine/reference/commandline/run/)).
 
 Mind that the git repository is also checked out to the "runner workspace" (`$GITHUB_ACTIONS`) as root directory, so do pay attention to not clobber any files or directories of your source repository.
 
@@ -110,18 +110,39 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Nobody seems to use it.
 * Appears to be easier to (ab)use for only caching the downloaded docker images than *Build docker images using cache* (discussed one bulet point above).
 
-#### ● *cached-dependencies* by [Jesse Yang (ktmud)](https://github.com/ktmud)
+#### ● [*cached-dependencies*](https://github.com/marketplace/actions/cached-dependencies) by [Jesse Yang (ktmud)](https://github.com/ktmud)
 * Its source code is [hosted at GitHub](https://github.com/ktmud/cached-dependencies) and uses the MIT license.
 * Does provide a single git tag.
 * Written in TypeScript (Microsoft's superset of JavaScript).
 * Smallish, < 100 KBytes.
-* Appears to be a generic caching solution.
+* Appears to be unmaintained.
+* Appears to be a generic caching solution for pulling external dependencies.
+* States to be adaptable, includes cache configurations for pip, npm and yarn.
 * Despite [extensive documentation](https://github.com/ktmud/cached-dependencies#readme), I fail to quickly comprehend:
   * How to configure a different source (Docker Hub).
   * If it is also limited to downloads in the runner's "workspace".
-* Appears to be unmaintained.
-* Pulled from the "GitHub marketplace"?  See https://github.com/marketplace/actions/cached-dependencies
+* Pulled from the "GitHub marketplace" (yesterday it was still there and is still [found via the search](https://github.com/marketplace?type=actions&query=cached-+))?  See https://github.com/marketplace/actions/cached-dependencies
 
+#### ● [*Docker Cache*](https://github.com/marketplace/actions/docker-cache) by [ScribeMD](https://github.com/ScribeMD)
+* Its source code is [hosted at GitHub](https://github.com/ScribeMD/docker-cache) and uses the MIT license.
+* Does provide stable releases and git tags (lots!).
+* Written in TypeScript (Microsoft's superset of JavaScript).
+* Smallish, < 100 KBytes.
+* Appears to be well maintained.
+* Appears to be a generic caching solution for Docker images.
+* Explicitly denotes the use case "pull images from Docker Hub"!
 
+#### ● [*Rootless Docker*](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
+* Its source code is [hosted at GitHub](https://github.com/ScribeMD/rootless-docker) and uses the MIT license.
+* Does provide stable releases and git tags (lots!).
+* Seem to be primarily written in Python with some JavaScript / TypeScript (Microsoft's superset of JavaScript).
+* Smallish, < 100 KBytes.
+* Appears to be well maintained.
+* States to provide a set of advantages over running docker conventionally in root mode.
+* Renders any specific caching moot, as GitHub's `action/cache` suffices.
 
+## Down-selection of possible solutions to try
 
+1. [*Rootless Docker*](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
+2. [*Docker Cache*](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache
+3. [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh): https://github.com/moby/moby/tree/master/contrib#readme
