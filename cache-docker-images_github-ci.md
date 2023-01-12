@@ -28,7 +28,7 @@ The only real alternative solution is to host container images "locally" at GitH
 
 * The `action/cache` only accepts download targets (i.e., local paths) to be configured as items to cache, not download sources.
 
-* These first two properties of GitHub's `action/cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images) on Linux, utilising [overlayfs](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt), because `/var/lib/docker` and all its sub-directories are assigned to the user and group `root` and provide no access for others.  Adding the user `runner` to the group `root` does not help, because this only provides search rights in directories (i.e., the `x` bit is set for directories), but still no access to the files in `/var/lib/docker/[<storage-driver>](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)/`.
+* These first two properties of GitHub's `action/cache` prevent to simply cache the images downloaded by the local docker instance, usually (in 2023) [in `/var/lib/docker/overlay2/`](https://www.freecodecamp.org/news/where-are-docker-images-stored-docker-container-paths-explained/#docker-images) on Linux (utilising [overlayfs](https://www.kernel.org/doc/Documentation/filesystems/overlayfs.txt)), because `/var/lib/docker` and all its sub-directories are assigned to the user and group `root` and provide no access for others.  Adding the user `runner` to the group `root` does not help, because this only provides search permission in directories (i.e., the `x` bit is set for directories), but still no access to the files in `/var/lib/docker/[<storage-driver>](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)/`.
 
 * The `action/cache` only caches items used in a *successful* CI run.  Sometimes it makes sense to always cache items, which are known be independent of the outcome of a CI run, e.g., classic prerequisites for it; exactly what the Sailfish-SDK images constitute for building software for SailfishOS at GitHub.
   
@@ -36,6 +36,8 @@ The only real alternative solution is to host container images "locally" at GitH
   
   ~~Unfortunately~~ GitHub has ~~not~~ provided a way to adjust this behaviour by a CI configuration, ~~despite~~ \[see\] [issue \#92](https://github.com/actions/cache/issues/92) (and subsequent issues [\#165](https://github.com/actions/cache/issues/165), [\#334](https://github.com/actions/cache/issues/334) etc.) has been filed for GitHub's `action/cache` long ago.<br />
   *Edit:* [Mostly solved](https://github.com/actions/cache/discussions/1020) by the initial release of `actions/cache/save` and `actions/cache/restore` in December 2022; although [this extension of the original `action/cache`](https://github.com/MartijnHols/actions-cache) still provides a larger feature set and is structurally analog to GitHub's new `actions/cache/save` and `actions/cache/restore`.  This is [now the recommended way of storing items in a cache](https://github.com/actions/cache/tree/main/save#always-save-cache), regardless if the whole action is sucessful or fails; still "live patching" GitHub's original `action/cache` to also cache when the job fails still has some appeal due to the simpler usage of `action/cache` compared to the new `action/cache/save` and `action/cache/restore`, which all three are now and continue to be maintained by GitHub.  As their basic properties are the same (except for this point), the remainder of this document can stay unchanged.
+  
+  <sup>Plan: Enhance and release [an "live patching" of the original `action/cache`](https://github.com/Olf0/always-cache), ultimately also to the GitHub Marketplace.</sup>
 
 ## Exploring the solution space
 
@@ -108,7 +110,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Small, summarised < 700 sloc, < 25 KBytes.
 * Appears to be unmaintained.
 * Nobody seems to use it.
-* Appears to be easier to (ab)use for only caching the downloaded docker images than *Build docker images using cache* (discussed one bulet point above).
+* Appears to be easier to (ab)use for only caching the downloaded docker images than *Build docker images using cache* (discussed one bullet point above).
 
 #### ● [cached-dependencies](https://github.com/marketplace/actions/cached-dependencies) by [Jesse Yang (ktmud)](https://github.com/ktmud)
 * Its source code is [hosted at GitHub](https://github.com/ktmud/cached-dependencies) and uses the MIT license.
