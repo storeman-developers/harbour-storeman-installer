@@ -19,24 +19,63 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Prepare
+      run: |
+        mkdir RPMS
+        sudo su
+
     - name: Cache SDK image
       id: cache-sdk
       uses: actions/cache@v3
       with:
-        path: coderus/github-sfos-build@old-stable
+        path: |
+          '/var/lib/docker/overlay2/[0-9a-f][0-9a-f]*/diff/*'
+          '/var/lib/docker/overlay2/[0-9a-f][0-9a-f]*/lower'
         key: cache
 
-    - name: Prepare
-      run: mkdir RPMS
-
     - name: Build armv7hl
-      uses: coderus/github-sfos-build@old-stable
+      uses: storeman-developers/github-sfos-build@old-stable
       with:
         release: 3.1.0.12
         arch: armv7hl
+
+    - name: Debug output
+      run: |
+        # echo "ls -laR /var/lib/docker/overlay2"
+        # sudo ls -laR /var/lib/docker/overlay2
+        # echo
+        # echo "du -ach /home/runner/runners"
+        # sudo du -ach /home/runner/runners
+        # echo
+        echo "docker info"
+        sudo docker info
+        echo
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo
+        echo "PWD: $(pwd)"
+        echo
+        echo "GITHUB_ACTIONS: $GITHUB_ACTIONS"
+        echo
+        echo "WhoAmI: $(whoami)"
+        echo
+        echo "MyGroups: $(groups)"
+        echo
+        echo "/etc/group"
+        cat /etc/group
+        echo
+        # echo "Files > 50 MB:"
+        # sudo find /tmp /var /home /mnt /opt /run /srv /imagegeneration /media /root /srv -type f -size 100M -printf "%s  %p\n"
+        # echo
+        echo "docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12"
+        sudo docker image inspect coderus/sailfishos-platform-sdk:3.1.0.12    
+        echo
+        a='/var/lib/docker/overlay2/*'
+        echo "ls -la $a"
+        sudo ls -la $a || true
 
     - name: Upload build result
       uses: actions/upload-artifact@v3
       with:
         name: rpm-build-result
         path: RPMS/
+
