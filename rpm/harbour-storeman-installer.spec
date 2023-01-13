@@ -179,9 +179,10 @@ exit 0
 
 %changelog
 * Wed Jan 04 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
-- Enhance spec file comments (#247)
+- Create double-fork-in-shell.md
 - Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
 - Update and enhance CI workflow script (#244, #245, #247, #254)
+- Enhance spec file and its comments (#247)
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul REDAME while updating it for v1.3.8+ and v2+
 - Minor changes
