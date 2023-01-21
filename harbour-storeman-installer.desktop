@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Application
+X-Nemo-Application-Type=Generic
 Icon=harbour-storeman-installer
 Exec=harbour-storeman-installer
 Name=Install Storeman
