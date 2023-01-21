@@ -205,6 +205,7 @@ exit 0
 - Clean up and optimise a bit
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 2.1.1-release1
 - Clean up
+- Optimise
 * Mon Dec 19 2022 olf <Olf0@users.noreply.github.com> - 1.3.9-release2
 - Simplify
 * Sat Dec 17 2022 olf <Olf0@users.noreply.github.com> - 1.3.8-release1
