@@ -17,7 +17,9 @@
 #### "Generic form"
 `(umask 0022; cd /; setsid --fork sh -c '(<command-list-to-execute [$1] [$2] [<…>] [individual-redirections-for-a-command]>)' [<arbitrary-name-for-$0-of-sh-c> [<parameter1-for-$1-"inside"-sh-c>] [<parameter2-for-$2-"inside"-sh-c>] [<…>]] [global-redirections-for-the-whole-command-list]) > /dev/null 2>&1 < /dev/null`
 
-##### Minimalistic form; inerits umask, PWD and and file descriptors from caller
+#### Minimalistic form
+Inerits umask, PWD and and file descriptors from caller
+
 `setsid --fork sh -c '(<commmand-list>)'`
 
 ## Variations
@@ -46,7 +48,7 @@
   Observing the dynamics of these actions can be best achieved by instrumenting the calling and called script with `ps -o stat,tty,user,group,pgid,sid,ppid,pid,comm,args` (field names from busybox's `ps`, other `ps`-implementations may call the SessionID-field `ssid`) at appropiate locations, plus some, but not too tight filtering (e.g., `ps -eo … | grep …` etc.), and output redirection to a file (e.g., `>> mylog.txt`).  See [this branch for an example](https://github.com/storeman-developers/harbour-storeman-installer/tree/2.0.44), the minimalistic `ps` call options are used in order to work with busybox's `ps` implementation (which is not fully POSIX compliant).
 
 ## Larger variations
-- Because one usually starts the whole double-fork to the innermost \<command-list\> from a shell (respectively, a script interpreted by one), one may omit the outer sub-shell call via `(…)` (as depicted in the "[minimalistic form](minimalistic-form)", above) and use the shell from which the double fork is called to set umask and PWD there; the outer sub-shell call was solely employed for not altering the callers environment.
+- Because one usually starts the whole double-fork to the innermost \<command-list\> from a shell (respectively, a script interpreted by one), one may omit the outer sub-shell call via `(…)` (as depicted in the "[minimalistic form](#minimalistic-form)", above) and use the shell from which the double fork is called to set umask and PWD there; the outer sub-shell call was solely employed for not altering the callers environment.
   If the caller finishes after the double-fork, this is a logical thing to do, e.g.:<br />
   `…`<br />
   `umask 7113`<br />
@@ -63,7 +65,7 @@
   `umask $curmask`<br />
   `popd`<br />
   `…`<br />
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/rpm/harbour-storeman-installer.spec#L116-L124).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.6/rpm/harbour-storeman-installer.spec#L117-L125).
 - Because a long \<command-list\> "inside" the `setsid --fork sh -c '…'` is not nice to handle and maintain, one can simply put the \<command-list\> in a shell script (which might consume positional parameters) and call that via `setsid --fork sh -c '(myscript $1 $2 …)' <name-for-$0> $$ <param2-for-$2> > /dev/null 2>&1 < /dev/null`<br />
   Then `myscript` might perform the necessary actions (*except* for setting the environment, which shall be performed as early as possible: umask, PWD, redirections), e.g. (continuing to use the example introduced one bullet point above):
   ```
@@ -75,7 +77,7 @@
   <cmd-list [$2]>
   …
   ```
-  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/bin/harbour-storeman-installer#L69-L87).
+  A "real-life example" [can be seen here](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.6/bin/harbour-storeman-installer#L69-L87).
 
 ## Motivation
 
@@ -87,7 +89,7 @@ I know that other people have solved this by utilising `cron` or `systemd`, but 
 - One does not want any time-based waiting, because no one can tell how long the initial "installer" package installation will take on a non-deterministic software stack (i.e., not a real-time system); imagine a machine is heavily swapping and hence (almost) grinding to a halt.  Thus timer units or cron jobs are not suitable to implement this robustly.
 - Consequently one has to transmit the PID of the `%posttrans` scriptlet interpreter (usually `bash`) to the fully detached process, when it is instanciated, so it can wait for the `%posttrans` interpreter to finish execution of the scriptlet.  Systemd allows for a single parameter to be transmitted to "instanciated units", but the wait function (a `while` or `until` loop) has to be implemented in an external script called by an `ExecStartPre=` statement (or pack the whole wait function awkwardly in an `sh -c '…'`), because systemd does not allow for loops or any other kind of programme flow control.
 - That was the moment I realised that a single, own shell script is more elegant and provides one with many more degrees of freedom than being limited to systemd's unit syntax.  The only open design question was then how to become fully detached from the caller.  I remembered the concept of double-forking / "daemonizing" for UNIX daemons, which were once usually written in C, to fully detach a process from its caller.
-- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.3/bin/harbour-storeman-installer#L207-L223), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable RPM package.
+- The final twist for a robust implementation was [to trigger the installation of the main package *also* in a fully detached manner by double-forking, then waiting for the grandparent to finish (i.e., the installer script)](https://github.com/storeman-developers/harbour-storeman-installer/blob/2.1.6/bin/harbour-storeman-installer#L207-L223), because the main package automatically triggers the removal of the "installer" package (including its "installer" script) by a `Conflicts:` dependency on it.  This way the main package can be kept free of any special measures WRT the two stepped installation procedure (except for the single `Conflicts: <installer>` statement) and thus can still be directly installed after manually enabling the correct repository or downloading a suitable RPM package.
 
 #### General information about various aspects of double forking / daemonising
 Hence I started searching the WWW for how to perform a double fork / daemonise in shell code, without finding anything really useful for UNIX shells, but really good explanations and examples in C, Python, Ruby etc.:
