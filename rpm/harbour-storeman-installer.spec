@@ -1,22 +1,22 @@
 Summary:        Installs Storeman for SailfishOS
 License:        MIT
 Name:           harbour-storeman-installer
-# The Git release tag format must adhere to just <version> since version 1.2.6.
-# The <version> field adheres to semantic versioning and the <release> field 
-# comprises one of {alpha,beta,rc,release} postfixed with a natural number
-# greater or equal to 1 (e.g., "beta3").  For details and reasons, see
+# The Git release tag format must adhere to just <version>.  The <version>
+# field adheres to semantic versioning and the <release> field comprises a
+# natural number greater or equal to 1, which may be prefixed with one of
+# {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        1.4.3
-Release:        release6
+Version:        1.4.4
+Release:        release7
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
-# These "Source:" lines below require that the value of ${name} is also the
-# project name at GitHub and the value of ${version} is also the name of a
+# These "Source:" lines below require that the value of %%{name} is also the
+# project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
 # Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       https://github.com/storeman-developers/%%{name}/archive/%%{version}.tar.gz
-# Source:       https://github.com/storeman-developers/%%{name}/archive/refs/tags/%%{version}.tar.gz
-Source:         https://github.com/storeman-developers/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+# Source:       %%{url}/archive/%%{version}.tar.gz
+# Source:       %%{url}/archive/refs/tags/%%{version}.tar.gz
+Source:         %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
@@ -29,8 +29,8 @@ Requires(post): ssu
 Requires:       PackageKit
 # `or` was introduced with RPM 4.13, SailfishOS v2.2.1 started deploying v4.14:
 # https://together.jolla.com/question/187243/changelog-221-nurmonjoki/#187243-rpm
-# But the SailfishOS-OBS' does not, either due to the antique release or `tar_git`:
-# https://github.com/MeeGoIntegration/obs-service-tar-git
+# But the SailfishOS-OBS' does not support `or`, either due to the antique OBS
+# release or `tar_git`: https://github.com/MeeGoIntegration/obs-service-tar-git
 # ToDo: Check if the GNU-versions of these packages (named as alternatives below)
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
@@ -76,7 +76,7 @@ Categories:
  - System
  - Network
  - PackageManager
-DeveloperName: Storeman developers (mentaljam)
+DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
 Icon: %{url}/raw/master/icons/%{name}.svg
@@ -93,6 +93,7 @@ Url:
   Homepage: %{url}
   Help: %{url}/issues
   Bugtracker: %{url}/issues
+  Donation: https://openrepos.net/donate
 %endif
 
 %prep
@@ -160,26 +161,32 @@ fi
 # is indicated that solely the final exit status of a whole scriptlet is crucial: 
 # See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
 # or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
-# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) as
-# "8d0cec9 Partially convert to semantic line breaks." in
+# committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) in
 # https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
 # Hence I have the impression, that only the main section of a spec file is
-# interpreted by `rpmbuild` in a shell called with the option `-e', but not the
-# scriptlets (`%pre`, `%post`, `%preun`, `%postun`, `%pretrans`, `%posttrans`,
-# `%trigger*` and `%file*`), which are also not interpreted by `rpmbuild`!
+# interpreted in a shell called with the option `-e', but not the scriptlets
+# (`%%pre*`, `%%post*`, `%%trigger*` and `%%file*`).
 exit 0
 
 %files
 %defattr(-,root,root,-)
-%attr(0754,root,ssu) %{_bindir}/%{name}
+%attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
 #%%{_sysconfdir}/%%{localauthority_dir}/50-%%{name}.pkla
 
 %changelog
+* Tue Jan 24 2023 olf <Olf0@users.noreply.github.com> - 1.4.4-release7
+- Apply changes from v2.1.7 to v1.x.y
+- Fix privilege issue on SailfishOS > 4.x by returning to the classic access rights for /usr/bin/*: 0755,root,root
+* Sun Jan 22 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
+- Create double-fork-in-shell.md
+- Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
+- Update and enhance CI workflow script (#244, #245, #247, #254)
+- Enhance spec file and its comments (#247)
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
-- Overhaul REDAME while updating it for v1.3.8+ and v2+
+- Overhaul README while updating it for v1.3.8+ and v2+
 - Minor changes
 - First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
@@ -219,22 +226,22 @@ exit 0
   - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
   - Print version of harbour-storeman-installer package in the log file entry of each run
   - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
-* Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
+* Fri Dec  9 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update harbour-storeman-installer script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt harbour-storeman-installer script for interactive use (#144)
 - Log file needs to be writeable (#146)
-* Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
+* Wed Dec  7 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
 - Start the harbour-storeman-installer script as detached ("&") in the %%posttrans scriptlet
 - Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
-* Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
+* Sun Dec  4 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite harbour-storeman-installer script in /usr/bin (#136)
 - The harbour-storeman-installer script ultimately issues pkcon install harbour-storeman … & (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
-* Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
+* Sat Dec  3 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
 - Tidy spec file as implemented in v2.0 (#130)
 - Clarify comment (#128)
-* Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
+* Thu Dec  1 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
 - Refine %%post scriptlet of the spec file (#96)
 * Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
@@ -243,13 +250,13 @@ exit 0
 - Enhance multiple aspects of the spec file (#89, #91, #93)
 - Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
-* Sat Jun 04 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
+* Sat Jun  4 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <Olf0@users.noreply.github.com> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <Olf0@users.noreply.github.com> - 1.2.7-release1
 - Fix icon deployment
-* Thu Apr 07 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
+* Thu Apr  7 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
