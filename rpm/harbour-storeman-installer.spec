@@ -178,8 +178,8 @@ exit 0
 
 %changelog
 * Tue Jan 24 2023 olf <Olf0@users.noreply.github.com> - 1.4.4-release7
-- Apply changes from v2.1.7 to v1.x.y
-- Fix privilege issue on SailfishOS > 4.x by returning to the classic access rights for /usr/bin/*: 0755,root,root
+- Apply changes from v2.1.7 to v1.x.y branch
+- Fix privilege issue on SailfishOS > 4.x by returning to the classic access rights for `/usr/bin/*`: 0755,root,root
 * Sun Jan 22 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
 - Create double-fork-in-shell.md
 - Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
@@ -190,15 +190,15 @@ exit 0
 - Minor changes
 - First regular release of v2, which is available at OpenRepos and SailfishOS:Chum
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 1.4.3-release6
-- Apply changes from v2.1.5 to v1.x.y
+- Apply changes from v2.1.5 to v1.x.y branch
 * Fri Dec 23 2022 olf <Olf0@users.noreply.github.com> - 2.1.5-release4
 - Beautifications of code and log output, etc.
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 1.4.2-release5
-- Apply changes from v2.1.4 to v1.x.y
+- Apply changes from v2.1.4 to v1.x.y branch
 * Thu Dec 22 2022 olf <Olf0@users.noreply.github.com> - 2.1.4-release3
 - Handle a stalled packagekit better
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 1.4.1-release4
-- Apply "more clean-up and optimisations" from v2.1.2 to v1.x.y
+- Apply "more clean-up and optimisations" from v2.1.2 to v1.x.y branch
 * Wed Dec 21 2022 olf <Olf0@users.noreply.github.com> - 2.1.2-release2
 - More clean-up and optimisations
 * Tue Dec 20 2022 olf <Olf0@users.noreply.github.com> - 1.4.0-release3
