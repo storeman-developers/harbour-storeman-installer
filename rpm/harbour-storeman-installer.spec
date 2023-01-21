@@ -170,7 +170,7 @@ exit 0
 
 %files
 %defattr(-,root,root,-)
-%attr(0754,root,ssu) %{_bindir}/%{name}
+%attr(0755,root,root) %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %{hicolor_icons_dir}/*/apps/%{name}.png
 %{_sharedstatedir}/%{localauthority_dir}/50-%{name}.pkla
@@ -178,8 +178,8 @@ exit 0
 
 %changelog
 * Tue Jan 24 2023 olf <Olf0@users.noreply.github.com> - 1.4.4-release7
-- Adopt changes from v2.1.7
-- Try to fix priviledge issue on SailfishOS 4.4
+- Apply changes from v2.1.7 to v1.x.y
+- Fix privilege issue on SailfishOS > 4.x by returning to the classic access rights for /usr/bin/*: 0755,root,root
 * Sun Jan 22 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
 - Create double-fork-in-shell.md
 - Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
