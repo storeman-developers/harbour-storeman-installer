@@ -178,10 +178,13 @@ exit 0
 
 %changelog
 * Sun Jan 22 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
-- Create double-fork-in-shell.md
 - Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
 - Update and enhance CI workflow script (#244, #245, #247, #254)
-- Enhance spec file and its comments (#247)
+- Enhance spec file and its comments (#224, #242, #247, #264)
+- Rectify and update %%changelog (#256, #257, #261, #262)
+- Enhance double-fork-in-shell.md
+- Improve the three issue-templates
+- Shorten README.md (#235, #240, #259)
 * Sun Dec 25 2022 olf <Olf0@users.noreply.github.com> - 2.1.6-release5
 - Overhaul README while updating it for v1.3.8+ and v2+
 - Minor changes
