@@ -180,7 +180,7 @@ exit 0
 * Tue Jan 24 2023 olf <Olf0@users.noreply.github.com> - 1.4.4-release7
 - Adopt changes from v2.1.7
 - Try to fix priviledge issue on SailfishOS 4.4
-* Wed Jan  4 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
+* Sun Jan 22 2023 olf <Olf0@users.noreply.github.com> - 2.1.7-release6
 - Create double-fork-in-shell.md
 - Create cache-docker-images_github-ci.md (#249, #250, #251, #252, #253)
 - Update and enhance CI workflow script (#244, #245, #247, #254)
@@ -226,22 +226,22 @@ exit 0
   - Start installation of harbour-storeman fully detached ("double fork" / daemonize)
   - Print version of harbour-storeman-installer package in the log file entry of each run
   - Refactor and enhance failure of: pkcon repo-set-data harbour-storeman-obs refresh-now true  
-* Fri Dec 09 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
+* Fri Dec  9 2022 olf <Olf0@users.noreply.github.com> - 1.3.5-release1
 - Update harbour-storeman-installer script to version in defer-inst-via-detached-script branch (#144)
 - Re-adapt harbour-storeman-installer script for interactive use (#144)
 - Log file needs to be writeable (#146)
-* Wed Dec 07 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
+* Wed Dec  7 2022 olf <Olf0@users.noreply.github.com> - 2.0.12-release1.detached.script
 - Start the harbour-storeman-installer script as detached ("&") in the %%posttrans scriptlet
 - Thus eliminating the necessity for user interaction(s), besides triggering the installation of Storeman Installer
-* Sun Dec 04 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
+* Sun Dec  4 2022 olf <Olf0@users.noreply.github.com> - 1.3.4-release1
 - Radically rewrite harbour-storeman-installer script in /usr/bin (#136)
 - The harbour-storeman-installer script ultimately issues pkcon install harbour-storeman … & (i.e., also detached), allowing this script to be removed in the process of the Storeman installation
 - Do not use pkcon's option -n; it is slow enough (#134)
-* Sat Dec 03 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
+* Sat Dec  3 2022 olf <Olf0@users.noreply.github.com> - 1.3.3-release1
 - Start pkcon commands with the options -pn (#130)
 - Tidy spec file as implemented in v2.0 (#130)
 - Clarify comment (#128)
-* Thu Dec 01 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
+* Thu Dec  1 2022 olf <Olf0@users.noreply.github.com> - 1.3.2-release1
 - Refine %%post scriptlet of the spec file (#96)
 * Wed Nov 30 2022 olf <Olf0@users.noreply.github.com> - 1.3.1-release1
 - Fix auto-removing Storeman < 0.3.0 on SailfishOS ≥ 3.1.0 (#109)
@@ -250,13 +250,13 @@ exit 0
 - Enhance multiple aspects of the spec file (#89, #91, #93)
 - Many small enhancements of comments, strings and other non-code assets
 - Storeman Installer ≥ 1.3.0 is a prerequisite for Storeman ≥ 0.3.2
-* Sat Jun 04 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
+* Sat Jun  4 2022 olf <Olf0@users.noreply.github.com> - 1.2.9-release1
 - pkcon expects options before the command (#74)
 * Sun May 15 2022 olf <Olf0@users.noreply.github.com> - 1.2.8-release1
 - Requires: sailfish-version >= 3.1.0 (#61), because this is the oldest SailfishOS release any Storeman version installed by Storeman Installer will work on.
 * Sun Apr 10 2022 olf <Olf0@users.noreply.github.com> - 1.2.7-release1
 - Fix icon deployment
-* Thu Apr 07 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
+* Thu Apr  7 2022 olf <Olf0@users.noreply.github.com> - 1.2.6-release1
 - Release tags must not carry a prepended "v" any longer and solely consist of a simple semantic version number a.b.c, because … (see next point)
 - Specify a correct source link at GitHub (#42)
 - Address a couple of rpmlint complaints
