@@ -10,13 +10,13 @@ Version:        2.1.8
 Release:        release7
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
-# These "Source:" lines below require that the value of %%{name} is also the
+# These "Source0:" line below requires that the value of %%{name} is also the
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-# Alternative links, which also download ${projectname}-${tagname}.tar.gz:
-# Source:       %%{url}/archive/%%{version}.tar.gz
-# Source:       %%{url}/archive/refs/tags/%%{version}.tar.gz
-Source:         %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+# Note that the rpmlintrc file shall be named exactly so according to
+# https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
+Source99:       %{name}-rpmlintrc
 BuildArch:      noarch
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
@@ -94,7 +94,7 @@ Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-08.png
  - %{screenshots_url}screenshot-screenshot-storeman-09.png
 Url:
-  Homepage: %{url}
+  Homepage: https://openrepos.net/content/olf/storeman-installer
   Help: %{url}/issues
   Bugtracker: %{url}/issues
   Donation: https://openrepos.net/donate
