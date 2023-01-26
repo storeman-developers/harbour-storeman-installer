@@ -177,6 +177,6 @@ exit 0
 %attr(0754,root,ssu) %{_bindir}/%{name}
 
 %changelog
-* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 9.9.9
+* Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
 - See %{url}/releases
 
