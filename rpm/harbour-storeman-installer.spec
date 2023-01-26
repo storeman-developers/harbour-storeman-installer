@@ -174,7 +174,7 @@ setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" 
 exit 0
 
 %files
-%attr(0754,root,ssu) %{_bindir}/%{name}
+%attr(0750,root,root) %{_bindir}/%{name}
 
 %changelog
 * Thu Sep  9 1999 olf <Olf0@users.noreply.github.com> - 99.99.99
