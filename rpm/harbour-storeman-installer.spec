@@ -79,6 +79,7 @@ Categories:
  - Utility
  - System
  - Network
+ - Settings
  - PackageManager
 DeveloperName: olf (Olf0)
 Custom:
