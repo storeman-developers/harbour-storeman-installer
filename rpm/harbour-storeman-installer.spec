@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # natural number greater or equal to 1, which may be prefixed with one of
 # {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.1.8
-Release:        release7
+Version:        2.2.0
+Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source0:" line below requires that the value of %%{name} is also the
@@ -59,7 +59,7 @@ Requires:       sailfish-version >= 3.1.0
 # Provide an automatically presented update candidate for an installed Storeman < 0.2.99:
 Conflicts:      harbour-storeman < 0.2.99
 Obsoletes:      harbour-storeman < 0.2.99
-Provides:       harbour-storeman = 0.3.0~2
+Provides:       harbour-storeman = 0.3.0~3
 
 %global screenshots_url    https://github.com/storeman-developers/harbour-storeman/raw/master/.xdata/screenshots/
 %global logdir             %{_localstatedir}/log
