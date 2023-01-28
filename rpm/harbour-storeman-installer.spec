@@ -76,8 +76,8 @@ of the device and its installed SailfishOS release.
 PackageName: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
- - Utility
  - System
+ - Utility
  - Network
  - Settings
  - PackageManager
