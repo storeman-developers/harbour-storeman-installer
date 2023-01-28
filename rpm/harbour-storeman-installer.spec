@@ -10,10 +10,13 @@ Version:        1.5.0
 Release:        release1
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
-# These "Source:" lines below require that the value of %%{name} is also the
+# These "Source0:" lines below require that the value of %%{name} is also the
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
-Source:         %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+# Note that the rpmlintrc file must be named so according to
+# https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
+Source99:       %{name}.rpmlintrc
 BuildArch:      noarch
 BuildRequires:  desktop-file-utils
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
