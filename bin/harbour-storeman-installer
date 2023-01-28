@@ -38,13 +38,13 @@ exec <&-            # Close StdIN
 exec >> "$logfile"  # Redirect StdOUT, appendingly
 exec 2>&1           # Map StdERR to (redirected) StdOUT
 
-umask 7113  # The first octal digit is ignored by most implementations
+umask 113
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
-# Prefix first output with three linebreaks, if logfile size > 0
+# Prefix first output with one plus two linebreaks, if logfile size > 0
 linebreaks=""
 if [ -s "$logfile" ]
-then linebreaks="\n\n------------------------------------------------------------------------------------------------------------\n\n\n"
+then linebreaks="\n-------------------------------------\n\n"
 fi
 
 # Write first entry to logfile:
