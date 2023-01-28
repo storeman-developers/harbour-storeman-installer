@@ -50,7 +50,7 @@ logfile="$2"
 # exec >> "$logfile"  # Redirect StdOUT, appendingly
 # exec 2>&1           # Map StdERR to (redirected) StdOUT
 
-umask 7113  # The first octal digit is ignored by most implementations
+umask 113
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
 # Prefix first output with three linebreaks, if logfile size > 0
