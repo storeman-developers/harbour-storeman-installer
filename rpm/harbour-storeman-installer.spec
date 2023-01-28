@@ -14,9 +14,9 @@ URL:            https://github.com/storeman-developers/%{name}
 # project name at GitHub and the value of %%{version} is also the name of a
 # correspondingly set git-tag.
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
-# Note that the rpmlintrc file shall be named exactly so according to
+# Note that the rpmlintrc file must be named so according to
 # https://en.opensuse.org/openSUSE:Packaging_checks#Building_Packages_in_spite_of_errors
-Source99:       %{name}-rpmlintrc
+Source99:       %{name}.rpmlintrc
 BuildArch:      noarch
 # For details on "Requires:" statements, especially "Requires(a,b,c):", see:
 # https://rpm-software-management.github.io/rpm/manual/spec.html#requires
@@ -74,11 +74,12 @@ of the device and its installed SailfishOS release.
 
 %if "%{?vendor}" == "chum"
 PackageName: Storeman Installer for SailfishOS
-Type: generic
+Type: desktop-application
 Categories:
- - Utilities
+ - Utility
  - System
  - Network
+ - Settings
  - PackageManager
 DeveloperName: olf (Olf0)
 Custom:
@@ -116,9 +117,9 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 if [ ! -e %{logfile} ]
 then
   curmask="$(umask)"
-  umask 7022  # The first octal digit is ignored by most implementations
+  umask 022
   [ ! -e %{logdir} ] && mkdir -p %{logdir}
-  umask 7113
+  umask 113
   touch %{logfile}
   # Not necessary, because umask is set:
   # chmod 0664 %%{logfile}
@@ -164,7 +165,7 @@ exit 0
 # (by a double-fork / "daemonize") to allow for this RPM transaction
 # to finalise (what waiting for it to finish would prevent).
 # (Ab)using the %%posttrans' interpreter instance for the preamble:
-umask 7113  # Most implementations ignore the first octet
+umask 113
 # [ "$PWD" = / ] || cd /  # Set PWD to /, if not already; omitted,
 # because the scriptlets are executed with PWD safely set to /.
 setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
