@@ -56,7 +56,7 @@ umask 113
 # Prefix first output with three linebreaks, if logfile size > 0
 linebreaks=""
 if [ -s "$logfile" ]
-then linebreaks="\n\n------------------------------------------------------------------------------------------------------------\n\n\n"
+then linebreaks="\n-----------------------------\n\n"
 fi
 
 # Write first entry to logfile:
