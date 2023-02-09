@@ -1,5 +1,5 @@
 Summary:        Installs Storeman for SailfishOS
-License:        MIT
+License:        LGPL-2.1-only
 Name:           harbour-storeman-installer
 # The Git release tag format must adhere to just <version>.  The <version>
 # field adheres to semantic versioning and the <release> field comprises a
