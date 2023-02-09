@@ -457,11 +457,12 @@ DAMAGES.
 
                      END OF TERMS AND CONDITIONS
 
-    Name of this software: sfos-upgrade
-    WWW-Link for this software: https://github.com/Olf0/sfos-upgrade/
+    Name of this software: Storeman Installer (harbour-storeman-installer)
+    WWW-Link for this software:
+    https://github.com/storeman-developers/harbour-storeman-installer
 
     Copyright (c) 2021 to 2022 Petr Tsymbarovich (osetr)
-                  2021 to 2022 olf  <Olf0@users.noreply.github.com>
+                  2021 to 2022 olf <Olf0@users.noreply.github.com>
 
     This software is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
