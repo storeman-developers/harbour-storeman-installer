@@ -72,7 +72,7 @@ Storeman Installer selects, downloads and installs the right variant of
 the Storeman OpenRepos client application built for the CPU-architecture
 of the device and its installed SailfishOS release.
 
-%if "%{?vendor}" == "chum"
+%if 0%{?_chum}
 PackageName: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
