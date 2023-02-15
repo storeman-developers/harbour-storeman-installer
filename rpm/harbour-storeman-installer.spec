@@ -101,6 +101,9 @@ Url:
   Donation: https://openrepos.net/donate
 %endif
 
+%define _binary_payload w6.gzdio
+%define _source_payload w2.gzdio
+
 %prep
 %setup -q
 
