@@ -22,7 +22,7 @@ RPMs of [older Storeman releases are also available at OpenRepos](https://openre
 
 * Initial installation without having Storeman or SailfishOS:Chum already installed
   1. Enable "System → Security → Untrusted software → Allow untrusted software" in the SailfishOS Settings app.
-  2. Download the current Storeman Installer RPM from [its "latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) or [the SailfishOS-OBS](https://build.merproject.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
+  2. Download the current Storeman Installer RPM from its ["latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest), [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer) or the [SailfishOS-OBS](https://build.merproject.org/package/show/home:olf:harbour-storeman/harbour-storeman-installer).
   3. Tap on the "File downloaded" notification on your SailfishOS device or select the downloaded RPM file in a file-manager app and choose "Install" in its pulley menu; then confirm the installation.
   4. Preferably disable "Allow untrusted software" again.
 
