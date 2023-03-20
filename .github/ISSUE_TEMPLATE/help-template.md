@@ -18,6 +18,11 @@ assignees: ''
 #### STEPS TO REPRODUCE
 
 
+#### ATTACH LOG-FILE
+
+Upload the log-file from `/var/log/harbour-storeman-installer.log.txt` here.
+
+
 #### ADDITIONAL INFORMATION
 
 <sub>\[Please consider which other pieces of information may be relevant: Denote if this is not always reproducible, if this is a regression (then name to which older version), attach relevant data such as log files or the systemd journal, provide screenshots etc.\]</sub>
