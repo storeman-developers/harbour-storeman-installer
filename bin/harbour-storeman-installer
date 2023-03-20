@@ -67,6 +67,11 @@ logentry="[Debug] Installed, now running: $pkgname"
 printf "\n%s\n" "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf "%s\n" "$logentry"
 
+# Log some status data:
+printf "\n%s" 'From /etc/os-release:  '; source /etc/os-release; printf "%s\n" "$ID $VERSION_ID $SAILFISH_FLAVOUR"
+printf "\n%s\n" 'Output of `ssu status`, UID omitted:'; ssu s | fgrep -iv 'UID:'
+printf "\n%s\n" '"storeman" entries from `ssu lr`:'; ssu lr | fgrep storeman | tr -s ' '
+
 # Out of occasional bad experience when pkcon is being hammered with
 # commands, also prefix `pkcon repo-set-data` with a second sleep:
 sleep 1
