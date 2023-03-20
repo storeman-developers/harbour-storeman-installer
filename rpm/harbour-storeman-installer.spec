@@ -1,13 +1,13 @@
 Summary:        Installs Storeman for SailfishOS
-License:        MIT
+License:        LGPL-2.1-only
 Name:           harbour-storeman-installer
 # The Git release tag format must adhere to just <version>.  The <version>
 # field adheres to semantic versioning and the <release> field comprises a
 # natural number greater or equal to 1, which may be prefixed with one of
 # {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.2.0
-Release:        release1
+Version:        2.2.1
+Release:        release2
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source0:" line below requires that the value of %%{name} is also the
@@ -72,7 +72,7 @@ Storeman Installer selects, downloads and installs the right variant of
 the Storeman OpenRepos client application built for the CPU-architecture
 of the device and its installed SailfishOS release.
 
-%if "%{?vendor}" == "chum"
+%if 0%{?_chum}
 PackageName: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
@@ -100,6 +100,9 @@ Url:
   Bugtracker: %{url}/issues
   Donation: https://openrepos.net/donate
 %endif
+
+%define _binary_payload w6.gzdio
+%define _source_payload w6.gzdio
 
 %prep
 %setup -q

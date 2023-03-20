@@ -66,6 +66,11 @@ then systemd-cat -t "$called" -p 6 printf "%s\n" "$logentry"
 else systemd-cat -t "$called" -p 4 printf "%s\n" "[Warning] PID $mypid failed to write to $logfile"
 fi
 
+# Log some status data:
+printf "\n%s" 'From /etc/os-release:  '; source /etc/os-release; printf "%s\n" "$ID $VERSION_ID $SAILFISH_FLAVOUR"
+printf "\n%s\n" 'Output of `ssu status`, UID omitted:'; ssu s | fgrep -iv 'UID:'
+printf "\n%s\n" '"storeman" entries from `ssu lr`:'; ssu lr | fgrep storeman | tr -s ' '
+
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
 # enqueuing a pkcon-job while this RPM transaction is unfinished.
