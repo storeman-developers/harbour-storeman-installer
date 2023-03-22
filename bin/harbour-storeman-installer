@@ -77,7 +77,7 @@ systemd-cat -t "$called" -p 7 printf '%s' "$logentry $(printf '%s' "$ssus" | sed
 
 ssulr="$(ssu lr | fgrep storeman | tr -s ' ')"; logentry='"storeman" entries from `ssu lr`:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssulr"
-systemd-cat -t "$called" -p 7 printf '%s' "$logentry $(printf '%s' "$ssulr" | tr -s '\n' ',')" 
+systemd-cat -t "$called" -p 7 printf '%s' "$logentry $(printf '%s' "$ssulr" | sed -e 's/^ - / /g' -e 's/ ... / /g' | tr -s '\n' ',')" 
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
