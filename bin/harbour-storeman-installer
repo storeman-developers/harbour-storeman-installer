@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -ufC  # "-u" (error when using uninitialised variables),
 # "-f" (disable pathname expansion) and "-C" (no-clobber / -overwrite).
 # Ultimately decided against "-e", because this script better runs through,
