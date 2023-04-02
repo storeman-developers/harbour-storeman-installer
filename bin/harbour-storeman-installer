@@ -53,15 +53,14 @@ logfile="$2"
 umask 113
 [ "$PWD" = / ] || cd /  # Set PWD to /, if not already
 
-# Prefix first output with one plus two linebreaks, if logfile size > 0
-linebreaks=''
+# Prefix first output with a linebreak, dashes and another linebreak, if logfile size > 0
 if [ -s "$logfile" ]
-then linebreaks='\n-----------------------------\n\n'
+then printf '\n%s\n\n' "-----------------------------"
 fi
 
 # Write first entry to logfile:
-logentry="[Info] PID $mypid is logging to $logfile"
-if printf "${linebreaks}%s\n" "$(date -Iseconds) $logentry"
+logentry="[Info] PID $mypid is logging to $logfile on"
+if printf '%s %s\n' "$logentry" "$(date -Iseconds)"
 then systemd-cat -t "$called" -p 6 printf '%s\n' "$logentry"
 else systemd-cat -t "$called" -p 4 printf '%s\n' "[Warning] PID $mypid failed to write to $logfile"
 fi
