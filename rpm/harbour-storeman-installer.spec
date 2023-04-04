@@ -84,7 +84,7 @@ Categories:
 DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
-PackageIcon: %{url}/raw/master/icons/%{name}.svg
+PackageIcon: %{url}/raw/master/.icon/%{name}.svg
 Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-01.png
  - %{screenshots_url}screenshot-screenshot-storeman-02.png
