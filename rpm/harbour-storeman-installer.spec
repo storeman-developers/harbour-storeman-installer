@@ -73,7 +73,7 @@ the Storeman OpenRepos client application built for the CPU-architecture
 of the device and its installed SailfishOS release.
 
 %if 0%{?_chum}
-PackageName: Storeman Installer for SailfishOS
+Title: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
  - System
@@ -84,7 +84,7 @@ Categories:
 DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/icons/%{name}.svg
+PackageIcon: %{url}/raw/master/icons/%{name}.svg
 Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-01.png
  - %{screenshots_url}screenshot-screenshot-storeman-02.png
@@ -94,7 +94,7 @@ Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-07.png
  - %{screenshots_url}screenshot-screenshot-storeman-08.png
  - %{screenshots_url}screenshot-screenshot-storeman-09.png
-Url:
+Links:
   Homepage: https://openrepos.net/content/olf/storeman-installer
   Help: %{url}/issues
   Bugtracker: %{url}/issues
