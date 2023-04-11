@@ -8,6 +8,7 @@ Name:           harbour-storeman-installer
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
 Version:        2.2.2
 Release:        release3
+Vendor:
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source0:" line below requires that the value of %%{name} is also the
