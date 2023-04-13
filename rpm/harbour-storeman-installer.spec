@@ -1,4 +1,3 @@
-%undefine vendor
 Summary:        Installs Storeman for SailfishOS
 License:        LGPL-2.1-only
 Name:           harbour-storeman-installer
