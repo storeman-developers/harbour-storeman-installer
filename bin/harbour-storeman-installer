@@ -74,11 +74,11 @@ systemd-cat -t "$called" -p 7 printf '%s\n' "$logentry"
 
 ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='`ssu status`, UID omitted:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssus"
-systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssus" | sed 's/$/, /g' | tr -d '\n')" 
+systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssus" | sed 's/$/, /g' | tr -d '\n')"
 
 ssulr="$(ssu lr | fgrep storeman | tr -s ' ')"; logentry='"storeman" entries from `ssu lr`:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssulr"
-systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssulr" | sed -e 's/^ - / /g' -e 's/ ... / /g' | tr -s '\n' ',')" 
+systemd-cat -t "$called" -p 7 printf '%s%s' "$logentry" "$(printf '%s' "$ssulr" | sed -e 's/^ - / /g' -e 's/ ... / /g' | tr -s '\n' ',')"  # Second string start with a space due to substitution by `sed`
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
