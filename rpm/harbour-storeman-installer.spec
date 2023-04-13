@@ -6,8 +6,8 @@ Name:           harbour-storeman-installer
 # natural number greater or equal to 1, which may be prefixed with one of
 # {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
 # https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
-Version:        2.2.2
-Release:        release3
+Version:        2.2.3
+Release:        release4
 Group:          Applications/System
 URL:            https://github.com/storeman-developers/%{name}
 # These "Source0:" line below requires that the value of %%{name} is also the
@@ -73,7 +73,7 @@ the Storeman OpenRepos client application built for the CPU-architecture
 of the device and its installed SailfishOS release.
 
 %if 0%{?_chum}
-PackageName: Storeman Installer for SailfishOS
+Title: Storeman Installer for SailfishOS
 Type: desktop-application
 Categories:
  - System
@@ -84,7 +84,7 @@ Categories:
 DeveloperName: olf (Olf0)
 Custom:
   Repo: %{url}
-Icon: %{url}/raw/master/icons/%{name}.svg
+PackageIcon: %{url}/raw/master/.icon/%{name}.svg
 Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-01.png
  - %{screenshots_url}screenshot-screenshot-storeman-02.png
@@ -94,7 +94,7 @@ Screenshots:
  - %{screenshots_url}screenshot-screenshot-storeman-07.png
  - %{screenshots_url}screenshot-screenshot-storeman-08.png
  - %{screenshots_url}screenshot-screenshot-storeman-09.png
-Url:
+Links:
   Homepage: https://openrepos.net/content/olf/storeman-installer
   Help: %{url}/issues
   Bugtracker: %{url}/issues
