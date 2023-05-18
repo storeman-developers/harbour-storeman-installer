@@ -1,12 +1,20 @@
 Summary:        Installs Storeman for SailfishOS
 License:        LGPL-2.1-only
 Name:           harbour-storeman-installer
-# The Git release tag format must adhere to just <version>.  The <version>
-# field adheres to semantic versioning and the <release> field comprises a
-# natural number greater or equal to 1, which may be prefixed with one of
-# {alpha,beta,rc,release} (e.g., "beta3").  For details and reasons, see
-# https://github.com/storeman-developers/harbour-storeman-installer/wiki/Git-tag-format
+# The Git tag format must adhere to <release>/<version> since 2023-05-18.
+# The <version> tag must adhere to semantic versioning, for details see
+# https://semver.org/
 Version:        2.2.4
+# The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
+# natural number greater or equal to 1 (e.g., "beta3") and may additionally be
+# postfixed with a plus character ("+"), the name of the packager and a release
+# number chosen by her (e.g., "rc2+jane4").  `{alpha|beta|rc|release}`
+# indicates the expected status of the software.  No other identifiers shall be
+# used for any published version, but for the purpose of testing infrastructure
+# other nonsensual identifiers as `adud` may be used, which do *not* trigger a
+# build at GitHub and OBS, when configured accordingly; mind the sorting
+# (`adud` < `alpha`).  For details and reasons, see
+# https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
 Release:        release5
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
