@@ -3,13 +3,15 @@ name: CI on SFOS 3.1.0
 on:
   push:
     tags:
-      - '*'
-      - '*/*'
+      - 'release*/*'
+      - 'rc*/*'
+      - 'beta*/*'
+      - 'alpha*/*'
   pull_request:
     branches:
       - master
       - devel
-      - '*legacy*'
+      - 'v*-legacy'
 
 jobs:
   build:
