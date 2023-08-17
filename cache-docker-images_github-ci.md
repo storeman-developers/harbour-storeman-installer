@@ -116,7 +116,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Its source code is [hosted at GitHub](https://github.com/ktmud/cached-dependencies) and uses the MIT license.
 * Does provide a single git tag.
 * Written in TypeScript (Microsoft's superset of JavaScript).
-* Smallish, < 100 KBytes.
+* Smallish, ca. 275 KiB comprising compiled JavaScript ([three files](https://github.com/ktmud/cached-dependencies/tree/master/dist)), a [bash script](https://github.com/ktmud/cached-dependencies/blob/master/src/scripts/bashlib.sh) and an [action.yaml](https://github.com/ktmud/cached-dependencies/blob/master/action.yml).
 * Appears to be unmaintained.
 * Appears to be a generic caching solution for pulling external dependencies.
 * States to be adaptable, includes cache configurations for `pip`, `npm` and `yarn`.
