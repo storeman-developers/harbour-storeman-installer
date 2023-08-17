@@ -123,8 +123,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Despite [extensive documentation](https://github.com/ktmud/cached-dependencies#readme), I fail to quickly comprehend:
   * How to configure a different source (Docker Hub).
   * If it is also limited to downloads in the runner's "workspace".
-* Pulled from the "GitHub marketplace" 2023-01-08 (?), see https://github.com/marketplace/actions/cached-dependencies
-  2023-01-07 it was still there and is still [found via the search](https://github.com/marketplace?type=actions&query=cached-+))?
+* Pulled (?) from the "GitHub marketplace" 2023-01-08, see [github.com/marketplace/actions/cached-dependencies](https://github.com/marketplace/actions/cached-dependencies).  2023-01-07 it was still there and is still [found via the search](https://github.com/marketplace?type=actions&query=cached-+)?
   
 #### ● [Docker Cache](https://github.com/marketplace/actions/docker-cache) by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/docker-cache) and uses the MIT license.
