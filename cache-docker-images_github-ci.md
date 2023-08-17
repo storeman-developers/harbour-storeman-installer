@@ -128,8 +128,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 #### ● [Docker Cache](https://github.com/marketplace/actions/docker-cache) by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/docker-cache) and uses the MIT license.
 * Does provide stable releases and git tags (lots!).
-* Written in TypeScript (Microsoft's superset of JavaScript).
-* Smallish, < 100 KBytes.
+* Comprises a [few TypeScript scripts](https://github.com/ScribeMD/docker-cache/tree/main/src) (Microsoft's superset of JavaScript), which are compiled into two JavaScript scripts ([main/index.js](https://github.com/ScribeMD/docker-cache/blob/main/dist/main/index.js) and [post/index.js](https://github.com/ScribeMD/docker-cache/blob/main/dist/post/index.js)) each 1,17 MiB large (!), plus a tiny [action.yaml](https://github.com/ScribeMD/docker-cache/blob/main/action.yaml) file which calls these.
 * Appears to be well maintained.
 * Appears to be a generic caching solution for Docker images.
 * Explicitly denotes the use case "pull images from Docker Hub"!
@@ -137,8 +136,9 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 #### ● [Rootless Docker](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/rootless-docker) and uses the MIT license.
 * Does provide stable releases and git tags (lots!).
-* Seem to be primarily written in Python with some JavaScript / TypeScript (Microsoft's superset of JavaScript).
-* Smallish, < 100 KBytes.
+* A small, well readable [action.yaml](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml) file.
+* Tiny: 2,65 KBytes
+* [Downloads and executes](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55) directly [`https://get.docker.com/rootless` shell script](https://get.docker.com/rootless) (some 10 KBytes).
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
 * Renders any specific caching moot, as GitHub's `action/cache` suffices.
