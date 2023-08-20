@@ -8,6 +8,8 @@ If a CI configuration (i.e., a "GitHub action") requires a docker image to run, 
 
 Specifically, using the Sailfish-SDK images provided by Coderus for a CI run results in downloading [a docker image between 1 GB and 3,5 GB in size](https://hub.docker.com/r/coderus/sailfishos-platform-sdk/tags) (depending on the SDK / SailfishOS version to build for) up to three times (once for each of the supported architectures: aarch64, armv7hl and i486) from an external "docker registry" (here: [Docker Hub](https://hub.docker.com/)).  This affects the [simple variant of using these images](https://github.com/storeman-developers/harbour-storeman-installer/blob/master/.github/workflows/build.yml#L24) (by directly using the [`coderus/github-sfos-build` "action"](https://github.com/CODeRUS/github-sfos-build)) and [the more sophisticated one](https://github.com/sailfishos-patches/patchmanager/blob/master/.github/workflows/build.yml#L34) alike.
 
+As these images are downloaded by all users of Coderus' SailfishOS Platform SDK Docker images hosted at DockerHub (the Docker "registry") and Docker imposes consequtively stricter "rate limiting" (i.e., limits for download volume and / or frequency, before access is severely throttled or someone pays for it), this may prevent the use of these images for CI runs in the future.
+
 ## Issue analysis
 
 ### Initial assessment
@@ -143,7 +145,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
 * Renders any specific caching moot, as GitHub's `action/cache` suffices.
-* But I have not yet determined in which directories pulled images / layers are stored; i.e., those which are to be cached by GitHub's `action/cache`.
+* But I have not yet determined in which directories pulled images / layers are stored (Rootless Docker's default is `~/.local/share/docker`); i.e., those which are to be cached by GitHub's `action/cache`.
 
 ## Down-selection of possible solutions to try
 
