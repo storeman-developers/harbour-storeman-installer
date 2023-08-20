@@ -151,7 +151,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 
 ## Down-selection of possible solutions to try
 
-0. Use Podman instead; it is preinstalled on GitHub's Ubuntu 22.04 image, too.
+0. Use Podman instead; it is preinstalled on GitHub's Ubuntu 22.04 image, too.  When started by an non-root user, it uses `$HOME/.local/share/containers/storage/` to store images, layers and their metadata, specifically the subdirectory `<Storage Driver>-layers` for the downloaded layers.
 1. [Rootless Docker](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
 2. ~~[Docker Cache](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache~~
 3. [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh): https://github.com/moby/moby/tree/master/contrib#readme
