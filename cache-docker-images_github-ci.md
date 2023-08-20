@@ -58,7 +58,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Created and maintained as [a by-product](https://github.com/moby/moby/tree/v23.0.0-rc.1/contrib#readme) of a [lively project](https://github.com/moby/moby/pulse).
 * Provides [tagged, stable releases](https://github.com/moby/moby/releases), e.g. (latest as of 2023-01-07), [v20.10.22](https://github.com/moby/moby/blob/v20.10.22/contrib/download-frozen-image-v2.sh).
 * Is a simple and small shell-script (< 400 sloc, ~ 13 KBytes), which implicitly documents [how to call it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L18-L22) and [how to utilise it](https://github.com/moby/moby/blob/v23.0.0-rc.1/contrib/download-frozen-image-v2.sh#L429-L431).
-* My favorite third-party tool for this approach.
+* My favorite "external" tool for this approach.
 
 #### ● [Scopeo](https://github.com/containers/skopeo#readme) by the ["Containers" project](https://github.com/containers)
 * Its source code is [hosted at GitHub](https://github.com/containers/skopeo) and uses the Apache-2.0 license.
