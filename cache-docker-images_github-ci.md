@@ -139,16 +139,15 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Does provide stable releases and git tags (lots!).
 * A small, well readable [action.yaml](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml) file.
 * Tiny: 2,65 KBytes
-* [Downloads and executes](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55) directly [`https://get.docker.com/rootless` shell script](https://get.docker.com/rootless) (some 10 KBytes).
+* But [Downloads and executes](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55) directly [`https://get.docker.com/rootless` shell script](https://get.docker.com/rootless) (some 10 KBytes), which in turn [downloads and unpacks (i.e., "installs") TAR archives of the required Docker components](https://get.docker.com/rootless) (some MBytes).
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
 * Renders any specific caching moot, as GitHub's `action/cache` suffices.
-* But [downloads and uses a shell script directly from Docker Inc.](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55), which in turn [downloads and unpacks (i.e., "installs") TAR archives of the required Docker components](https://get.docker.com/rootless).
-* I have not yet determined in which directories pulled images / layers are stored; i.e., those which are to be cached by GitHub's `action/cache`.
+* But I have not yet determined in which directories pulled images / layers are stored; i.e., those which are to be cached by GitHub's `action/cache`.
 
 ## Down-selection of possible solutions to try
 
-0. Use Podman insttead; it is preinstalled on GitHub's Uuntu 22.04 image, too.
+0. Use Podman instead; it is preinstalled on GitHub's Ubuntu 22.04 image, too.
 1. [Rootless Docker](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
 2. ~~[Docker Cache](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache~~
 3. [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh): https://github.com/moby/moby/tree/master/contrib#readme
