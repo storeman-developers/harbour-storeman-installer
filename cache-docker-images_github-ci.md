@@ -132,6 +132,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be well maintained.
 * Appears to be a generic caching solution for Docker images.
 * Explicitly denotes the use case "pull images from Docker Hub"!
+* Works technically fine, but uses `docker save --output ~/.docker-images.tar` <All freshly pulled images by this Action job>, which results in `write /home/runner/.docker_temp_XYZ: no space left on device` even with teh malles SailfishOS Platform SDK images by Coderus.
 
 #### ● [Rootless Docker](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/rootless-docker) and uses the MIT license.
@@ -142,9 +143,12 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
 * Renders any specific caching moot, as GitHub's `action/cache` suffices.
+* But [downloads and uses a shell script directly from Docker Inc.](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55), which in turn [downloads and unpacks (i.e., "installs") TAR archives of the required Docker components](https://get.docker.com/rootless).
+* I have not yet determined in which directories pulled images / layers are stored; i.e., those which are to be cached by GitHub's `action/cache`.
 
 ## Down-selection of possible solutions to try
 
+0. Use Podman insttead; it is preinstalled on GitHub's Uuntu 22.04 image, too.
 1. [Rootless Docker](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker
-2. [Docker Cache](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache
+2. ~~[Docker Cache](https://github.com/marketplace/actions/docker-cache): https://github.com/ScribeMD/docker-cache~~
 3. [`download-frozen-image-v2.sh`](https://github.com/moby/moby/blob/master/contrib/download-frozen-image-v2.sh): https://github.com/moby/moby/tree/master/contrib#readme
