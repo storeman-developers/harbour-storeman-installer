@@ -136,7 +136,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be well maintained.
 * Appears to be a generic caching solution for Docker images.
 * Explicitly denotes the use case "pull images from Docker Hub"!
-* Works technically fine, but uses `docker save --output ~/.docker-images.tar` <All freshly pulled images by this Action job>, which results in `write /home/runner/.docker_temp_XYZ: no space left on device` even with teh malles SailfishOS Platform SDK images by Coderus.
+* Works technically fine, but uses `docker save --output ~/.docker-images.tar` <All freshly pulled images by this Action job>, which results in `write /home/runner/.docker_temp_XYZ: no space left on device` even with the smallest SailfishOS Platform SDK images by Coderus (ca. 1 GB, but these pull in a few additional layers).
 
 #### ● [Rootless Docker](https://github.com/marketplace/actions/rootless-docker) also by [ScribeMD](https://github.com/ScribeMD)
 * Its source code is [hosted at GitHub](https://github.com/ScribeMD/rootless-docker) and uses the MIT license.
@@ -147,7 +147,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
 * Renders any specific caching moot, as GitHub's `action/cache` suffices.
-* But I have not yet determined in which directories pulled images / layers are stored (Rootless Docker's default is `~/.local/share/docker`); i.e., those which are to be cached by GitHub's `action/cache`.
+* But I have not yet determined in which directories pulled images / layers are stored (Rootless Docker's default is `~/.local/share/docker`, likely in the subdirectory `<Storage Driver, e.g., overlay2>`); i.e., those which are to be cached by GitHub's `action/cache`.
 
 ## Down-selection of possible solutions to try
 
