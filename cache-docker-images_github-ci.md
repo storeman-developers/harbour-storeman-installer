@@ -146,7 +146,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 * But [Downloads and executes](https://github.com/ScribeMD/rootless-docker/blob/main/action.yaml#L48-L55) directly [`https://get.docker.com/rootless` shell script](https://get.docker.com/rootless) (some 10 KBytes), which in turn [downloads and unpacks (i.e., "installs") TAR archives of the required Docker components](https://get.docker.com/rootless) (some MBytes).
 * Appears to be well maintained.
 * States to provide a set of advantages over running docker conventionally in root mode.
-* Renders any specific caching moot, as GitHub's `action/cache` suffices.
+* Renders any specific caching moot, as GitHub's `action/cache` should suffice.
 * But I have not yet determined in which directories pulled images / layers are stored (Rootless Docker's default is `~/.local/share/docker`, likely in the subdirectory `<Storage Driver, e.g., overlay2>`); i.e., those which are to be cached by GitHub's `action/cache`.
 
 ## Down-selection of possible solutions to try
