@@ -151,7 +151,7 @@ Mind that the git repository is also checked out to the "runner workspace" (`$GI
 
 ## Down-selection of possible solutions to try
 
-0. ~~Use Podman instead; it is preinstalled on GitHub's Ubuntu 22.04 image, too.~~<br />
+0. ~~Use Podman instead; it is preinstalled on GitHub's Ubuntu 22.04 runner image, too.~~<br />
    When started by an non-root user, it uses `$HOME/.local/share/containers/storage/` to store images, layers and their metadata, specifically the subdirectory `<Storage Driver>-layers` for the downloaded layers.  This [configuration can easily be adapted](https://github.com/containers/podman/issues/1916#issuecomment-1219466711).  But not all files are neccesarily redable by the user, despite being their owner, because they have no permissions set (e.g., an `/etc/shadow` in a conatiner image).  Consequently the Github Actions `cache` and `cache/save` fail.
 1. ~~[Rootless Docker](https://github.com/marketplace/actions/rootless-docker): https://github.com/ScribeMD/rootless-docker~~<br />
    Very likely it exposes the same issue as rootless Podman, which is described in the prior point.
