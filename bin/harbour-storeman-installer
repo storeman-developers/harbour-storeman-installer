@@ -72,11 +72,11 @@ source /etc/os-release; logentry="[Debug] From /etc/os-release: $ID $VERSION_ID 
 printf '\n%s\n' "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf '%s' "$logentry"
 
-ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] `ssu status`, UID omitted:'
+ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] \`ssu status\`, UID omitted:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssus"
 systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssus" | sed 's/$/, /g' | tr -d '\n')"
 
-ssulr="$(ssu lr | fgrep storeman | tr -s ' ')"; logentry='[Debug] "storeman" entries from `ssu lr`:'
+ssulr="$(ssu lr | fgrep storeman | tr -s ' ')"; logentry='[Debug] "storeman" entries from \`ssu lr\`:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssulr"
 systemd-cat -t "$called" -p 7 printf '%s%s' "$logentry" "$(printf '%s' "$ssulr" | sed -e 's/^ - / /g' -e 's/ ... / /g' | tr '\n' ',')"  # Second string starts with a space due to substitution by `sed`
 
@@ -143,7 +143,7 @@ do
     logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
-    logentry="[Notice] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    logentry="[Notice] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) \`pkcon\`, then sleeping for $wait seconds."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 5 printf '%s' "$logentry"
     killall -q -TERM pkcon
@@ -156,7 +156,7 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 3 printf '%s' "$logentry"
-    logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) \`pkcon\`, then sleeping for $wait seconds."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
     killall -q -INT pkcon
@@ -170,7 +170,7 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 3 printf '%s' "$logentry"
-    logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
+    logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) \`pkcon\`, then sleeping for $i seconds and ultimately killing them."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
     killall -q -HUP pkcon
