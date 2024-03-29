@@ -5,7 +5,7 @@ set -ufC  # "-u" (error when using uninitialised variables),
 # despite minor errors.
 set -o pipefail  # May not be supported, busybox's ash and bash do.
 export LC_ALL=POSIX  # For details see https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html#tag_08_02
-export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/Olf0/sfos-upgrade/issues/73
+export POSIXLY_CORRECT=1  # Can have side-effects, see e.g. https://github.com/Olf0/sfos-upgrade/issues/73
                           # Ultimately this ensures an almost consistent behaviour across shell implementations.
 
 # Specify bash as interpreter of this script (in its first line), as this ensures
@@ -28,7 +28,7 @@ export POSIXLY_CORRECT=1  # Can have side-effects, see e.g., https://github.com/
 
 # This script is designed to be called fully detached (by a "double fork"
 # / a "daemonize") as the last statement of the %posttrans scriptlet
-# (the last executed) of an RPM spec file or directly (e.g., in a shell).
+# (the last executed) of an RPM spec file or directly (e.g. in a shell).
 
 # Memorise how we were called (argument checks are primarily intended for interactive use):
 mypid="$$"
@@ -72,7 +72,7 @@ source /etc/os-release; logentry="[Debug] From /etc/os-release: $ID $VERSION_ID 
 printf '\n%s\n' "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf '%s' "$logentry"
 
-ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] `ssu status`, UID omitted:'
+ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] \`ssu status\`, UID omitted:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssus"
 systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssus" | sed 's/$/, /g' | tr -d '\n')"
 
@@ -143,7 +143,7 @@ do
     logentry="[Warning] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
-    logentry="[Notice] Trying to terminate (i.e., sending SIGTERM to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    logentry="[Notice] Trying to terminate (i.e. sending SIGTERM to) all processes named (ID) \`pkcon\`, then sleeping for $wait seconds."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 5 printf '%s' "$logentry"
     killall -q -TERM pkcon
@@ -156,7 +156,7 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 3 printf '%s' "$logentry"
-    logentry="[Warning] Trying to interrupt (i.e., sending SIGINT to) all processes named (ID) `pkcon`, then sleeping for $wait seconds."
+    logentry="[Warning] Trying to interrupt (i.e. sending SIGINT to) all processes named (ID) \`pkcon\`, then sleeping for $wait seconds."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
     killall -q -INT pkcon
@@ -170,7 +170,7 @@ do
     logentry="[Error] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 3 printf '%s' "$logentry"
-    logentry="[Warning] Trying to hang-up (i.e., sending SIGHUP to) all processes named (ID) `pkcon`, then sleeping for $i seconds and ultimately killing them."
+    logentry="[Warning] Trying to hang-up (i.e. sending SIGHUP to) all processes named (ID) \`pkcon\`, then sleeping for $i seconds and ultimately killing them."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
     killall -q -HUP pkcon
@@ -210,7 +210,7 @@ do
                         systemd-cat -t "$3" -p 6 printf '%s' "[Info] Self-removal in 20 seconds: $2";\
                         eval $2)' sh_rm_inst-storeman "$mypid" "$logentry" "$called"
                         # The first 15 characters of the spawned process' name
-                        # (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+                        # (to be used for, e.g. `ps` and `pgrep` / `pkill`) are:
                         # sh_rm_inst-stor
   fi
 done
@@ -230,7 +230,7 @@ setsid --fork sh -c '(sleep 1;\
                     systemd-cat -t "$3" -p 6 printf '%s' "[Info] Executing: $2";\
                     eval $2)' sh_do_inst-storeman "$mypid" "$logentry" "$called"
                     # The first 15 characters of the spawned process' name
-                    # (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+                    # (to be used for, e.g. `ps` and `pgrep` / `pkill`) are:
                     # sh_do_inst-stor
 # Double-fork / "Daemonise" ("SysV-style") in shell code, (ab)using this
 # interpreter instance for the preamble (setting the environment):

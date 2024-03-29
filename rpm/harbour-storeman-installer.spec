@@ -4,18 +4,18 @@ Name:           harbour-storeman-installer
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        2.2.4
+Version:        2.2.5
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
-# natural number greater or equal to 1 (e.g., "beta3") and may additionally be
+# natural number greater or equal to 1 (e.g. "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
-# number chosen by her (e.g., "rc2+jane4").  `{alpha|beta|rc|release}`
+# number chosen by her (e.g. "rc2+jane4").  `{alpha|beta|rc|release}`
 # indicates the expected status of the software.  No other identifiers shall be
 # used for any published version, but for the purpose of testing infrastructure
 # other nonsensual identifiers as `adud` may be used, which do *not* trigger a
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release5
+Release:        release6
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Software Management/Package Manager
@@ -44,7 +44,7 @@ Requires(posttrans): PackageKit
 # ToDo: Check if the GNU-versions of these packages (named as alternatives below)
 # also provide the aliases ("virtual packages") denoted here, then these can be
 # used; ultimately most of these packages shall be already installed, anyway.
-# 1. `coreutils` (for e.g., `touch` and many other very basic UNIX tools):
+# 1. `coreutils` (for e.g. `touch` and many other very basic UNIX tools):
 # Requires:       (busybox-symlinks-coreutils or gnu-coreutils)
 Requires:       coreutils
 # Requires(post,posttrans): (busybox-symlinks-coreutils or gnu-coreutils)
@@ -125,7 +125,7 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 
 %post
 # The %%post scriptlet is deliberately run when installing and updating.
-# Create a persistent log file, i.e., which is not managed by RPM and hence
+# Create a persistent log file, i.e. which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
 if [ ! -e %{logfile} ]
 then
@@ -183,7 +183,7 @@ umask 113
 # because the scriptlets are executed with PWD safely set to /.
 setsid --fork sh -c '(%{_bindir}/%{name} "$1" "$2")' sh_call_inst-storeman "$$" "%{logfile}" >> "%{logfile}" 2>&1 <&-
 # The first 15 characters of the spawned process' name
-# (to be used for, e.g., `ps` and `pgrep` / `pkill`) are:
+# (to be used for, e.g. `ps` and `pgrep` / `pkill`) are:
 # sh_call_inst-st
 exit 0
 
