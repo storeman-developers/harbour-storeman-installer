@@ -1,4 +1,4 @@
-name: CI on SDK 3.1.0
+name: CI on SDK for 3.1.0
 
 on:
   push:
