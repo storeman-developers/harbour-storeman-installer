@@ -72,13 +72,17 @@ source /etc/os-release; logentry="[Debug] From /etc/os-release: $ID $VERSION_ID 
 printf '\n%s\n' "$(date -Iseconds) $logentry"
 systemd-cat -t "$called" -p 7 printf '%s' "$logentry"
 
-ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] \`ssu status\`, UID omitted:'
+ssus="$(ssu s | grep -iv 'UID:\? ')"; logentry='[Debug] `ssu status`, UID omitted:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssus"
 systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssus" | sed 's/$/, /g' | tr -d '\n')"
 
 ssulr="$(ssu lr | fgrep storeman | tr -s ' ')"; logentry='[Debug] "storeman" entries from `ssu lr`:'
 printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssulr"
 systemd-cat -t "$called" -p 7 printf '%s%s' "$logentry" "$(printf '%s' "$ssulr" | sed -e 's/^ - / /g' -e 's/ ... / /g' | tr '\n' ',')"  # Second string starts with a space due to substitution by `sed`
+
+ssuini="$(fgrep storeman /etc/ssu/ssu.ini)"; logentry='[Debug] "storeman" entries from /etc/ssu/ssu.ini:'
+printf '\n%s\n%s\n' "$(date -Iseconds) $logentry" "$ssuini"
+systemd-cat -t "$called" -p 7 printf '%s %s' "$logentry" "$(printf '%s' "$ssuini" | tr '\n' ',')"
 
 # Provide RPM with a little time to proceed finishing the RPM transaction,
 # which called this script asynchronously, because pkcon might fail
@@ -175,7 +179,7 @@ do
     systemd-cat -t "$called" -p 4 printf '%s' "$logentry"
     killall -q -HUP pkcon
     sleep $i
-    killall -qw -KILL pkcon
+    killall -q -KILL pkcon
     sleep 1
     pkcon -pv quit
     sleep 1
@@ -194,13 +198,13 @@ do
     logentry="[Critical] Failed to refresh harbour-storeman-obs repository, because error-code $retc was returned by: $logentry"
     printf '\n%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 2 printf '%s' "$logentry"
-    killall -qw -KILL pkcon
+    killall -q -KILL pkcon
     sleep 1
     pkcon -pv quit
     sleep 1
     systemctl stop packagekit.service
     systemctl start packagekit.service
-    logentry='[Notice] Scheduling harbour-storeman-installer for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile.'
+    logentry="[Notice] Scheduling $called for removal in 20 seconds, trying to install harbour-storeman despite the failed repository refresh meanwhile."
     printf '%s\n' "$(date -Iseconds) $logentry"
     systemd-cat -t "$called" -p 5 printf '%s' "$logentry"
     sleep 1
@@ -226,7 +230,7 @@ logentry='pkcon -pvy install harbour-storeman'
 # except for the final log message.
 setsid --fork sh -c '(sleep 1;\
                     i=0; while [ $i -le 9 ] && ps -eo pid | fgrep -q "$1"; do sleep 1; i=$(($i+1)); done;\
-                    printf '\n%s\n' "$(date -Iseconds) [Step 2 / 2] $2";\
+                    printf "\n%s\n" "$(date -Iseconds) [Step 2 / 2] $2";\
                     systemd-cat -t "$3" -p 6 printf '%s' "[Info] Executing: $2";\
                     eval $2)' sh_do_inst-storeman "$mypid" "$logentry" "$called"
                     # The first 15 characters of the spawned process' name
@@ -238,7 +242,7 @@ setsid --fork sh -c '(sleep 1;\
 # For a detailed description of double-forking in shell code, see
 # https://github.com/storeman-developers/harbour-storeman-installer/blob/master/double-fork-in-shell.md
 logentry="[Debug] ${called}'s main script (PID: ${mypid}) finishes"
-printf '\n%s\n' "$(date -Iseconds) $logentry"
+printf '\n%s\n' "$(date -Iseconds) ${logentry}."
 systemd-cat -t "$called" -p 7 printf '%s' "$logentry"
 exit $retc
 

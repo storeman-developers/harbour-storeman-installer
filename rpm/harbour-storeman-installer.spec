@@ -4,7 +4,7 @@ Name:           harbour-storeman-installer
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        2.2.5
+Version:        2.2.6
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g. "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -15,7 +15,7 @@ Version:        2.2.5
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release6
+Release:        release7
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Software Management/Package Manager
@@ -151,25 +151,53 @@ then
   rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
-if ! echo "$ssu_lr" | grep -Fq harbour-storeman-obs
+# Add sailfishos-chum repository configuration, depending on the installed
+# SailfishOS release (3.1.0 is the lowest supported, see line 68):
+source %{_sysconfdir}/os-release
+# Three equivalent variants, but the sed-based ones have additional, ugly
+# backslashed quoting of all backslashes, curly braces and brackets (likely
+# also quotation marks), and a double percent for a single percent character,
+# because they were developed as shell-scripts for `%%define <name> %%(<script>)`
+# (the same applies to scriplets with "queryformat-expansion" option -q, see 
+# https://rpm-software-management.github.io/rpm/manual/scriptlet_expansion.html#queryformat-expansion ):
+# %%define _sailfish_version %%(source %%{_sysconfdir}/os-release; echo "$VERSION_ID" | %%{__sed} 's/^\\(\[0-9\]\[0-9\]*\\)\\.\\(\[0-9\]\[0-9\]*\\)\\.\\(\[0-9\]\[0-9\]*\\).*/\\1\\2\\3/')
+# ~: sailfish_version="$(source %%{_sysconfdir}/os-release; echo "$VERSION_ID" | sed 's/^\([0-9][0-9]*\)\.\([0-9][0-9]*\)\.\([0-9][0-9]*\).*/\1\2\3/')"
+# Using an extended ("modern") RegEx shortens the sed script, but busybox's sed
+# does not support the POSIX option -E for that!  Hence one must resort to the
+# non-POSIX option -r for that, without a real gain compared to the basic RegEx:
+# %%define _sailfish_version %%(source %%{_sysconfdir}/os-release; echo "$VERSION_ID" | %%{__sed} -r 's/^(\[0-9\]+)\\.(\[0-9\]+)\\.(\[0-9\]+).*/\\1\\2\\3/')
+# ~: sailfish_version="$(source %%{_sysconfdir}/os-release; echo "$VERSION_ID" | sed -r 's/^([0-9]+)\.([0-9]+)\.([0-9]+).*/\1\2\3/')"
+# Note: Debug output of RPM macros assigned by a %%define statement is best
+# done by `echo`s / `printf`s at the start of the %%build section.
+# The variant using `cut` and `tr` instead of `sed` does not require extra quoting,
+# regardless where it is used (though escaping each quotation mark by a backslash
+# might be advisable, when using it inside a %%define statement's `%%()` ).
+sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
+# Must be an all numerical string of at least three digits:
+if echo "$sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then
-  ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+  if [ "$sailfish_version" -lt 460 ]
+  then ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+  else ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(releaseMajorMinor)_%%(arch)/'
+  fi
   ssu_ur=yes
+# Should be enhanced to proper debug output, also writing to log-file and systemd-journal:
+else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version"
 fi
 if [ $ssu_ur = yes ]
 then ssu ur
 fi
 # BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
-# flow control directives (if, while, until etc.).  Furthermore on Fedora Docs it
-# is indicated that solely the final exit status of a whole scriptlet is crucial: 
+# flow control directives (if, while, until etc.).  Furthermore Fedora Docs etc.
+# state that solely the final exit status of a whole scriptlet is crucial: 
 # See https://docs.pagure.org/packaging-guidelines/Packaging%3AScriptlets.html
 # or https://docs.fedoraproject.org/en-US/packaging-guidelines/Scriptlets/#_syntax
 # committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) in
 # https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
-# Hence I have the impression, that only the main section of a spec file is
-# interpreted in a shell called with the option `-e', but not the scriptlets
-# (`%%pre*`, `%%post*`, `%%trigger*` and `%%file*`).
+# Hence only the main section of a spec file and likely also `%%(<shell-script>)`
+# statements are executed in a shell called with the option `-e', but not the
+# scriptlets: `%%pre*`, `%%post*`, `%%trigger*` and `%%file*`
 exit 0
 
 %posttrans
