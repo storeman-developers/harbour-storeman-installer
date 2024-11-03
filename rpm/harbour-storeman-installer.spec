@@ -181,7 +181,7 @@ then
   fi
   ssu_ur=yes
 # Should be enhanced to proper debug output, also writing to log-file and systemd-journal:
-else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version"
+else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 fi
 if [ $ssu_ur = yes ]
 then
