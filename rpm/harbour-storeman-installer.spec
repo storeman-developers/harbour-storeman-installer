@@ -151,7 +151,7 @@ then
   rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
-# Add sailfishos-chum repository configuration, depending on the installed
+# Add harbour-storeman-obs repository configuration, depending on the installed
 # SailfishOS release (3.1.0 is the lowest supported, see line 68):
 source %{_sysconfdir}/os-release
 # Three equivalent variants, but the sed-based ones have additional, ugly
