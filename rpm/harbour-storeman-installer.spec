@@ -125,7 +125,7 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 
 %post
 # The %%post scriptlet is deliberately run when installing and updating.
-# Create a persistent log file, i.e. which is not managed by RPM and hence
+# Create a persistent log-file, i.e. which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
 if [ ! -e %{logfile} ]
 then
