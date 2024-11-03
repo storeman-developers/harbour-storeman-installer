@@ -148,7 +148,6 @@ ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if echo "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
-  rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
 # Add harbour-storeman-obs repository configuration, depending on the installed
@@ -185,7 +184,9 @@ then
 else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version"
 fi
 if [ $ssu_ur = yes ]
-then ssu ur
+then
+  rm -f /var/cache/ssu/features.ini
+  ssu ur
 fi
 # BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
