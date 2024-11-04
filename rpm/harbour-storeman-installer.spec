@@ -4,7 +4,7 @@ Name:           harbour-storeman-installer
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        2.2.6
+Version:        2.2.7
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g. "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -15,7 +15,7 @@ Version:        2.2.6
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release7
+Release:        release8
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Software Management/Package Manager
@@ -125,7 +125,7 @@ cp bin/%{name} %{buildroot}%{_bindir}/
 
 %post
 # The %%post scriptlet is deliberately run when installing and updating.
-# Create a persistent log file, i.e. which is not managed by RPM and hence
+# Create a persistent log-file, i.e. which is not managed by RPM and hence
 # is unaffected by removing the %%{name} RPM package:
 if [ ! -e %{logfile} ]
 then
@@ -148,10 +148,9 @@ ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
 if echo "$ssu_lr" | grep -Fq mentaljam-obs
 then
   ssu rr mentaljam-obs
-  rm -f /var/cache/ssu/features.ini
   ssu_ur=yes
 fi
-# Add sailfishos-chum repository configuration, depending on the installed
+# Add harbour-storeman-obs repository configuration, depending on the installed
 # SailfishOS release (3.1.0 is the lowest supported, see line 68):
 source %{_sysconfdir}/os-release
 # Three equivalent variants, but the sed-based ones have additional, ugly
@@ -182,7 +181,7 @@ then
   fi
   ssu_ur=yes
 # Should be enhanced to proper debug output, also writing to log-file and systemd-journal:
-else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version"
+else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 fi
 if [ $ssu_ur = yes ]
 then ssu ur
@@ -196,7 +195,7 @@ fi
 # committed on 18 February 2019 by tibbs ( https://pagure.io/user/tibbs ) in
 # https://pagure.io/packaging-committee/c/8d0cec97aedc9b34658d004e3a28123f36404324
 # Hence only the main section of a spec file and likely also `%%(<shell-script>)`
-# statements are executed in a shell called with the option `-e', but not the
+# statements are executed in a shell invoked with the option `-e', but not the
 # scriptlets: `%%pre*`, `%%post*`, `%%trigger*` and `%%file*`
 exit 0
 
