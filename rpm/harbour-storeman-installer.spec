@@ -144,8 +144,7 @@ fi
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
 ssu_ur=no
-ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if echo "$ssu_lr" | grep -Fq mentaljam-obs
+if grep -q '^mentaljam-obs=' %{_sysconfdir}/ssu/ssu.ini
 then
   ssu rr mentaljam-obs
   ssu_ur=yes
@@ -172,6 +171,9 @@ source %{_sysconfdir}/os-release
 # regardless where it is used (though escaping each quotation mark by a backslash
 # might be advisable, when using it inside a %%define statement's `%%()` ).
 sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
+
+#grep '^habour-storeman-obs=' %{_sysconfdir}/ssu/ssu.ini | grep -o '/[[:graph:]]+/$' | grep -o '%%(release[[:alpha:]]*)'
+
 # Must be an all numerical string of at least three digits:
 if echo "$sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then
