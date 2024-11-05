@@ -149,10 +149,11 @@ then
   ssu rr mentaljam-obs
   ssu_ur=yes
 fi
-# Set nonsensical default failing the following tests, because VERSION_ID should become overwritten by source'ing /etc/os-release:
-VERSION_ID=''
 # Add harbour-storeman-obs repository configuration, depending on the installed
-# SailfishOS release (3.1.0 is the lowest supported, see line 68):
+# SailfishOS release (3.1.0 is the lowest supported, see line 68).
+# Set empty default value failing the following tests, because VERSION_ID
+# should become overwritten by source'ing /etc/os-release:
+VERSION_ID=''
 source %{_sysconfdir}/os-release
 # Three equivalent variants, but the sed-based ones have additional, ugly
 # backslashed quoting of all backslashes, curly braces and brackets (likely
