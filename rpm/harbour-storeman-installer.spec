@@ -179,7 +179,8 @@ if ! echo "sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then
   echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 else
-  # Ensure that the repo config is correct: If it is missing or a fixed SFOS-release number was used, set it anew.
+  # Ensure that the repo config is correct: If it is missing or a fixed
+  # SFOS-release number was used, set it anew.
   release_macro="$(grep '^harbour-storeman-obs=' %{_sysconfdir}/ssu/ssu.ini | grep -o '/[[:graph:]][[:graph:]][[:graph:]][[:graph:]]*/$' | grep -o '%%(release[[:alpha:]]*)')"
   if [ $sailfish_version -ge 460 ] && [ "$release_macro" != '%%(releaseMajorMinor)' ]
   then
