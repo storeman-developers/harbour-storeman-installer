@@ -144,14 +144,16 @@ fi
 # added again when installing Storeman via Storeman Installer), which is far more
 # fail-safe: If something goes wrong, this SSUs repo entry is now ensured to exist.
 ssu_ur=no
-ssu_lr="$(ssu lr | grep '^ - ' | cut -f 3 -d ' ')"
-if echo "$ssu_lr" | grep -Fq mentaljam-obs
+if grep -q '^mentaljam-obs=' %{_sysconfdir}/ssu/ssu.ini
 then
   ssu rr mentaljam-obs
   ssu_ur=yes
 fi
 # Add harbour-storeman-obs repository configuration, depending on the installed
-# SailfishOS release (3.1.0 is the lowest supported, see line 68):
+# SailfishOS release (3.1.0 is the lowest supported, see line 68).
+# Set empty default value failing the following tests, because VERSION_ID
+# should become overwritten by source'ing /etc/os-release:
+VERSION_ID=''
 source %{_sysconfdir}/os-release
 # Three equivalent variants, but the sed-based ones have additional, ugly
 # backslashed quoting of all backslashes, curly braces and brackets (likely
@@ -172,16 +174,22 @@ source %{_sysconfdir}/os-release
 # regardless where it is used (though escaping each quotation mark by a backslash
 # might be advisable, when using it inside a %%define statement's `%%()` ).
 sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
-# Must be an all numerical string of at least three digits:
-if echo "$sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
+# sailfish_version must be an all numerical string of at least three digits:
+if ! echo "sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then
-  if [ "$sailfish_version" -lt 460 ]
-  then ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
-  else ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(releaseMajorMinor)_%%(arch)/'
+  echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
+else
+  # Ensure that the repo config is correct: If it is missing or a fixed SFOS-release number was used, set it anew.
+  release_macro="$(grep '^harbour-storeman-obs=' %{_sysconfdir}/ssu/ssu.ini | grep -o '/[[:graph:]][[:graph:]][[:graph:]][[:graph:]]*/$' | grep -o '%%(release[[:alpha:]]*)')"
+  if [ $sailfish_version -ge 460 ] && [ "$release_macro" != '%%(releaseMajorMinor)' ]
+  then
+    ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(releaseMajorMinor)_%%(arch)/'
+    ssu_ur=yes
+  elif [ $sailfish_version -lt 460 ] && [ "$release_macro" != '%%(release)' ]
+  then
+    ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(release)_%%(arch)/'
+    ssu_ur=yes
   fi
-  ssu_ur=yes
-# Should be enhanced to proper debug output, also writing to log-file and systemd-journal:
-else echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 fi
 if [ $ssu_ur = yes ]
 then ssu ur
