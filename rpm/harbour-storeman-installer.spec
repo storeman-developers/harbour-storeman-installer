@@ -177,9 +177,9 @@ sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
 # sailfish_version must be an all numerical string of at least three digits:
 if ! echo "sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then
-  # Should be enhanced to proper debug output, also writing to log-file and systemd-journal:
   echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 else
+  # Ensure that the repo config is correct: If it is missing or a fixed SFOS-release number was used, set it anew.
   release_macro="$(grep '^harbour-storeman-obs=' %{_sysconfdir}/ssu/ssu.ini | grep -o '/[[:graph:]][[:graph:]][[:graph:]][[:graph:]]*/$' | grep -o '%%(release[[:alpha:]]*)')"
   if [ $sailfish_version -ge 460 ] && [ "$release_macro" != '%%(releaseMajorMinor)' ]
   then
