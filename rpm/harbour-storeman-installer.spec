@@ -4,7 +4,7 @@ Name:           harbour-storeman-installer
 # The Git tag format must adhere to <release>/<version> since 2023-05-18.
 # The <version> tag must adhere to semantic versioning, for details see
 # https://semver.org/
-Version:        2.2.8
+Version:        2.2.9
 # The <release> tag comprises one of {alpha,beta,rc,release} postfixed with a
 # natural number greater or equal to 1 (e.g. "beta3") and may additionally be
 # postfixed with a plus character ("+"), the name of the packager and a release
@@ -15,7 +15,7 @@ Version:        2.2.8
 # build at GitHub and OBS, when configured accordingly; mind the sorting
 # (`adud` < `alpha`).  For details and reasons, see
 # https://github.com/Olf0/sfos-upgrade/wiki/Git-tag-format
-Release:        release9
+Release:        release10
 # The Group tag should comprise one of the groups listed here:
 # https://github.com/mer-tools/spectacle/blob/master/data/GROUPS
 Group:          Software Management/Package Manager
