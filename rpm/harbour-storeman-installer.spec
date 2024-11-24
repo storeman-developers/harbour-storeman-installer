@@ -175,7 +175,7 @@ source %{_sysconfdir}/os-release
 # might be advisable, when using it inside a %%define statement's `%%()` ).
 sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
 # sailfish_version must be an all numerical string of at least three digits:
-if ! echo "sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
+if ! echo "$sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
 then echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 else
   # Ensure that the repo config is correct: If it is missing or a fixed
