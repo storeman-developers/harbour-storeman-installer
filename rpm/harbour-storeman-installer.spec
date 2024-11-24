@@ -175,7 +175,7 @@ source %{_sysconfdir}/os-release
 # might be advisable, when using it inside a %%define statement's `%%()` ).
 sailfish_version="$(echo "$VERSION_ID" | cut -s -f 1-3 -d '.' | tr -d '.')"
 # sailfish_version must be an all numerical string of at least three digits:
-if ! echo "$sailfish_version" | grep -q '^[0-9][0-9][0-9][0-9]*$'
+if [ $(echo "$sailfish_version" | grep -c '^[0-9][0-9][0-9][0-9]*$') != 1 ]
 then echo "Error: VERSION_ID=$VERSION_ID => sailfish_version=$sailfish_version" >&2
 else
   # Ensure that the repo config is correct: If it is missing or a fixed
@@ -183,6 +183,7 @@ else
   release_macro="$(grep '^harbour-storeman-obs=' %{_sysconfdir}/ssu/ssu.ini | grep -o '/[[:graph:]][[:graph:]][[:graph:]][[:graph:]]*/$' | grep -o '%%(release[[:alpha:]]*)')"
   if [ $sailfish_version -ge 460 ] && [ "$release_macro" != '%%(releaseMajorMinor)' ]
   then
+    # No `ssu rr harbour-storeman-obs` needed, because an `ssu ar <name> <URL>` overwrites an extant entry.
     ssu ar harbour-storeman-obs 'https://repo.sailfishos.org/obs/home:/olf:/harbour-storeman/%%(releaseMajorMinor)_%%(arch)/'
     ssu_ur=yes
   elif [ $sailfish_version -lt 460 ] && [ "$release_macro" != '%%(release)' ]
@@ -191,9 +192,7 @@ else
     ssu_ur=yes
   fi
 fi
-if [ $ssu_ur = yes ]
-then ssu ur
-fi
+[ $ssu_ur = yes ] && ssu ur
 # BTW, `ssu`, `rm -f`, `mkdir -p` etc. *always* return with "0" ("success"), hence
 # no appended `|| true` needed to satisfy `set -e` for failing commands outside of
 # flow control directives (if, while, until etc.).  Furthermore Fedora Docs etc.
