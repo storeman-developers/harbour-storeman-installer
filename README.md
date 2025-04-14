@@ -4,9 +4,9 @@
 
 ### Background
 
-Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS and initially installed by the Storeman Installer (or manually).  To update from Storeman <&nbsp;0.2.9 (requires SailfishOS ≥&nbsp;3.1.0), one should reinstall Storeman via the Storeman Installer.  After an initial installation of Storeman ≥&nbsp;0.3.0, further updates of Storeman will be performed within Storeman, as usual.
+Starting with version 0.2.9, Storeman is built by the help of the SailfishOS-OBS and initially installed by the Storeman Installer (or manually).  To update from Storeman <&nbsp;0.2.9 (requires SailfishOS ≥&nbsp;3.1.0), one should either reinstall Storeman via the Storeman Installer, or manually remove Storeman < 0.2.9 and install Storeman ≥ 0.3.0.  After an initial installation of Storeman ≥&nbsp;0.3.0, further updates of Storeman will be performed within Storeman, as usual.
 
-The Storeman Installer works on any SailfishOS release ≥&nbsp;3.1.0 and all three supported CPU-architectures (aarch64, armv7hl and i486).  The current Storeman Installer RPM can be obtained from its ["latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest) and [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer).
+The Storeman Installer works on any SailfishOS release ≥&nbsp;3.4.0 and all three supported CPU-architectures (aarch64, armv7hl and i486).  The current Storeman Installer RPM can be obtained from its ["latest release" page at GitHub](https://github.com/storeman-developers/harbour-storeman-installer/releases/latest) and [OpenRepos.net](https://openrepos.net/content/olf/storeman-installer).
 
 RPMs of [older Storeman releases are also available at OpenRepos](https://openrepos.net/content/olf/storeman-legacy), e.g. v0.1.8 which works on SailfishOS 2.2.1 and may work on older SailfishOS 2 releases.
 
